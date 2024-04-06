@@ -2,3 +2,32 @@ baseURL: https://samaita.com/
 languageCode: en-us
 title: Backend Dev Story
 theme: ["PaperMod"]
+params:
+  env: production # to enable google analytics, opengraph, twitter-cards and schema.
+  title: Backend Dev Story
+  description: "Learning Series of Scaling Backend System"
+  keywords: [Blog, Backend, Scaling]
+  author: Gary Samaita
+  # author: ["Me", "You"] # multiple authors
+  images: ["https://avatars.githubusercontent.com/u/6941042?v=4"]
+  DateFormat: "January 2, 2006"
+  defaultTheme: dark # dark, light
+  disableThemeToggle: false
+
+  ShowCodeCopyButtons: true
+  ShowPostNavLinks: true
+  ShowToc: true
+  ShowBreadCrumbs: true
+  ShowShareButtons: true
+  ShowReadingTime: true
+  homeInfoParams:
+    Title: Hi, I'm Gary 🙋‍♂️
+    Content: Backend Engineer for almost a decade. In mission to solve scaling problems by make things effective & efficient.
+
+  socialIcons: # optional
+    - name: "LinkedIn"
+      url: "https://www.linkedin.com/in/gary-almas-samaita"
+    - name: "Github"
+      url: "https://github.com/samaita"
+    - name: "Twitter"
+      url: "https://twitter.com/garysamaita"
