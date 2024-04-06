@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Backend Dev Story</title>
+    <link>https://samaita.com/</link>
+    <description>Recent content on Backend Dev Story</description>
+    <image>
+      <title>Backend Dev Story</title>
+      <url>https://avatars.githubusercontent.com/u/6941042?v=4</url>
+      <link>https://avatars.githubusercontent.com/u/6941042?v=4</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 13 Apr 2023 05:49:16 +0700</lastBuildDate>
+    <atom:link href="https://samaita.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Resolve Port Already in Use</title>
+      <link>https://samaita.com/posts/resolve-port-already-in-use/</link>
+      <pubDate>Thu, 13 Apr 2023 05:49:16 +0700</pubDate>
+      <guid>https://samaita.com/posts/resolve-port-already-in-use/</guid>
+      <description>Port conflict usually happen whenever a service try to run and listen to a specific port while another server currently utilizing it. For those who manage multiple service repository, this could be quite common.
+The simplest way is to search and terminate the binary. But what if the binary stalled or we have no idea where did we ran it.
+No worry, with a simple command, we can figure it out in less than a minute!</description>
+    </item>
+    <item>
+      <title>Measure Code Performance With Benchmark in Go</title>
+      <link>https://samaita.com/posts/measure-code-performance-with-benchmark-in-go/</link>
+      <pubDate>Fri, 06 Jan 2023 05:44:20 +0700</pubDate>
+      <guid>https://samaita.com/posts/measure-code-performance-with-benchmark-in-go/</guid>
+      <description>Golang provide a way to know our code efficiency by benchmark our code. By benchmarking our code, we able to see how fast our code can run and even gain more insight.
+An efficient code displayed from the resource required to complete it execution. The faster it can run, the better. The lower resource required, the better.
+This concept also applied for codes that run with serverless platform such as AWS Lambda or Google Cloud Function.</description>
+    </item>
+    <item>
+      <title>How to Delete Multiple Local Git Branches</title>
+      <link>https://samaita.com/posts/how-to-delete-multiple-local-git-branches/</link>
+      <pubDate>Wed, 06 Apr 2022 05:33:50 +0700</pubDate>
+      <guid>https://samaita.com/posts/how-to-delete-multiple-local-git-branches/</guid>
+      <description>For you, productive engineer, who dedicate a lot of time for a repo. Have you clean your git branch locally? Just like our home, a project&amp;rsquo;s local branch need decluttering too.
+In my point of view, I&amp;rsquo;d rather see clear git branch locally to help me find any unmerged branch. Or simply pursue peace of mind.
+Since Git doesn&amp;rsquo;t have a built in feature to delete multiple git branch in local project, deleting many branches in your local Git project might take you a while.</description>
+    </item>
+  </channel>
+</rss>

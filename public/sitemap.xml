@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://samaita.com/</loc>
+    <lastmod>2023-04-13T05:49:16+07:00</lastmod>
+  </url><url>
+    <loc>https://samaita.com/posts/</loc>
+    <lastmod>2023-04-13T05:49:16+07:00</lastmod>
+  </url><url>
+    <loc>https://samaita.com/posts/resolve-port-already-in-use/</loc>
+    <lastmod>2023-04-13T05:49:16+07:00</lastmod>
+  </url><url>
+    <loc>https://samaita.com/posts/measure-code-performance-with-benchmark-in-go/</loc>
+    <lastmod>2023-01-06T05:44:20+07:00</lastmod>
+  </url><url>
+    <loc>https://samaita.com/posts/how-to-delete-multiple-local-git-branches/</loc>
+    <lastmod>2022-04-06T05:33:50+07:00</lastmod>
+  </url><url>
+    <loc>https://samaita.com/categories/</loc>
+  </url><url>
+    <loc>https://samaita.com/tags/</loc>
+  </url>
+</urlset>
