@@ -10,7 +10,7 @@ In my point of view, I'd rather see clear git branch locally to help me find any
 
 Since Git doesn't have a built in feature to delete multiple git branch in local project, deleting many branches in your local Git project might take you a while.
 
-## How to delete git branch?
+# How to delete git branch?
 
 First, lets list all branch available in your local with `git branch`
 
@@ -34,7 +34,7 @@ git branch -D feat/api-update-product
 
 While it is easy to do in smaller number of branch, It might turned into disaster when there are too many branches to delete.
 
-## How do we delete all git branch with pattern?
+# How to delete all git branch with pattern?
 
 Here is a tip on how to delete multiple git branches by a pattern quickly.[^1]
 
@@ -60,5 +60,5 @@ git branch | grep "*" | xargs git branch -D
 
 There is no need to do it frequently. I'd suggest to do this at least once per 6 months or earlier if you active in development.
 
-## Reference
+# Reference
 [^1]: [Deleting Multiple Branches in Git by Raja Sekar Durairaj](https://medium.com/@rajsek/deleting-multiple-branches-in-git-e07be9f5073c)

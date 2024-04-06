@@ -10,7 +10,7 @@ The simplest way is to search and terminate the binary. But what if the binary s
 
 No worry, with a simple command, we can figure it out in less than a minute!
 
-## How to Find Used Port
+# How to Find Used Port
 
 > 🔖 TLDR; use `lsof -i <port>`
 
@@ -55,7 +55,7 @@ main    4336   masgar   3u  IPv6  54519       0t0 TCP  *:http-alt (LISTEN)
 
 ```
 
-## How to Kill A Process By PID
+# How to Kill A Process By PID
 
 Now that you have found the PID of a process that utilize port `8080`, you have an option to kill it or have mercy. If you choose to kill it, you can use `kill`, with format:
 
@@ -75,6 +75,6 @@ Done! Your port `8080` is now free, just like Dobby, the free elf. 🕊️ Wee
 
 If you have time to spare and want to be expert of `lsof`, I'd recommend this article: **[Linux Manual](https://man7.org/linux/man-pages/man8/lsof.8.html)** - `lsof`
 
-## Reference
+# Reference
 
 [^1]: [Linux Manual](https://man7.org/linux/man-pages/man8/lsof.8.html) - `lsof`

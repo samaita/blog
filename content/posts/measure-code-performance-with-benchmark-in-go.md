@@ -14,11 +14,14 @@ Unless you have unlimited budget, you should have concerned more about: Does my 
 
 Golang provide a way to know our code efficiency by benchmark our code. By benchmarking our code, we able to see how fast our code can run and even gain more insight.
 
-## Three Benefits of Benchmark:
+# Three Benefits of Benchmark:
 
 1. **Measure the performance of your code.** By running a benchmark, you can see how many iterations per second your code is able to run. This can help you identify performance bottlenecks and optimize your code.
 2. **Easier to compare the performance of different implementations of a function.** When you are in doubt, comparing two algorithm performance might help. Having a benchmark strengthen your argument.
 3. **Ensure your code is correct.** You can test your code under different conditions and input sizes. This can help you to find and fix bugs that might not appeared with smaller input or concurrence.
+
+# How to Benchmark
+Go has a built-in function to perform benchmark on our own code. Here is how:
 
 ## Creating Benchmark
 
@@ -287,5 +290,5 @@ By benchmarking our code, we able to see how fast our code can run and even gain
 
 With its benefits and simple implementation, Benchmark in Go is one of the high return investment that you should never underestimate.
 
-## Reference
+# Reference
 [^1]: [Benchmarking in Golang: Improving function performance](https://blog.logrocket.com/benchmarking-golang-improve-function-performance/)
