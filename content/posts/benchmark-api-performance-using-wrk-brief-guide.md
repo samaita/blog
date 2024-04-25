@@ -1,48 +1,50 @@
 +++
 title = 'Benchmark API Performance with WRK: A Brief Guide'
-date = 2024-04-09T00:50:35+07:00
-draft = true
+date = 2024-04-25T20:22:00+07:00
+draft = false
 +++
 
-Fellas, imagine you've built a powerful API. It perform well at first. No sign of slowness, your users is happy as the app feels smooth.
+Fellas, imagine you've built a powerful API. It perform well at first. No sign of sluggish, your users is happy as the app feels smooth.
 
-The business is thriving, your user base grows. Things start slowing down. Requests take longer, and sometimes, the server crashes. Looking at the server metric, it's your API that doesn't run as fast as your first deployment.
+The business is thriving, your user base grows. Things start slowing down. Loading after click button take longer, and sometimes, the server crashes returning error. Looking at the server metric, it's your API that doesn't run as fast as your first deployment.
 
-The problem is, you notice that the API goes slow only during high concurrent requests. While at single request it does fine. Now, how will you replicate this condition?
+The problem, you notice that the API goes slow only during high concurrent requests. While at single request it does fine. Now, how will you replicate this condition?
 
-That's where tools like WRK come in. In this article, we'll explore how WRK can help you generate load and measure your API performance.
+That's when a handy tools like WRK comes in. In this article, let's explore how WRK can help you generate load and measure your API performance.
 
 # What is WRK?
 
-WRK is a tool with core functionality to generate load for HTTP services. It mimic a stress test with minimal setup.
+WRK is a tool with core functionality to generate load for HTTP services. It mimic a stress test with minimal setup. Install and run.
 
-WRK gives you highlights of crucial metrics like requests per second (RPS), latency, and throughput. This helps you pinpoint any weak spots in your server's performance and gives you a heads-up on where you need to tighten things up.
+WRK gives you highlights of crucial metrics like requests per second (RPS), latency, and throughput. This helps you spot any weak spots in your server's performance. WRK gives you a heads-up on where you need to tighten things up.
 
-Some might say load test with Locust or JMeter is better, I'd agree. But if you have no time nor resource to setup a load test, you can only guess if your code changes improved the performance.
+Some might say load test with Locust or JMeter is better, I'd agree. But both need a lot of time and resource to setup. Can you setup it at everytime you need to do PR changes?
 
 ## WRK Benefits
 
-WRK suit best for those who need to reiterate every code changes in his API **locally**. Before even a Pull Request opened, you can get the gist of impact of your code changes.
+WRK suit best for those who need to reiterate every code changes in his API **locally**. Before even a Pull Request opened, you can get the gist of impact of your code changes. No surprise after deployment. It is all testable in your local.
 
-As WRK run in local, it make technically no cost of resource and time to operate to perform. The feedback also fast, only a matter of seconds. Or minutes if you intend to. It is possible by only update a single parameter.
+As WRK run in local, it make technically no cost of resource and time to operate to perform. The feedback also fast, only a matter of seconds or minutes if you intend to. It is possible by only update a single parameter in command line.
 
-WRK provide parameters that can be adjusted to help you mimic a production load. It has all the necessity to help you provide load you need to measure your API performance.
+WRK provide parameters that can be adjusted to help you mimic a production load. It has all the necessity to help you provide load you need to measure your API performance. It also configurable with LuaJIT script so the request can be customizable to met your API requirement.
 
 ## WRK Drawbacks
 
 WRK isn't perfect. It's mainly prepared towards HTTP and HTTPS protocols.
 
-WRK is built on C and using LuaJIT for scripting. Setting up WRK for more complex testing scenarios can be a bit of a head-scratcher for beginners. LuaJIT might be a problem for those who never use it. But you have help of LLM anyway! 😉 
+WRK is built on C and using LuaJIT for scripting. Setting up WRK for more complex testing scenarios can be a bit of a head-scratcher for beginners. LuaJIT might be a problem for those who never use it. At least for me. Not to worry, get help from LLM! 😉 
 
 # Requirements
 
-You only need two:
-1. Install WRK, find the methods that suit your OS here.
+You only need to do two things:
+1. Install WRK, best suit for UNIX-like OS. If you use homebrew, [here is the way](https://formulae.brew.sh/formula/wrk)!
 2. API to benchmark, if you have no web server ready, lets build one!
 
 This article use Golang for web server, please ensure if you have it installed.
 
 # Setup Web Server
+
+This section let't you build a web server with the classic-basic API of hello world. You may skip, if you have an API ready to test.
 
 ## How to Check if Golang Installed
 
@@ -59,7 +61,7 @@ masgar@ip-127-0-0-1 ~ % go version
 go version go1.21.8 darwin/arm64
 ```
 
-If you dont have Golang installed, click here for instruction of how to install go.
+If you dont have Golang installed, click [here](https://go.dev/doc/install) for instruction of how to install go.
 
 ## Building Basic Web Server
 
@@ -155,7 +157,7 @@ As you see in the parameter of `-t2 -c10 -d10s`:
 Running 10s test @ http://localhost:8080/hello
   2 threads and 10 connections
 ```
-You use a scenario where test run under 10 seconds utilize 2 concurrent process with each process perform 10 simulaneous connection. Those three can be adjusted to suit more of your needs.
+It explain that the test was run in 10 seconds utilize 2 concurrent process with each process perform 10 simulaneous connection. Those three can be adjusted to suit your needs.
 
 ## Reading The Report
 
@@ -185,7 +187,7 @@ Then you have several additonal informations as well:
 4. **Requests/sec** - The average number of requests per second handled by the server over the entire test duration.
 5. **Transfer/sec** - The average data transfer rate from the server in megabytes per second.
 
-Based on this result, you can say that the `Hello World` endpoint is high performant.
+Based on this result, you can say that the `Hello World` endpoint is high performant. 
 
 ## Ensure The Test is Valid
 
@@ -204,7 +206,7 @@ Transfer/sec:   23.93MB
 ```
 1 million requests in 10s! Wow!
 
-While the number is superior than previous, it is actually http error that being reported. WRK telling you that the test is invalid as most of response is not 2xx nor 3xx via `Non-2xx or 3xx responses`. In this case, it is all 404.
+While the number is superior than previous, the report indicating a lot of http error. WRK telling you that the test is invalid as most of response is not 2xx nor 3xx via `Non-2xx or 3xx responses`. In this case, it is all 404.
 
 Now what is this report tell you?
 ```bash
@@ -276,9 +278,9 @@ wrk.body = json_payload
 wrk.headers["Content-Type"] = "application/json"
 ```
 
-With script, you can build a shared Git or Github repository among your team. So everyone can build and use standardized local loadtest. 
+With script, you can share it Git or Github repository among your team. So everyone can build and use standardized local loadtest. 
 
-The script is in LuaJIT, you can do more than just passing a static variable. There is options to randomize the value. Let's learn about it later (_TBH, i haven't tried it, so later then!_) 😁
+The script is in LuaJIT, you can do more than just passing a static variable. There is options to randomize the value. Let's learn about it later! (_TBH, i haven't tried it, so later then!_) 😁
 
 # Conclusion
 
