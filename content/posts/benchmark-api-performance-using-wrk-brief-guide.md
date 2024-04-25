@@ -1,5 +1,5 @@
 +++
-title = 'Benchmark API Performance with WRK: A Step-by-Step Guide'
+title = 'Benchmark API Performance with WRK: A Brief Guide'
 date = 2024-04-09T00:50:35+07:00
 draft = true
 +++
@@ -63,7 +63,7 @@ If you dont have Golang installed, click here for instruction of how to install 
 
 ## Building Basic Web Server
 
-To test the capability of WRK, we build one web server first.Lets use Golang for it. 
+To test the capability of WRK, you need build one web server first. Lets use Golang for it. 
 
 Go to a directory, then write a file name `main.go`
 ```go
@@ -86,7 +86,7 @@ func main() {
 
 use your terminal and type `go run main.go` to run it.
 
-To test if the web server ready, you may use this cURL in another terminal. Do not use the same terminal as your web server as we want to let the web server running.
+To test if the web server ready, you may use this cURL in another terminal. Do not use the same terminal as your web server as you want to let the web server running.
 ```bash
 curl -X GET http://localhost:8080/hello
 ```
@@ -99,7 +99,7 @@ Hello World!
 
 # Benchmark with WRK
 
-Now that we have our web server up and running, it's time to put WRK to the test. We need to ensure first if WRK already installed.
+Now that you have your web server up and running, it's time to put WRK to the test. You need to ensure first if WRK already installed.
 
 ## How to Check if WRK Installed
 
@@ -130,7 +130,7 @@ If you haven't install it, do not worry. You can follow this article to install 
 ## Benchmark with WRK
 
 > ⚠️ **WARNING!** ⚠️
-Before we continue with how to benchmark, I'd like to remind you to not blindly benchmark your production server. WRK could generate a lot of traffic to your server. Generate it huge enough, it might broken your production and getting you in trouble. We want to benchmark your server, not break it. There is a thin line of difference.
+Before you continue with how to benchmark, I'd like to remind you to not blindly benchmark your production server. WRK could generate a lot of traffic to your server. Generate it huge enough, it might broken your production and getting you in trouble. You want to benchmark your server, not break it. There is a thin line of difference.
 
 The simplest way to run a benchmark is to run this command:
 
@@ -178,14 +178,14 @@ There are 4 columns for both of Latency & Req/Sec:
 3. **Max** - The maximum response time observed during the test. Lower is better.
 4. **+/- Stdev** - The percentage of requests whose response time falls within one standard deviation of the average. A higher percentage indicates more predictable performance.
 
-Then we have several additonal informations as well:
+Then you have several additonal informations as well:
 1. **Total Requests** - The total number of requests sent to the server during the test duration.
-2. **Test Duration** - The duration of the test, we might defined 10s, but actual duration might excess a bit.
+2. **Test Duration** - The duration of the test, you might defined 10s, but actual duration might excess a bit.
 3. **Data Transferred** - The total amount of data transferred from the server in megabytes.
 4. **Requests/sec** - The average number of requests per second handled by the server over the entire test duration.
 5. **Transfer/sec** - The average data transfer rate from the server in megabytes per second.
 
-Based on this result, we can say that the `Hello World` endpoint is high performant.
+Based on this result, you can say that the `Hello World` endpoint is high performant.
 
 ## Ensure The Test is Valid
 
@@ -221,10 +221,69 @@ Transfer/sec:    0.00B
 
 If you ever found this kind of report, WRK tell you that all HTTP call fail to get any response. The API might be too slow and it have latency over 10s, or it has 504 Bad Gateway that WRK unable to capture within 10 second of test.
 
-If so, adjust the parameter of WRK. I'd say to increase the duration of testing from 10 seconds to 30 seconds, or reduce the number of threads and connection. It is common for endpoint to have low latency in low traffic, but exponentially increased when serve large concurrent traffic.
+If so, adjust the parameter of WRK. I'd suggest to increase the duration of testing from 10 seconds to 30 seconds, or reduce the number of threads and connection. It is common for endpoint to have low latency in low traffic. While it exponentially increased during serving large concurrent traffic.
 
 ## Adding Header to WRK Request
 
+When header is required to be added to the request, WRK has a way to include it into the command line. Here is how:
+```bash
+wrk -t12 -c400 -d30s -H "Authorization: Bearer ASDFsamaitaJKL" http://localhost:8080/hello
+```
 
+Notice that you need to add a param `-H` or `--header` followed by key value to be included as header.
 
-## Adding Body to WRK Request
+When you need more than one header to be added:
+```bash
+wrk -t12 -c400 -d30s \
+    -H "Authorization: Bearer ASDFsamaitaJKL" \
+    -H "Content-Type: application/json" \
+    http://localhost:8080/hello
+```
+
+## Using Script
+
+You might notice that the help command is not mention about how to use another http method and body request. WRK using a LuaJIT script to allow more option to be set to HTTP request.
+
+Here is the [example script for WRK](https://github.com/wg/wrk/blob/master/scripts/post.lua):
+
+```lua
+-- example HTTP POST script which demonstrates setting the
+-- HTTP method, body, and adding a header
+
+wrk.method = "POST"
+wrk.body   = "foo=bar&baz=quux"
+wrk.headers["Content-Type"] = "application/x-www-form-urlencoded"
+```
+
+You can change the method, body, and even set headers. It is hassle free as you can simplify our command for WRK:
+```bash
+wrk -t2 -c10 -d10s -s request.lua http://localhost:8080/hello
+```
+This example using `-s` or `--script` as param and put value `request.lua`, the script you use to define the http request body, header, and method.
+
+What if you want to use JSON as WRK request? Here is the example script:
+```lua
+-- example HTTP POST script with JSON payload as a string
+wrk.method = "POST"
+
+-- Define your JSON payload as a string
+local json_payload = '{"foo": "bar", "baz": "quux"}'
+
+-- Set the request body to the JSON payload string
+wrk.body = json_payload
+
+-- Set the Content-Type header to indicate JSON payload
+wrk.headers["Content-Type"] = "application/json"
+```
+
+With script, you can build a shared Git or Github repository among your team. So everyone can build and use standardized local loadtest. 
+
+The script is in LuaJIT, you can do more than just passing a static variable. There is options to randomize the value. Let's learn about it later (_TBH, i haven't tried it, so later then!_) 😁
+
+# Conclusion
+
+To sum it all up, benchmarking API performance is crucial for keeping web server reliable and scalable. WRK help to gain key insights into how your APIs handle a lot of traffic. And it is all done within your local. Any dev with access to terminal can do it!
+
+Throughout this article, you have learn the most of WRK's basics. Begin by set up a basic web server in Go, installed WRK, and run tests with different settings to mimic real-life situations. The report is simple yet comprehensive enough to ensure the API performance. Customization can also be done with LuaJIT scripting. Scripts open possibility to work in collaborative with Git.
+
+With WRK, there is always a reason to ensure API performance before even open Pull Request. Scale your system folks!

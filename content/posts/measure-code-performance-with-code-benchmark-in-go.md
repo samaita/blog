@@ -1,5 +1,5 @@
 +++
-title = 'Measure Code Performance With Benchmark in Go'
+title = 'Measure Code Performance With Code Benchmark in Go'
 date = 2023-01-06T05:44:20+07:00
 draft = false
 +++
