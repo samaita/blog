@@ -10,9 +10,16 @@ Without using same version, it is painful just to start in local. I have to run 
 
 The easiest solution might be just to upgrade the repository to using the latest one. Why would let it stick with outdated go version? Yes! But sometimes, it is not an option.
 
-The simpler solution is just to change the golang version anytime you need. I've use `gvm` Golang Version Manager -- I guess. It is dead simple and super easy to use.
+The simpler solution is just to change the golang version anytime you need. I've use `gvm` [^1], short of Golang Version Manager -- I guess. It is dead simple and super easy to use.
 
 # Basic Usage GVM
+First, you have to install a golang version first. Further reading, just access the [Github GVM](https://github.com/benms/gvm).
+
+If it installed. You might be a certain golang version and your gvm doesn't have it. Install it, with:
+```
+gvm install 1.23
+```
+After install, you can use it for switch.
 
 Whenever I need to change my go version, i just have to switch. Lets say the repository is using go1.18, but I got go1.23. In terminal i just have to type:
 ```
@@ -24,13 +31,8 @@ gvm default 1.18
 ```
 That's it!
 
-There might be new golang version and your gvm doesn't have it. No worry, install it so it will be available for switch.
-```
-gvm install 1.24
-```
-
 This service manager put my life easier to switch my golang versions. I hope gvm would help you too.
 
 # Reference
 
-GVM - https://github.com/benms/gvm
+[^1]: [Github GVM](https://github.com/benms/gvm)
