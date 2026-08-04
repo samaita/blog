@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto">
+<html lang="en" dir="auto" data-theme="dark">
 
 <head>
-	<meta name="generator" content="Hugo 0.124.1"><meta charset="utf-8">
+	<meta name="generator" content="Hugo 0.164.0"><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -11,7 +11,7 @@
 <meta name="description" content="Learning Series of Scaling Backend System">
 <meta name="author" content="Gary Samaita">
 <link rel="canonical" href="https://samaita.com/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://samaita.com/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://samaita.com/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://samaita.com/favicon-32x32.png">
@@ -19,7 +19,7 @@
 <link rel="mask-icon" href="https://samaita.com/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="https://samaita.com/index.xml">
+<link rel="alternate" type="application/rss+xml" href="https://samaita.com/index.xml" title="rss">
 <link rel="alternate" hreflang="en" href="https://samaita.com/">
 <noscript>
     <style>
@@ -29,17 +29,24 @@
         }
 
     </style>
-</noscript><meta property="og:title" content="Backend Dev Story" />
-<meta property="og:description" content="Learning Series of Scaling Backend System" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://samaita.com/" />
-<meta property="og:image" content="https://avatars.githubusercontent.com/u/6941042?v=4" />
-<meta property="og:site_name" content="Backend Dev Story" />
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.querySelector("html").dataset.theme = 'light';
+    }
 
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://avatars.githubusercontent.com/u/6941042?v=4" />
-<meta name="twitter:title" content="Backend Dev Story"/>
-<meta name="twitter:description" content="Learning Series of Scaling Backend System"/>
+</script><meta property="og:url" content="https://samaita.com/">
+  <meta property="og:site_name" content="Backend Dev Story">
+  <meta property="og:title" content="Backend Dev Story">
+  <meta property="og:description" content="Learning Series of Scaling Backend System">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+      <meta property="og:image" content="https://avatars.githubusercontent.com/u/6941042?v=4">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://avatars.githubusercontent.com/u/6941042?v=4">
+  <meta name="twitter:title" content="Backend Dev Story">
+  <meta name="twitter:description" content="Learning Series of Scaling Backend System">
 
 <script type="application/ld+json">
 {
@@ -48,34 +55,26 @@
   "name": "Backend Dev Story",
   "url": "https://samaita.com/",
   "description": "Learning Series of Scaling Backend System",
-  "thumbnailUrl": "https://samaita.com/favicon.ico",
+  "logo": "https://samaita.com/favicon.ico",
   "sameAs": [
       "https://www.linkedin.com/in/gary-almas-samaita", "https://github.com/samaita", "https://twitter.com/garysamaita"
   ]
 }
 </script>
 </head>
-
-<body class="list dark" id="top">
-<script>
-    if (localStorage.getItem("pref-theme") === "light") {
-        document.body.classList.remove('dark')
-    }
-
-</script>
-
-<header class="header">
-    <nav class="nav">
+<body class="list" id="top">
+    <header class="header">
+    <nav class="header-nav">
         <div class="logo">
             <a href="https://samaita.com/" accesskey="h" title="Backend Dev Story (Alt + H)">Backend Dev Story</a>
             <div class="logo-switches">
-                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
-                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                     </svg>
-                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
                         <circle cx="12" cy="12" r="5"></circle>
@@ -91,7 +90,7 @@
                 </button>
             </div>
         </div>
-        <ul id="menu">
+        <ul id="menu" class="menu">
         </ul>
     </nav>
 </header>
@@ -100,8 +99,10 @@
     <header class="entry-header">
         <h1>Hi, I&rsquo;m Gary 🙋‍♂️</h1>
     </header>
-    <div class="entry-content">
-        Backend Engineer for almost a decade. In mission to solve scaling problems by make things effective &amp; efficient.
+    <div class="entry-content md-content">
+        
+        <p>Backend Engineer for almost a decade. In mission to solve scaling problems by make things effective &amp; efficient.</p>
+
     </div>
     <footer class="entry-footer">
         <div class="social-icons" >
@@ -139,30 +140,69 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">Easily Switch Go Version with GVM
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>There are various challenge in managing multiple golang microservice. One of them is develop the service with right golang version. I’ve work on a legacy service that set with go1.16. But the thing is I have go1.23.
+Without using same version, it is painful just to start in local. I have to run go mod vendor, met incompatibilities, go get, go mod vendor, broken there broken here.. Waste of time!
+...</p>
+  </div>
+  <footer class="entry-footer">
+
+<span title='2024-12-20 22:00:00 +0700 WIB'>December 20, 2024</span>&nbsp;·&nbsp;<span>2 min</span>&nbsp;·&nbsp;<span>Gary Samaita</span></footer>
+  <a class="entry-link" aria-label="post link to Easily Switch Go Version with GVM" href="https://samaita.com/posts/easily-switch-go-version-with-gvm/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Benchmark API Performance with WRK: A Brief Guide
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Fellas, imagine you’ve built a powerful API. It perform well at first. No sign of sluggish, your users is happy as the app feels smooth.
+The business is thriving, your user base grows. Things start slowing down. Loading after click button take longer, and sometimes, the server crashes returning error. Looking at the server metric, it’s your API that doesn’t run as fast as your first deployment.
+The problem, you notice that the API goes slow only during high concurrent requests. While at single request it does fine. Now, how will you replicate this condition?
+...</p>
+  </div>
+  <footer class="entry-footer">
+
+<span title='2024-04-25 20:22:00 +0700 WIB'>April 25, 2024</span>&nbsp;·&nbsp;<span>10 min</span>&nbsp;·&nbsp;<span>Gary Samaita</span></footer>
+  <a class="entry-link" aria-label="post link to Benchmark API Performance with WRK: A Brief Guide" href="https://samaita.com/posts/benchmark-api-performance-using-wrk-brief-guide/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">Resolve Port Already in Use
     </h2>
   </header>
   <div class="entry-content">
     <p>Port conflict usually happen whenever a service try to run and listen to a specific port while another server currently utilizing it. For those who manage multiple service repository, this could be quite common.
 The simplest way is to search and terminate the binary. But what if the binary stalled or we have no idea where did we ran it.
-No worry, with a simple command, we can figure it out in less than a minute!...</p>
+No worry, with a simple command, we can figure it out in less than a minute!
+...</p>
   </div>
-  <footer class="entry-footer"><span title='2023-04-13 05:49:16 +0700 WIB'>April 13, 2023</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;Gary Samaita</footer>
+  <footer class="entry-footer">
+
+<span title='2023-04-13 05:49:16 +0700 WIB'>April 13, 2023</span>&nbsp;·&nbsp;<span>3 min</span>&nbsp;·&nbsp;<span>Gary Samaita</span></footer>
   <a class="entry-link" aria-label="post link to Resolve Port Already in Use" href="https://samaita.com/posts/resolve-port-already-in-use/"></a>
 </article>
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">Measure Code Performance With Benchmark in Go
+    <h2 class="entry-hint-parent">Measure Code Performance With Code Benchmark in Go
     </h2>
   </header>
   <div class="entry-content">
     <p>Golang provide a way to know our code efficiency by benchmark our code. By benchmarking our code, we able to see how fast our code can run and even gain more insight.
 An efficient code displayed from the resource required to complete it execution. The faster it can run, the better. The lower resource required, the better.
-This concept also applied for codes that run with serverless platform such as AWS Lambda or Google Cloud Function....</p>
+This concept also applied for codes that run with serverless platform such as AWS Lambda or Google Cloud Function. You are charged based on the number of requests for your functions and the duration it takes to execute.
+...</p>
   </div>
-  <footer class="entry-footer"><span title='2023-01-06 05:44:20 +0700 WIB'>January 6, 2023</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;Gary Samaita</footer>
-  <a class="entry-link" aria-label="post link to Measure Code Performance With Benchmark in Go" href="https://samaita.com/posts/measure-code-performance-with-benchmark-in-go/"></a>
+  <footer class="entry-footer">
+
+<span title='2023-01-06 05:44:20 +0700 WIB'>January 6, 2023</span>&nbsp;·&nbsp;<span>7 min</span>&nbsp;·&nbsp;<span>Gary Samaita</span></footer>
+  <a class="entry-link" aria-label="post link to Measure Code Performance With Code Benchmark in Go" href="https://samaita.com/posts/measure-code-performance-with-code-benchmark-in-go/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -173,31 +213,44 @@ This concept also applied for codes that run with serverless platform such as AW
   <div class="entry-content">
     <p>For you, productive engineer, who dedicate a lot of time for a repo. Have you clean your git branch locally? Just like our home, a project’s local branch need decluttering too.
 In my point of view, I’d rather see clear git branch locally to help me find any unmerged branch. Or simply pursue peace of mind.
-Since Git doesn’t have a built in feature to delete multiple git branch in local project, deleting many branches in your local Git project might take you a while....</p>
+Since Git doesn’t have a built in feature to delete multiple git branch in local project, deleting many branches in your local Git project might take you a while.
+...</p>
   </div>
-  <footer class="entry-footer"><span title='2022-04-06 05:33:50 +0700 WIB'>April 6, 2022</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Gary Samaita</footer>
+  <footer class="entry-footer">
+
+<span title='2022-04-06 05:33:50 +0700 WIB'>April 6, 2022</span>&nbsp;·&nbsp;<span>2 min</span>&nbsp;·&nbsp;<span>Gary Samaita</span></footer>
   <a class="entry-link" aria-label="post link to How to Delete Multiple Local Git Branches" href="https://samaita.com/posts/how-to-delete-multiple-local-git-branches/"></a>
 </article>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2024 <a href="https://samaita.com/">Backend Dev Story</a></span>
+        <span>&copy; 2026 <a href="https://samaita.com/">Backend Dev Story</a></span> · 
+
+    
+    
     <span>
         Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
         <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
     </span>
 </footer>
-<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
-        <path d="M12 6H0l6-6z" />
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
     </svg>
 </a>
 
 <script>
-    let menu = document.getElementById('menu')
+    let menu = document.getElementById('menu');
     if (menu) {
-        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
         menu.onscroll = function () {
             localStorage.setItem("menu-scroll-position", menu.scrollLeft);
         }
@@ -224,25 +277,25 @@ Since Git doesn’t have a built in feature to delete multiple git branch in loc
 
 </script>
 <script>
-    var mybutton = document.getElementById("top-link");
+    var toplink = document.getElementById("top-link");
     window.onscroll = function () {
-        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
-            mybutton.style.visibility = "visible";
-            mybutton.style.opacity = "1";
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
         } else {
-            mybutton.style.visibility = "hidden";
-            mybutton.style.opacity = "0";
+            toplink.classList.add("hidden");
         }
     };
 
 </script>
 <script>
     document.getElementById("theme-toggle").addEventListener("click", () => {
-        if (document.body.className.includes("dark")) {
-            document.body.classList.remove('dark');
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
             localStorage.setItem("pref-theme", 'light');
         } else {
-            document.body.classList.add('dark');
+            html.dataset.theme = 'dark';
             localStorage.setItem("pref-theme", 'dark');
         }
     })

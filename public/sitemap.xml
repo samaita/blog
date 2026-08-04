@@ -3,10 +3,13 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://samaita.com/</loc>
-    <lastmod>2024-12-21T08:00:00+07:00</lastmod>
+    <lastmod>2024-12-20T22:00:00+07:00</lastmod>
+  </url><url>
+    <loc>https://samaita.com/posts/easily-switch-go-version-with-gvm/</loc>
+    <lastmod>2024-12-20T22:00:00+07:00</lastmod>
   </url><url>
     <loc>https://samaita.com/posts/</loc>
-    <lastmod>2024-12-21T08:00:00+07:00</lastmod>
+    <lastmod>2024-12-20T22:00:00+07:00</lastmod>
   </url><url>
     <loc>https://samaita.com/posts/benchmark-api-performance-using-wrk-brief-guide/</loc>
     <lastmod>2024-04-25T20:22:00+07:00</lastmod>
