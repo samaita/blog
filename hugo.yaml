@@ -1,5 +1,9 @@
 baseURL: https://samaita.com/
-languageCode: en-us
+defaultContentLanguage: en
+languages:
+  en:
+    languageName: English
+    languageCode: en-US
 title: Backend Dev Story
 theme: ["PaperMod"]
 params:
