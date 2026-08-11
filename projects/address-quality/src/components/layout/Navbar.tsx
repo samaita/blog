@@ -7,6 +7,7 @@ const navLinks = [
   { label: "Home", to: "/" },
   { label: "Playground", to: "/playground" },
   { label: "Docs", to: "/docs" },
+  { label: "Benchmark", to: "/benchmark" },
 ]
 
 export default function Navbar() {
