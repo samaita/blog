@@ -22,13 +22,13 @@ The common thread: **software assumes addresses arrive clean and structured. In 
 
 Beyond the business problems, Indonesian addresses are hard by nature. The language itself creates ambiguity:
 
-**Kota vs Kabupaten.** Many city names are shared between a *kota* (city) and a *kabupaten* (regency). Bandung, Bogor, Cirebon, Sukabumi, and a hundred more pairs. "Jl. Merdeka No. 1, Bogor" is ambiguous between Kota Bogor and Kabupaten Bogor. A human can get confused, let alone a parser. The official hierarchy encodes both: `32.73` is Kota Bandung, `32.04` is Kabupaten Bandung.
+**Kota vs Kabupaten.** Many city names are shared between a *kota* (city) and a *kabupaten*. Bandung, Bogor, Cirebon, Sukabumi, and a hundred more pairs. "Jl. Merdeka No. 1, Bogor" is ambiguous between Kota Bogor and Kabupaten Bogor. A human can get confused, let alone a parser. The official hierarchy encodes both: `32.73` is Kota Bandung, `32.04` is Kabupaten Bandung.
 
 **Spelling variants.** The same place gets written multiple ways. Some say "Jogjakarta", some say "Yogyakarta", and the official name is "Daerah Istimewa Yogyakarta". Abbreviations add to it: `DIY` for Daerah Istimewa Yogyakarta, `Kab` for Kabupaten, `Kec` for Kecamatan, `Gg` for Gang.
 
 **Roman numerals in names.** Administrative names often contain Roman numerals. "IV Koto", "X Koto", "VII Koto" are real names, and people write them as "4 Koto" or "10 Koto". Same place, different text.
 
-**One word, many levels.** The same word can be a province, city, district, and village in different parts of the country. "Bandung" is a city in Jawa Barat, and also a kecamatan (and a kelurahan) in Tulungagung, Jawa Timur. A word-level lookup cannot tell them apart without hierarchy context.
+**One word, many levels.** The same word can be a province, city, district, and subdistrict in different parts of the country. "Bandung" is a city in Jawa Barat, and also a kecamatan (and a kelurahan) in Tulungagung, Jawa Timur. A word-level lookup cannot tell them apart without hierarchy context.
 
 **Informal conventions.** Addresses carry RT/RW numbers, landmarks, and informal descriptions. Natural for humans, confusing for software that relies on deterministic matching.
 
@@ -71,7 +71,7 @@ The pipeline, in order:
 The engine is only as good as its reference data. The seeder parses roughly 176,000 lines of upstream MySQL dumps. The Kemendagri `wilayah` administrative dump and the `wilayah_kodepos` postal-code dump. It rebuilds them into a normalized SQLite hierarchy:
 
 - **38 provinces**
-- **514 cities/regencies**
+- **514 cities**
 - **7,285 districts**
 - **83,762 subdistricts**
 
@@ -81,7 +81,7 @@ The reference dataset is fully **offline**. No network dependency at validation 
 
 ## The build
 
-Built over roughly four weeks (July to August 2026), single author, in a linear history of 132 commits. Ten phases: an MVP API, API hardening, containerization and first CI, the data layer and seeder, caching and candidate sets, benchmarks/docs/licensing, a full evaluation-engine overhaul, Swagger documentation, a frontend (later moved to samaita.com), and production CI/CD polish.
+Built over roughly four weeks (July to August 2026). The project is AI assisted, and hosted on a very small VPS. Ten phases: an MVP API, API hardening, containerization and first CI, the data layer and seeder, caching and candidate sets, benchmarks/docs/licensing, a full evaluation-engine overhaul, Swagger documentation, a frontend (later moved to samaita.com), and production CI/CD polish.
 
 Two design decisions worth calling out:
 
@@ -108,13 +108,13 @@ The subdistrict (kelurahan/desa) is where it falls apart.
 
 The benchmark flagged three challenge areas:
 
-1. **Village resolution (18.9% of records).** Province, city, and district are correct, but the village is wrong or empty. The worst part: in the benchmark, a wrong village came back with **90% confidence and status VALID**. The engine was confidently wrong.
-2. **Ambiguous city/regency names (23.6%).** Many names are shared across provinces. Bandung, Sukasari, Sukarasa. "JL. GATOT SUBROTO NO.86 BANDUNG" resolved to **Bandung, Kabupaten Tulungagung, Jawa Timur**. A real kecamatan Bandung in a different province.
+1. **Subdistrict resolution (18.9% of records).** Province, city, and district are correct, but the subdistrict is wrong or empty. The worst part: in the benchmark, a wrong subdistrict came back with **90% confidence and status VALID**. The engine was confidently wrong.
+2. **Ambiguous city names (23.6%).** Many names are shared across provinces. Bandung, Sukasari, Sukarasa. "JL. GATOT SUBROTO NO.86 BANDUNG" resolved to **Bandung, Kabupaten Tulungagung, Jawa Timur**. A real kecamatan Bandung in a different province.
 3. **Road-level data (20.8%).** Street names are recognized but not resolved. Roads are not part of the reference dataset.
 
 ## What the benchmark taught me
 
-The 90% confident wrong village case exposed a structural bug, not a tuning issue. The status logic stamps **VALID** based on province + city + district. **It never checks the subdistrict.** So the engine can be fully confident about a location whose weakest level is wrong or missing. It has no way to doubt the village.
+The 90% confident wrong subdistrict case exposed a structural bug, not a tuning issue. The status logic stamps **VALID** based on province + city + district. **It never checks the subdistrict.** So the engine can be fully confident about a location whose weakest level is wrong or missing. It has no way to doubt the subdistrict.
 
 The Bandung case exposed the second bug. A single "Bandung" token can match two levels at once. The kecamatan Bandung and the kelurahan Bandung in Tulungagung. This increases the matched-level count and the confidence. One ambiguous word tricked the scoring.
 
