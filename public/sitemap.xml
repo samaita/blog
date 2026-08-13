@@ -2,13 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://samaita.com/</loc>
-    <lastmod>2024-12-20T22:00:00+07:00</lastmod>
+    <loc>https://samaita.com/posts/address-quality-building-indonesian-address-validation-api/</loc>
+    <lastmod>2026-08-13T18:00:00+07:00</lastmod>
   </url><url>
-    <loc>https://samaita.com/posts/easily-switch-go-version-with-gvm/</loc>
-    <lastmod>2024-12-20T22:00:00+07:00</lastmod>
+    <loc>https://samaita.com/</loc>
+    <lastmod>2026-08-13T18:00:00+07:00</lastmod>
   </url><url>
     <loc>https://samaita.com/posts/</loc>
+    <lastmod>2026-08-13T18:00:00+07:00</lastmod>
+  </url><url>
+    <loc>https://samaita.com/posts/easily-switch-go-version-with-gvm/</loc>
     <lastmod>2024-12-20T22:00:00+07:00</lastmod>
   </url><url>
     <loc>https://samaita.com/posts/benchmark-api-performance-using-wrk-brief-guide/</loc>
