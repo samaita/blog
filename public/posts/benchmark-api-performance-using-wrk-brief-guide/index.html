@@ -12,7 +12,7 @@ The business is thriving, your user base grows. Things start slowing down. Loadi
 The problem, you notice that the API goes slow only during high concurrent requests. While at single request it does fine. Now, how will you replicate this condition?">
 <meta name="author" content="Gary Samaita">
 <link rel="canonical" href="https://samaita.com/posts/benchmark-api-performance-using-wrk-brief-guide/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.6ff46447b1fa3f8a5cc0bcae48088decc3ae37f5fbc99406a3aefc3bf0e6044a.css" integrity="sha256-b/RkR7H6P4pcwLyuSAiN7MOuN/X7yZQGo678O/DmBEo=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://samaita.com/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://samaita.com/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://samaita.com/favicon-32x32.png">
@@ -240,15 +240,15 @@ The problem, you notice that the API goes slow only during high concurrent reque
 <h2 id="how-to-check-if-golang-installed">How to Check if Golang Installed<a hidden class="anchor" aria-hidden="true" href="#how-to-check-if-golang-installed">#</a></h2>
 <p>Make sure you have Golang installed!</p>
 <p>Run this command in terminal:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>go version
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>go version
 </span></span></code></pre></div><p>Example output</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>masgar@ip-127-0-0-1 ~ % go version
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>masgar@ip-127-0-0-1 ~ % go version
 </span></span><span style="display:flex;"><span>go version go1.21.8 darwin/arm64
 </span></span></code></pre></div><p>If you dont have Golang installed, click <a href="https://go.dev/doc/install">here</a> for instruction of how to install go.</p>
 <h2 id="building-basic-web-server">Building Basic Web Server<a hidden class="anchor" aria-hidden="true" href="#building-basic-web-server">#</a></h2>
 <p>To test the capability of WRK, you need build one web server first. Lets use Golang for it.</p>
 <p>Go to a directory, then write a file name <code>main.go</code></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
 </span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;fmt&#34;</span>
@@ -265,17 +265,17 @@ The problem, you notice that the API goes slow only during high concurrent reque
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>use your terminal and type <code>go run main.go</code> to run it.</p>
 <p>To test if the web server ready, you may use this cURL in another terminal. Do not use the same terminal as your web server as you want to let the web server running.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl -X GET http://localhost:8080/hello
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl -X GET http://localhost:8080/hello
 </span></span></code></pre></div><p>Example output</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>masgar@ip-127-0-0-1 ~ % curl -X GET http://localhost:8080/hello
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>masgar@ip-127-0-0-1 ~ % curl -X GET http://localhost:8080/hello
 </span></span><span style="display:flex;"><span>Hello World!
 </span></span></code></pre></div><h1 id="benchmark-with-wrk">Benchmark with WRK<a hidden class="anchor" aria-hidden="true" href="#benchmark-with-wrk">#</a></h1>
 <p>Now that you have your web server up and running, it&rsquo;s time to put WRK to the test. You need to ensure first if WRK already installed.</p>
 <h2 id="how-to-check-if-wrk-installed">How to Check if WRK Installed<a hidden class="anchor" aria-hidden="true" href="#how-to-check-if-wrk-installed">#</a></h2>
 <p>Open a new terminal and run this command in your terminal:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>masgar@ip-127-0-0-1 ~ % wrk
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>masgar@ip-127-0-0-1 ~ % wrk
 </span></span></code></pre></div><p>The output will looks like:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Usage: wrk &lt;options&gt; &lt;url&gt;                            
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Usage: wrk &lt;options&gt; &lt;url&gt;                            
 </span></span><span style="display:flex;"><span>  Options:                                            
 </span></span><span style="display:flex;"><span>    -c, --connections &lt;N&gt;  Connections to keep open   
 </span></span><span style="display:flex;"><span>    -d, --duration    &lt;T&gt;  Duration of test           
@@ -293,11 +293,12 @@ The problem, you notice that the API goes slow only during high concurrent reque
 <h2 id="benchmark-with-wrk-1">Benchmark with WRK<a hidden class="anchor" aria-hidden="true" href="#benchmark-with-wrk-1">#</a></h2>
 <blockquote>
 <p>⚠️ <strong>WARNING!</strong> ⚠️
-Before you continue with how to benchmark, I&rsquo;d like to remind you to not blindly benchmark your production server. WRK could generate a lot of traffic to your server. Generate it huge enough, it might broken your production and getting you in trouble. You want to benchmark your server, not break it. There is a thin line of difference.</p></blockquote>
+Before you continue with how to benchmark, I&rsquo;d like to remind you to not blindly benchmark your production server. WRK could generate a lot of traffic to your server. Generate it huge enough, it might broken your production and getting you in trouble. You want to benchmark your server, not break it. There is a thin line of difference.</p>
+</blockquote>
 <p>The simplest way to run a benchmark is to run this command:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wrk -t2 -c10 -d10s http://localhost:8080/hello
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wrk -t2 -c10 -d10s http://localhost:8080/hello
 </span></span></code></pre></div><p>By default, WRK will perform a benchmark with default duration of 10 seconds. After 10 seconds, your terminal will be look like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>masgar@ip-127-0-0-1 ~ % wrk -t2 -c10 -d10s http://localhost:8080/hello
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>masgar@ip-127-0-0-1 ~ % wrk -t2 -c10 -d10s http://localhost:8080/hello
 </span></span><span style="display:flex;"><span>Running 10s test @ http://localhost:8080/hello
 </span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">2</span> threads and <span style="color:#ae81ff">10</span> connections
 </span></span><span style="display:flex;"><span>  Thread Stats   Avg      Stdev     Max   +/- Stdev
@@ -307,12 +308,12 @@ Before you continue with how to benchmark, I&rsquo;d like to remind you to not b
 </span></span><span style="display:flex;"><span>Requests/sec:    74281.80
 </span></span><span style="display:flex;"><span>Transfer/sec:      9.21MB
 </span></span></code></pre></div><p>As you see in the parameter of <code>-t2 -c10 -d10s</code>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Running 10s test @ http://localhost:8080/hello
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Running 10s test @ http://localhost:8080/hello
 </span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">2</span> threads and <span style="color:#ae81ff">10</span> connections
 </span></span></code></pre></div><p>It explain that the test was run in 10 seconds utilize 2 concurrent process with each process perform 10 simulaneous connection. Those three can be adjusted to suit your needs.</p>
 <h2 id="reading-the-report">Reading The Report<a hidden class="anchor" aria-hidden="true" href="#reading-the-report">#</a></h2>
 <p>Lets break down the information you may gain from the report:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>masgar@ip-127-0-0-1 ~ % wrk -t2 -c10 -d10s http://localhost:8080/hello
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>masgar@ip-127-0-0-1 ~ % wrk -t2 -c10 -d10s http://localhost:8080/hello
 </span></span><span style="display:flex;"><span>Running 10s test @ http://localhost:8080/hello
 </span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">2</span> threads and <span style="color:#ae81ff">10</span> connections
 </span></span><span style="display:flex;"><span>  Thread Stats   Avg      Stdev     Max   +/- Stdev
@@ -339,7 +340,7 @@ Before you continue with how to benchmark, I&rsquo;d like to remind you to not b
 <p>Based on this result, you can say that the <code>Hello World</code> endpoint is high performant.</p>
 <h2 id="ensure-the-test-is-valid">Ensure The Test is Valid<a hidden class="anchor" aria-hidden="true" href="#ensure-the-test-is-valid">#</a></h2>
 <p>There might be times where you gain report with additional information like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>technologyevermos@ip-192-168-1-6 ~ % wrk http://localhost:8080/hellos
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>technologyevermos@ip-192-168-1-6 ~ % wrk http://localhost:8080/hellos
 </span></span><span style="display:flex;"><span>Running 10s test @ http://localhost:8080/hellos
 </span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">2</span> threads and <span style="color:#ae81ff">10</span> connections
 </span></span><span style="display:flex;"><span>  Thread Stats   Avg      Stdev     Max   +/- Stdev
@@ -352,7 +353,7 @@ Before you continue with how to benchmark, I&rsquo;d like to remind you to not b
 </span></span></code></pre></div><p>1 million requests in 10s! Wow!</p>
 <p>While the number is superior than previous, the report indicating a lot of http error. WRK telling you that the test is invalid as most of response is not 2xx nor 3xx via <code>Non-2xx or 3xx responses</code>. In this case, it is all 404.</p>
 <p>Now what is this report tell you?</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>technologyevermos@ip-192-168-1-6 ~ % wrk http://localhost:8080/hello 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>technologyevermos@ip-192-168-1-6 ~ % wrk http://localhost:8080/hello 
 </span></span><span style="display:flex;"><span>Running 10s test @ http://localhost:8080/hello
 </span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">2</span> threads and <span style="color:#ae81ff">10</span> connections
 </span></span><span style="display:flex;"><span>  Thread Stats   Avg      Stdev     Max   +/- Stdev
@@ -365,27 +366,27 @@ Before you continue with how to benchmark, I&rsquo;d like to remind you to not b
 <p>If so, adjust the parameter of WRK. I&rsquo;d suggest to increase the duration of testing from 10 seconds to 30 seconds, or reduce the number of threads and connection. It is common for endpoint to have low latency in low traffic. While it exponentially increased during serving large concurrent traffic.</p>
 <h2 id="adding-header-to-wrk-request">Adding Header to WRK Request<a hidden class="anchor" aria-hidden="true" href="#adding-header-to-wrk-request">#</a></h2>
 <p>When header is required to be added to the request, WRK has a way to include it into the command line. Here is how:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wrk -t12 -c400 -d30s -H <span style="color:#e6db74">&#34;Authorization: Bearer ASDFsamaitaJKL&#34;</span> http://localhost:8080/hello
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wrk -t12 -c400 -d30s -H <span style="color:#e6db74">&#34;Authorization: Bearer ASDFsamaitaJKL&#34;</span> http://localhost:8080/hello
 </span></span></code></pre></div><p>Notice that you need to add a param <code>-H</code> or <code>--header</code> followed by key value to be included as header.</p>
 <p>When you need more than one header to be added:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wrk -t12 -c400 -d30s <span style="color:#ae81ff">\
-</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -H <span style="color:#e6db74">&#34;Authorization: Bearer ASDFsamaitaJKL&#34;</span> <span style="color:#ae81ff">\
-</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> <span style="color:#ae81ff">\
-</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    http://localhost:8080/hello
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wrk -t12 -c400 -d30s <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>    -H <span style="color:#e6db74">&#34;Authorization: Bearer ASDFsamaitaJKL&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>    -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span>    http://localhost:8080/hello
 </span></span></code></pre></div><h2 id="using-script">Using Script<a hidden class="anchor" aria-hidden="true" href="#using-script">#</a></h2>
 <p>You might notice that the help command is not mention about how to use another http method and body request. WRK using a LuaJIT script to allow more option to be set to HTTP request.</p>
 <p>Here is the <a href="https://github.com/wg/wrk/blob/master/scripts/post.lua">example script for WRK</a>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#75715e">-- example HTTP POST script which demonstrates setting the</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#75715e">-- example HTTP POST script which demonstrates setting the</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">-- HTTP method, body, and adding a header</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>wrk.method <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;POST&#34;</span>
 </span></span><span style="display:flex;"><span>wrk.body   <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;foo=bar&amp;baz=quux&#34;</span>
 </span></span><span style="display:flex;"><span>wrk.headers[<span style="color:#e6db74">&#34;Content-Type&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;application/x-www-form-urlencoded&#34;</span>
 </span></span></code></pre></div><p>You can change the method, body, and even set headers. It is hassle free as you can simplify our command for WRK:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wrk -t2 -c10 -d10s -s request.lua http://localhost:8080/hello
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wrk -t2 -c10 -d10s -s request.lua http://localhost:8080/hello
 </span></span></code></pre></div><p>This example using <code>-s</code> or <code>--script</code> as param and put value <code>request.lua</code>, the script you use to define the http request body, header, and method.</p>
 <p>What if you want to use JSON as WRK request? Here is the example script:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#75715e">-- example HTTP POST script with JSON payload as a string</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#75715e">-- example HTTP POST script with JSON payload as a string</span>
 </span></span><span style="display:flex;"><span>wrk.method <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;POST&#34;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">-- Define your JSON payload as a string</span>
