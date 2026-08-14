@@ -1,8 +1,9 @@
-# Address Quality SPA fallback (Cloudflare Pages).
-# Cloudflare applies rewrites before static assets, so real files are passed through first.
-# The SPA fallback rewrites to the directory (not index.html) to avoid Cloudflare's infinite-loop detection.
-/projects/address-quality/favicon.svg /projects/address-quality/favicon.svg 200
-/projects/address-quality/icons.svg /projects/address-quality/icons.svg 200
-/projects/address-quality/assets/* /projects/address-quality/assets/:splat 200
+# SPA fallback for /projects/address-quality (Cloudflare Pages).
+# Rules are narrow so real files (images, assets, benchmark reports) are served
+# directly and never rewritten by the SPA fallback. Rewrites apply before static
+# assets, so only the SPA routes below map to index.html.
 /projects/address-quality/benchmark/*/ /projects/address-quality/benchmark/:splat/ 200
-/projects/address-quality/* /projects/address-quality/ 200
+/projects/address-quality/docs /projects/address-quality/ 200
+/projects/address-quality/playground /projects/address-quality/ 200
+/projects/address-quality/benchmark /projects/address-quality/ 200
+/projects/address-quality/benchmark/* /projects/address-quality/ 200
