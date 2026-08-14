@@ -8,6 +8,8 @@ This is the first post in a series about building [Address Quality](https://sama
 
 This post covers the why and the how. It ends with the first benchmark: **49% accuracy on my own test set.** I will explain later why that number turned out to be useful.
 
+![Address Quality landing page](https://samaita.com/projects/address-quality/images/landing-page.png)
+
 ## The problem
 
 Back in my logistics-aggregation days, one of the hardest problems was validating addresses. Three problems stood out:
@@ -120,6 +122,10 @@ The benchmark flagged three challenge areas:
 2. **Ambiguous city names (23.6%).** Many names are shared across provinces. Bandung, Sukasari, Sukarasa. "JL. GATOT SUBROTO NO.86 BANDUNG" resolved to **Bandung, Kabupaten Tulungagung, Jawa Timur**. A real kecamatan Bandung in a different province.
 3. **Road-level data (20.8%).** Street names are recognized but not resolved. Roads are not part of the reference dataset.
 
+Each release runs this benchmark again. The results are tracked so the next iteration can be compared against this baseline.
+
+![Accuracy test loop](https://samaita.com/projects/address-quality/images/test-loop-alpha.png)
+
 ## Two failure cases
 
 ### Case 1: a subdistrict the input already contained
@@ -175,5 +181,7 @@ The system is early alpha. To be explicit:
 The 49% is not a confession. It is a baseline. It means there is a lot of room to improve, and every improvement is measurable. The next post will cover the scoring fix and the alias layer: what changed, and whether the number moved.
 
 The API is live at [samaita.com/projects/address-quality](https://samaita.com/projects/address-quality/) with a playground. Try it. If an address comes back wrong, that is useful data. Every release comes with a new benchmark update, available under Benchmark on the same page.
+
+![Address Quality playground](https://samaita.com/projects/address-quality/images/playground.png)
 
 *Series: Part 1, why and how (this post). Next: the scoring fix, and what the new number is.*
