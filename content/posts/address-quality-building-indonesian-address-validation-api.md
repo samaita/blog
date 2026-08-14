@@ -81,7 +81,7 @@ The reference dataset is fully **offline**. No network dependency at validation 
 
 ## The build
 
-The project is AI assisted, and hosted on a 2c4g VPS in Indonesia. Ten phases: an MVP API, API hardening, containerization and first CI, the data layer and seeder, caching and candidate sets, benchmarks/docs/licensing, a full evaluation-engine overhaul, Swagger documentation, a frontend, and production CI/CD polish.
+The backend is AI assisted, and the frontend is vibe coded. Hosted on a 2c4g VPS in Indonesia. Ten phases: an MVP API, API hardening, containerization and first CI, the data layer and seeder, caching and candidate sets, benchmarks/docs/licensing, a full evaluation-engine overhaul, Swagger documentation, a frontend, and production CI/CD polish.
 
 Two design decisions worth calling out:
 
