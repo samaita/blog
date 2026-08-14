@@ -122,7 +122,7 @@ The benchmark flagged three challenge areas:
 2. **Ambiguous city names (23.6%).** Many names are shared across provinces. Bandung, Sukasari, Sukarasa. "JL. GATOT SUBROTO NO.86 BANDUNG" resolved to **Bandung, Kabupaten Tulungagung, Jawa Timur**. A real kecamatan Bandung in a different province.
 3. **Road-level data (20.8%).** Street names are recognized but not resolved. Roads are not part of the reference dataset.
 
-Each release runs this benchmark again. The results are tracked so the next iteration can be compared against this baseline.
+Each release runs this benchmark again. The results are tracked so the next iteration can be compared against this baseline. You can see the live results on the [benchmark page](https://samaita.com/projects/address-quality/benchmark).
 
 ![Accuracy test loop](https://samaita.com/projects/address-quality/images/test-loop-alpha.png)
 
@@ -134,7 +134,11 @@ Input: "JL. Supratman No.72, Cihuar Geulis, Kec. Cibeunying Kaler, Kota Bandung,
 
 The address literally contains the subdistrict name "Cihuar Geulis". The result came back as Cibeunying Kaler, Kota Bandung, Jawa Barat 40114, **status VALID, confidence 0.90**, with no subdistrict resolved.
 
-That exposed a problem in the current implementation. The status logic stamps **VALID** based on province + city + district. **It never checks the subdistrict.** So a result can be fully confident about a location whose weakest level is missing or wrong. The engine has no way to say "I am not sure about the subdistrict". It just does not look at it.
+The root cause is a spelling mismatch. The official name in the Kemendagri data is **"Cihaur Geulis"**. The input wrote "Cihuar Geulis", swapping two letters. The engine uses **exact matching**, so "Cihuar Geulis" does not match "Cihaur Geulis". The subdistrict stayed unresolved.
+
+The status logic made it worse. VALID is stamped based on province + city + district. **It never checks the subdistrict.** So the result was fully confident about a location whose subdistrict was missing. The engine had no way to say "I am not sure about the subdistrict". It just did not look at it.
+
+This is a concrete argument for the alias layer: a normalized name table would let "Cihuar" resolve to "Cihaur" instead of failing the exact match.
 
 ### Case 2: one word, two levels, wrong province
 
@@ -152,18 +156,19 @@ What this suggests for the next iteration: do not let one token fill two levels,
 
 The benchmark showed weaknesses in the current approach, not a fundamental flaw in the direction.
 
-- The status definition does not gate on the subdistrict, so the engine can be confidently wrong about the weakest level.
+- Exact matching fails on typos. A subdistrict written with a swapped letter ("Cihuar" for "Cihaur") does not match, and the subdistrict stays unresolved.
+- The status definition does not gate on the subdistrict, so an unresolved subdistrict can still come back VALID with high confidence.
 - The scorer rewards per-level matches, and one ambiguous token can match two levels and inflate confidence.
 - Roads are not in the reference data, so road-based addresses cannot be fully resolved.
 
-All three are concrete, addressable problems.
+All four are concrete, addressable problems.
 
 ## What I will change next
 
 Two changes are in progress:
 
 1. **Gate VALID on the subdistrict.** VALID should require all four levels: province, city, district, and subdistrict. Or it should report which level is missing or uncertain.
-2. **A generated alias layer.** When a name is ambiguous between Kota and Kabupaten, the seeder normalizes city names and generates the alias. For this iteration, Kota is the default. I am testing whether that resolves the ambiguity cases the benchmark flagged.
+2. **A generated alias layer.** The seeder normalizes names and generates aliases. This serves two purposes: it maps typo variants like "Cihuar" to "Cihaur", and it resolves Kota/Kabupaten ambiguity with a default preference. For this iteration, Kota is the default. The alias infrastructure already exists in the schema (the `location_alias` table), and the strategy is declared in code but not yet wired into the runtime. I am testing whether this reduces the false matches the benchmark flagged.
 
 The benchmark will tell whether the number moves.
 
