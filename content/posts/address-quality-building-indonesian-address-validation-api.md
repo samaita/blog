@@ -1,5 +1,5 @@
 +++
-title = 'Building an Indonesian Address Validation API: An Underdog Story That Begins With 49% Accuracy'
+title = 'Building an Indonesian Address Validation API: Starting With 49% Accuracy'
 date = 2026-08-13T18:00:00+07:00
 draft = false
 +++
@@ -95,9 +95,11 @@ Two design decisions worth calling out:
 
 ## The benchmark
 
+Before the numbers, here is what "accurate" means in this article.
+
 I built a benchmark against a hand-tagged ground-truth set: **106 addresses, all in Bandung.** Real addresses, tagged with the correct province, city, district, and subdistrict.
 
-The method is simple: run each address through the API, compare the resolved components against the tagged ground truth, and count a record as correct when all four levels match.
+The method is simple: run each address through the API, compare the resolved components against the tagged ground truth, and count a record as **accurate** when all four levels match exactly: province, city, district, and subdistrict. A record where the province is right but the subdistrict is wrong is not counted as accurate. The per-level numbers below show how often each level alone is correct.
 
 **The result: 52/106 exact matches = 49.1%.**
 
@@ -132,7 +134,7 @@ That exposed a problem in the current implementation. The status logic stamps **
 
 Input: "JL. GATOT SUBROTO NO.86 BANDUNG"
 
-"Bandung" is ambiguous. As a domain fact, the name exists at multiple levels: Kota Bandung (`32.73`), Kabupaten Bandung (`32.04`), and a kecamatan Bandung in Tulungagung, Jawa Timur (`35.04.17`), which also contains a kelurahan named Bandung.
+"Bandung" is ambiguous. In the Kemendagri data, the name exists at multiple levels: Kota Bandung (`32.73`), Kabupaten Bandung (`32.04`), and a kecamatan Bandung in Tulungagung, Jawa Timur (`35.04.17`), which also contains a kelurahan named Bandung.
 
 The current implementation resolved this input to Bandung, Bandung, Kabupaten Tulungagung, Jawa Timur 66274, **status AMBIGUOUS, confidence 0.43**. The formatted output shows why: "Bandung, Bandung" means the single token matched two levels at once, the kecamatan and the kelurahan, both in the wrong region. The scorer rewards matched levels, so one ambiguous word counted twice and inflated the score.
 
