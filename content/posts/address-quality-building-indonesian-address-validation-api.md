@@ -4,7 +4,7 @@ date = 2026-08-13T18:00:00+07:00
 draft = false
 +++
 
-This is the first post in a series about building [Address Quality](https://samaita.com/projects/address-quality/), an API that validates Indonesian addresses. I want to document the real journey: the failures, the measurements, and the changes in thinking. It is not a "nailed it" story yet, because the journey is just on.
+This is the first post in a series about building [Address Quality](https://samaita.com/projects/address-quality/), an API that validates Indonesian addresses. I want to document it honestly: the failures, the measurements, and the changes in thinking. It is not a "nailed it" story yet, because the work is just getting started.
 
 This post covers the why and the how. It ends with the first benchmark: **49% accuracy on my own test set.** I will explain later why that number turned out to be useful.
 
@@ -14,11 +14,11 @@ This post covers the why and the how. It ends with the first benchmark: **49% ac
 
 Back in my logistics-aggregation days, one of the hardest problems was validating addresses. Three problems stood out:
 
-**Fraud.** A sender could declare a cheap origin to game shipping rates. The origin code is used by the logistic provider, not the user's actual address. So a user's declared address origin could mismatch the actual origin code, and the rate is computed from that code. The mismatch cost real money.
+Fraud. A sender could declare a cheap origin to game shipping rates. The origin code is used by the logistic provider, not the user's actual address. So a user's declared address origin could mismatch the actual origin code, and the rate is computed from that code. The mismatch cost real money.
 
-**UX.** Users had to provide either a postal code or a subdistrict in different form inputs of the address. This friction delayed shipping creation. Some users got used to it and typed minimal addresses on purpose: a city name or a subdistrict name. That behavior pollutes the data and risks lost packages.
+UX. Users had to provide either a postal code or a subdistrict in different form inputs of the address. This friction delayed shipping creation. Some users got used to it and typed minimal addresses on purpose: a city name or a subdistrict name. That behavior pollutes the data and risks lost packages.
 
-**Data drift.** Some people have a different memory of the postal code, so their own address is mislabeled after official updates. Take Kedung Waringin, Kota Bogor. People remember a postal code that no longer matches the official data. Many people do not even realize Indonesia has added new provinces over the years.
+Data drift. Some people have a different memory of the postal code, so their own address is mislabeled after official updates. Take Kedung Waringin, Kota Bogor. People remember a postal code that no longer matches the official data. Many people do not even realize Indonesia has added new provinces over the years.
 
 The common thread: **software assumes addresses arrive clean and structured. In Indonesian, they rarely do.**
 
@@ -26,17 +26,17 @@ The common thread: **software assumes addresses arrive clean and structured. In 
 
 Beyond the business problems, Indonesian addresses are hard by nature. The language creates ambiguity:
 
-**Kota vs Kabupaten.** Many city names are shared between a *kota* (city) and a *kabupaten*. Bandung, Bogor, Cirebon, Sukabumi, and a hundred more pairs. "Jl. Merdeka No. 1, Bogor" is ambiguous between Kota Bogor and Kabupaten Bogor. A human can get confused, let alone a parser. The official hierarchy encodes both: `32.73` is Kota Bandung, `32.04` is Kabupaten Bandung.
+Kota vs Kabupaten. Many city names are shared between a *kota* (city) and a *kabupaten*. Bandung, Bogor, Cirebon, Sukabumi, and a hundred more pairs. "Jl. Merdeka No. 1, Bogor" is ambiguous between Kota Bogor and Kabupaten Bogor. A human can get confused, let alone a parser. The official hierarchy encodes both: `32.73` is Kota Bandung, `32.04` is Kabupaten Bandung.
 
-**Spelling variants.** The same place gets written multiple ways. Some say "Jogjakarta", some say "Yogyakarta", and the official name is "Daerah Istimewa Yogyakarta". Abbreviations add to it: `DIY`, `Kab`, `Kec`, `Gg`.
+Spelling variants. The same place gets written multiple ways. Some say "Jogjakarta", some say "Yogyakarta", and the official name is "Daerah Istimewa Yogyakarta". Abbreviations add to it: `DIY`, `Kab`, `Kec`, `Gg`.
 
-**Roman numerals in names.** "IV Koto", "X Koto", "VII Koto" are real names, and people write them as "4 Koto" or "10 Koto". Same place, different text.
+Roman numerals in names. "IV Koto", "X Koto", "VII Koto" are real names, and people write them as "4 Koto" or "10 Koto". Same place, different text.
 
-**One word, many levels.** The same word can be a province, city, district, and subdistrict in different parts of the country. "Bandung" is a city in Jawa Barat, and also a kecamatan (and a kelurahan) in Tulungagung, Jawa Timur. A word-level lookup cannot tell them apart without hierarchy context.
+One word, many levels. The same word can be a province, city, district, and subdistrict in different parts of the country. "Bandung" is a city in Jawa Barat, and also a kecamatan (and a kelurahan) in Tulungagung, Jawa Timur. A word-level lookup cannot tell them apart without hierarchy context.
 
-**Informal conventions.** Addresses carry RT/RW numbers, landmarks, and informal descriptions. Natural for humans, confusing for software that relies on deterministic matching.
+Informal conventions. Addresses carry RT/RW numbers, landmarks, and informal descriptions. Natural for humans, confusing for software that relies on deterministic matching.
 
-**The hierarchy changes.** New provinces are created, postal codes evolve, aliases appear.
+The hierarchy changes. New provinces are created, postal codes evolve, aliases appear.
 
 These are not edge cases. They are the norm.
 
@@ -44,11 +44,11 @@ These are not edge cases. They are the norm.
 
 Before building anything, I tried the obvious approaches. All three failed in useful ways.
 
-**Regex rules per word.** Define rules like "Bandung goes to Jawa Barat". The problem: Bandung is also a kecamatan in Jawa Timur. A word-level rule cannot scale to a country where the same name means different administrative things in different places.
+Regex rules per word. Define rules like "Bandung goes to Jawa Barat". The problem: Bandung is also a kecamatan in Jawa Timur. A word-level rule cannot scale to a country where the same name means different administrative things in different places.
 
-**AI / RAG comparison.** Compare the address against a knowledge base using an LLM. The problems: latency dependency, and inconsistent reasoning. The same input could return different reasoning on different calls. For a validation service, this alone rules it out.
+AI / RAG comparison. Compare the address against a knowledge base using an LLM. The problems: latency dependency, and inconsistent reasoning. The same input could return different reasoning on different calls. For a validation service, this alone rules it out.
 
-**Fuzzy match to a database.** Fuzzy lookup plus extra checks. It worked, but it was complicated and hard to maintain.
+Fuzzy match to a database. Fuzzy lookup plus extra checks. It worked, but it was complicated and hard to maintain.
 
 The lesson: the engine needs to be **deterministic**. The same address must always produce the same result, with reasons you can inspect.
 
@@ -87,13 +87,13 @@ The reference dataset is fully **offline**. No network dependency at validation 
 
 ## The build
 
-The backend is AI assisted, the frontend is vibe coded, and the whole thing runs on a 2c4g VPS in Indonesia. Ten phases took it from MVP to production CI/CD: API hardening, containerization, the data layer and seeder, caching and candidate sets, benchmarks and docs, a full evaluation-engine overhaul, Swagger documentation, the frontend, and deployment polish.
+The backend is AI assisted, the frontend is vibe coded, and the whole thing runs on a 2c4g VPS in Indonesia. Ten phases took it from MVP to production CI/CD: an MVP API, API hardening, containerization, the data layer and seeder, caching and candidate sets, benchmarks and docs, a full evaluation-engine overhaul, Swagger documentation, the frontend, and deployment polish.
 
 Two design decisions worth calling out:
 
-**Two databases, two personalities.** `location.db`, the read-only administrative hierarchy, loaded once into memory. `address.db`, the append-only request log. Separating static reference data from mutable log data keeps the hierarchy safely read-only.
+Two databases, two personalities. `location.db`, the read-only administrative hierarchy, loaded once into memory. `address.db`, the append-only request log. Separating static reference data from mutable log data keeps the hierarchy safely read-only.
 
-**CI builds, but never deploys.** CI builds and pushes one container image to a registry, and never deploys. Deployment is a manual step on the production VPS. An operator pulls the chosen image tag, recreates the container, waits for the health check, verifies the reverse proxy, and records the deployed tag for one-command rollback. There is no CI-to-production path.
+CI builds, but never deploys. CI builds and pushes one container image to a registry, and never deploys. Deployment is a manual step on the production VPS. An operator pulls the chosen image tag, recreates the container, waits for the health check, verifies the reverse proxy, and records the deployed tag for one-command rollback. There is no CI-to-production path.
 
 ## The benchmark
 
@@ -118,9 +118,9 @@ The subdistrict (kelurahan/desa) is where it falls apart.
 
 The benchmark flagged three challenge areas:
 
-1. **Subdistrict resolution (18.9% of records).** Province, city, and district are correct, but the subdistrict is wrong or empty. The worst part: in the benchmark, a wrong subdistrict came back with **90% confidence and status VALID**. The engine was confidently wrong.
-2. **Ambiguous city names (23.6%).** Many names are shared across provinces. Bandung, Sukasari, Sukarasa. "JL. GATOT SUBROTO NO.86 BANDUNG" resolved to **Bandung, Kabupaten Tulungagung, Jawa Timur**. A real kecamatan Bandung in a different province.
-3. **Road-level data (20.8%).** Street names are recognized but not resolved. Roads are not part of the reference dataset.
+1. Subdistrict resolution (18.9% of records). Province, city, and district are correct, but the subdistrict is wrong or empty. The worst part: in the benchmark, a wrong subdistrict came back with **90% confidence and status VALID**. The engine was confidently wrong.
+2. Ambiguous city names (23.6%). Many names are shared across provinces. Bandung, Sukasari, Sukarasa. "JL. GATOT SUBROTO NO.86 BANDUNG" resolved to **Bandung, Kabupaten Tulungagung, Jawa Timur**. A real kecamatan Bandung in a different province.
+3. Road-level data (20.8%). Street names are recognized but not resolved. Roads are not part of the reference dataset.
 
 Each release runs this benchmark again. The results are tracked so the next iteration can be compared against this baseline.
 
@@ -132,9 +132,9 @@ Each release runs this benchmark again. The results are tracked so the next iter
 
 Input: "JL. Supratman No.72, Cihuar Geulis, Kec. Cibeunying Kaler, Kota Bandung, Jawa Barat 40114"
 
-The address literally contains the subdistrict name "Cihuar Geulis". The result came back as Cibeunying Kaler, Kota Bandung, Jawa Barat 40114, **status VALID, confidence 0.90**, with no subdistrict resolved.
+The subdistrict name is in the input, but misspelled: the kelurahan is Cihaur Geulis, not Cihuar Geulis. The postal code is wrong too, 40114 belongs to Kelurahan Cihapit, Kecamatan Bandung Wetan, not to Cihaur Geulis (40122). The result came back as Cibeunying Kaler, Kota Bandung, Jawa Barat 40114, **status VALID, confidence 0.90**, with no subdistrict resolved.
 
-That exposed a problem in the current implementation. The status logic stamps **VALID** based on province + city + district. **It never checks the subdistrict.** So a result can be fully confident about a location whose weakest level is missing or wrong. The engine has no way to say "I am not sure about the subdistrict". It just does not look at it.
+That exposed a problem in the current implementation. The status logic stamps VALID based on province + city + district. **It never checks the subdistrict.** So a result can be fully confident about a location whose weakest level is missing or wrong. The engine has no way to say "I am not sure about the subdistrict". It just does not look at it. The benchmark ground truth carried the same misspelling, so it needs fixing in the test set before the next run.
 
 ### Case 2: one word, two levels, wrong province
 
@@ -162,8 +162,8 @@ All three are concrete, addressable problems.
 
 Two changes are in progress:
 
-1. **Gate VALID on the subdistrict.** VALID should require all four levels: province, city, district, and subdistrict. Or it should report which level is missing or uncertain.
-2. **A generated alias layer.** When a name is ambiguous between Kota and Kabupaten, the seeder normalizes city names and generates the alias. For this iteration, Kota is the default. I am testing whether that resolves the ambiguity cases the benchmark flagged.
+1. Gate VALID on the subdistrict. VALID should require all four levels: province, city, district, and subdistrict. Or it should report which level is missing or uncertain.
+2. A generated alias layer. When a name is ambiguous between Kota and Kabupaten, the seeder normalizes city names and generates the alias. I am testing whether that resolves the ambiguity cases the benchmark flagged.
 
 The benchmark will tell whether the number moves.
 
@@ -171,10 +171,10 @@ The benchmark will tell whether the number moves.
 
 The system is early alpha. To be explicit:
 
-- **The API key is manually managed.** One shared key in env, no per-key scoping, no rotation.
-- **There are tests, but no observability.** No metrics, no tracing. Just access logs.
-- **The benchmark is 106 addresses, all in Bandung.** There is no national-accuracy number yet.
-- **The alias and postal discovery strategies are declared but not used at runtime.** Only top-down and any-level matching are active.
+- The API key is manually managed. One shared key in env, no per-key scoping, no rotation.
+- There are tests, but no observability. No metrics, no tracing. Just access logs.
+- The benchmark is 106 addresses, all in Bandung. There is no national-accuracy number yet.
+- The alias and postal discovery strategies are declared but not used at runtime. Only top-down and any-level matching are active.
 
 ## Conclusion
 
