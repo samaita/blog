@@ -148,9 +148,7 @@ Input: "JL. GATOT SUBROTO NO.86 BANDUNG"
 
 The current implementation resolved this input to Bandung, Bandung, Kabupaten Tulungagung, Jawa Timur 66274, **status AMBIGUOUS, confidence 0.43**. The formatted output shows why: "Bandung, Bandung" means the single token matched two levels at once, the kecamatan and the kelurahan, both in the wrong region. The scorer rewards matched levels, so one ambiguous word counted twice and inflated the score.
 
-The score was misleading because it reflects how much evidence matched, not how likely the interpretation is. A word that exists at many levels is weak evidence, but the current scorer does not treat it that way.
-
-What this suggests for the next iteration: do not let one token fill two levels, and prefer the city interpretation when a name is ambiguous between Kota and Kabupaten. I am testing an alias layer where the seeder normalizes city names and generates one canonical target. For this iteration, Kota is the default. The alias infrastructure already exists in the schema (the `location_alias` table), and the strategy is declared in code but not yet wired into the runtime. The benchmark will determine whether this reduces the false matches.
+Without clear context, it is hard to determine whether Bandung is input as a kota or a kecamatan. The engine needs a fallback when a known place exists at different levels. The decision for this iteration: without enough context, Bandung will always be Kota.
 
 ## What the benchmark showed
 
