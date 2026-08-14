@@ -1,22 +1,22 @@
 +++
-title = 'Address Quality: Building an Indonesian Address Validation API, and Measuring It at 49%'
+title = 'Building an Indonesian Address Validation API: An Underdog Story That Begins With 49% Accuracy'
 date = 2026-08-13T18:00:00+07:00
 draft = false
 +++
 
-This is the first post in a series about building [Address Quality](https://samaita.com/projects/address-quality/), an API that validates Indonesian addresses. I want to document the real journey: the failures, the measurements, and the changes in thinking. Not a polished "we nailed it" story.
+This is the first post in a series about building [Address Quality](https://samaita.com/projects/address-quality/), an API that validates Indonesian addresses. I want to document the real journey: the failures, the measurements, and the changes in thinking. It is not a "nailed it" story yet, because the journey is just on.
 
-This post covers the **why** and the **how**, and ends with the benchmark that told me how far the engine still has to go: **49% accuracy on my own test set.** Spoiler: that number is the best thing that happened to the project.
+This post covers the **why** and the **how**, and ends with the benchmark that told me how far the engine still has to go: **49% accuracy on my own test set.** I will explain later why that number is the best thing that happened to the project.
 
 ## Why Indonesian addresses are hard
 
 Back in my logistics-aggregation days, one of the hardest problems was validating addresses. Three problems stood out:
 
-**Fraud.** A sender could declare a cheap origin to game shipping rates. They claimed an address in one city while the actual pickup point was elsewhere. The aggregator's rate is computed from the declared origin code, so the mismatch cost real money.
+**Fraud.** A sender could declare a cheap origin to game shipping rates. The origin code is used by the logistic provider, not the user's actual address. So a user's declared address origin could mismatch the actual origin code, and the rate is computed from that code. The mismatch cost real money.
 
-**UX.** Users filling an address had to provide either a postal code or a subdistrict. Even when they filled everything out completely, the system still asked them to fill another form. Complete addresses were rejected for not matching a rigid format.
+**UX.** Users had to provide either a postal code or a subdistrict in different form inputs of the address. This is a friction that delays user shipping creation. Some even got used to it and only type minimal addresses on purpose, short like a city name or subdistrict name. This kind of behavior also pollutes our own data and risks lost packages.
 
-**Data drift.** People remember postal codes that no longer match the official data. Someone in Cimanggu remembers `16164`, but the official code changed to `16163`. Their memory does not update. Many people do not even realize Indonesia has added new provinces over the years.
+**Data drift.** Some people have different memory about the postal code, making their own address mislabeled due to official updates. Take Kedung Waringin, Kota Bogor. People remember a postal code that no longer matches the official data, and their memory does not update. Many people do not even realize Indonesia has added new provinces over the years.
 
 The common thread: **software assumes addresses arrive clean and structured. In Indonesian, they rarely do.**
 
@@ -77,11 +77,11 @@ The engine is only as good as its reference data. The seeder parses roughly 176,
 
 joined with postal codes. It has normalized names for phrase matching and a pre-built hierarchy table for fast upper-level lookups.
 
-The reference dataset is fully **offline**. No network dependency at validation time, no external service. A pure-Go SQLite driver keeps the binary CGO-free and statically linked.
+The reference dataset is fully **offline**. No network dependency at validation time, no external service. The source project is [wilayah_ref by cahyadsn](https://github.com/cahyadsn/wilayah_ref). A pure-Go SQLite driver keeps the binary CGO-free and statically linked.
 
 ## The build
 
-Built over roughly four weeks (July to August 2026). The project is AI assisted, and hosted on a very small VPS. Ten phases: an MVP API, API hardening, containerization and first CI, the data layer and seeder, caching and candidate sets, benchmarks/docs/licensing, a full evaluation-engine overhaul, Swagger documentation, a frontend (later moved to samaita.com), and production CI/CD polish.
+The project is AI assisted, and hosted on a 2c4g VPS in Indonesia. Ten phases: an MVP API, API hardening, containerization and first CI, the data layer and seeder, caching and candidate sets, benchmarks/docs/licensing, a full evaluation-engine overhaul, Swagger documentation, a frontend, and production CI/CD polish.
 
 Two design decisions worth calling out:
 
@@ -140,6 +140,6 @@ The engine began with a lot of limitations. That is the point of this series: me
 
 The 49% is not a confession. It is a **baseline**. It means there is a lot of room to improve, and every improvement is measurable. The next post will cover the scoring fix and the alias layer: what changed, and whether the number moved.
 
-The API is live at [samaita.com/projects/address-quality](https://samaita.com/projects/address-quality/) with a playground. Try it. If an address comes back wrong, that is useful data.
+The API is live at [samaita.com/projects/address-quality](https://samaita.com/projects/address-quality/) with a playground. Try it. If an address comes back wrong, that is useful data. Every release comes with a new benchmark update, available at [samaita.com/projects/address-quality](https://samaita.com/projects/address-quality/) under Benchmark.
 
 *Series: Part 1, why and how (this post). Next: the scoring fix, and what the new number is.*
