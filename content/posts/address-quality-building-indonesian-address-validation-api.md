@@ -112,11 +112,11 @@ Sanitize and normalize it to:
 supratman cihaur geulis cibeunying kaler bandung jawa barat 40114
 ```
 
-Extract evidence and resolve. The engine recognizes Jawa Barat as a province, Bandung as a City, Cibeunying Kaler as a District, and Cihaur Geulis as a Subdistrict. The postal code `40114` supports the evidence.
+Extract evidence and resolve. The engine recognizes `Jawa Barat` as a province, `Bandung` as a City, `Cibeunying Kaler` as a District, and `Cihaur Geulis` as a Subdistrict. The postal code `40114` supports the evidence.
 
-Discover candidates, limited to unique and relevant entities at each level. Kabupaten Bandung gets dropped here, because Cibeunying Kaler does not exist as a District in Kabupaten Bandung.
+Discover candidates, limited to unique and relevant entities at each level. `Kabupaten Bandung` gets dropped here, because `Cibeunying Kaler` does not exist as a District in `Kabupaten Bandung`.
 
-Enrich and evaluate. Missing data is filled from the hierarchy, then the result is scored. Since all four levels match (Cihaur Geulis, Cibeunying Kaler, Bandung, Jawa Barat), the confidence is 100%. Any similar result, like Cibeunying Kaler, Bandung, Jawa Barat without the subdistrict, appears at a lower confidence.
+Enrich and evaluate. Missing data is filled from the hierarchy, then the result is scored. Since all four levels match (`Cihaur Geulis`, `Cibeunying Kaler`, `Bandung`, `Jawa Barat`), the confidence is 100%. Any similar result, like `Cibeunying Kaler, Bandung, Jawa Barat` without the subdistrict, appears at a lower confidence.
 
 Rank and respond. The engine displays the data in a formatted response:
 
