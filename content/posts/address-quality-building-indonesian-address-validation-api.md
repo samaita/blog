@@ -88,15 +88,7 @@ The engine does not use an AI/ML model at runtime. It uses deterministic phrase 
 
 ## How the pipeline works
 
-1. **Sanitize** the raw input
-2. **Normalize:** lowercase, strip administrative prefixes (`kabupaten`, `kota`, `kecamatan`, `kelurahan`, `provinsi`), remove punctuation, collapse extra spaces, keep 5-digit postal codes
-3. **Extract evidence:** find postal codes, classify words as road or place evidence
-4. **Resolve:** map each piece of evidence to all possible entities (longest-match over a phrase dictionary). Resolution never picks a winner; it collects possibilities
-5. **Discover candidates:** one candidate per unique entity at each level
-6. **Enrich:** fill upper levels from the hierarchy, attach postal codes
-7. **Evaluate:** check hierarchy consistency, measure evidence coverage, detect conflicts, compute confidence, assign status
-8. **Rank:** sort by confidence, then filled-level count, then fewer conflicts
-9. **Respond:** formatted address plus structured metadata
+The engine runs a fixed pipeline. The worked example below walks through each step.
 
 ### A worked example
 
