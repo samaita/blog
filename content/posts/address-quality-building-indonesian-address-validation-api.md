@@ -14,41 +14,67 @@ This post covers the why and the how. It ends with the first benchmark: **49% ac
 
 Back in my logistics-aggregation days, one of the hardest problems was validating addresses. Three problems stood out:
 
-**Fraud.** A sender could declare a cheap origin to game shipping rates. The origin code is used by the logistic provider, not the user's actual address. So a user's declared address origin could mismatch the actual origin code, and the rate is computed from that code. The mismatch cost real money.
+### Fraud
 
-**UX.** Users had to provide either a postal code or a subdistrict in different form inputs of the address. This friction delayed shipping creation. Some users got used to it and typed minimal addresses on purpose: a city name or a subdistrict name. That behavior pollutes the data and risks lost packages.
+A sender could declare a cheap origin to game shipping rates. The origin code is used by the logistic provider, not the user's actual address. So a user's declared address origin could mismatch the actual origin code, and the rate is computed from that code. The mismatch cost real money.
 
-**Data drift.** Some people have a different memory of the postal code, so their own address is mislabeled after official updates. Take Kedung Waringin, Kota Bogor. People remember a postal code that no longer matches the official data. Many people do not even realize Indonesia has added new provinces over the years.
+### UX
+
+Users had to provide either a postal code or a subdistrict in different form inputs of the address. This friction delayed shipping creation. Some users got used to it and typed minimal addresses on purpose: a city name or a subdistrict name. That behavior pollutes the data and risks lost packages.
+
+### Data drift
+
+Some people have a different memory of the postal code, so their own address is mislabeled after official updates. Take Kedung Waringin, Kota Bogor. People remember a postal code that no longer matches the official data. Many people do not even realize Indonesia has added new provinces over the years.
 
 The common thread: **software assumes addresses arrive clean and structured. In Indonesian, they rarely do.**
 
 ## Why Indonesian addresses are difficult
 
+Before the list, one thing to know: Indonesian addresses follow an administrative hierarchy. A province contains cities, a city contains districts, a district contains subdistricts. Province is bigger than City, City is bigger than District, District is bigger than Subdistrict. Postal codes sit at the subdistrict level.
+
 Beyond the business problems, Indonesian addresses are hard by nature. The language creates ambiguity:
 
-**Kota vs Kabupaten.** Many city names are shared between a *kota* (city) and a *kabupaten*. Bandung, Bogor, Cirebon, Sukabumi, and a hundred more pairs. "Jl. Merdeka No. 1, Bogor" is ambiguous between Kota Bogor and Kabupaten Bogor. A human can get confused, let alone a parser. The official hierarchy encodes both: `32.73` is Kota Bandung, `32.04` is Kabupaten Bandung.
+### Kota vs Kabupaten
 
-**Spelling variants.** The same place gets written multiple ways. Some say "Jogjakarta", some say "Yogyakarta", and the official name is "Daerah Istimewa Yogyakarta". Abbreviations add to it: `DIY`, `Kab`, `Kec`, `Gg`.
+Many city names are shared between a *kota* (city) and a *kabupaten*. Bandung, Bogor, Cirebon, Sukabumi, and a hundred more pairs. "Jl. Merdeka No. 1, Bogor" is ambiguous between Kota Bogor and Kabupaten Bogor. A human can get confused, let alone a parser. The official hierarchy encodes both: `32.73` is Kota Bandung, `32.04` is Kabupaten Bandung.
 
-**Roman numerals in names.** "IV Koto", "X Koto", "VII Koto" are real names, and people write them as "4 Koto" or "10 Koto". Same place, different text.
+### Spelling variants
 
-**One word, many levels.** The same word can be a province, city, district, and subdistrict in different parts of the country. "Bandung" is a city in Jawa Barat, and also a kecamatan (and a kelurahan) in Tulungagung, Jawa Timur. A word-level lookup cannot tell them apart without hierarchy context.
+The same place gets written multiple ways. Some say "Jogjakarta", some say "Yogyakarta", and the official name is "Daerah Istimewa Yogyakarta". Abbreviations add to it: `DIY`, `Kab`, `Kec`, `Gg`.
 
-**Informal conventions.** Addresses carry RT/RW numbers, landmarks, and informal descriptions. Natural for humans, confusing for software that relies on deterministic matching.
+### Roman numerals in names
 
-**The hierarchy changes.** New provinces are created, postal codes evolve, aliases appear.
+"IV Koto", "X Koto", "VII Koto" are real names, and people write them as "4 Koto" or "10 Koto". Same place, different text.
 
-These are not edge cases. They are the norm.
+### One word, many levels
+
+The same word can be a province, city, district, and subdistrict in different parts of the country. "Bandung" is a city in Jawa Barat, and also a kecamatan (and a kelurahan) in Tulungagung, Jawa Timur. A word-level lookup cannot tell them apart without hierarchy context.
+
+### Informal conventions
+
+Addresses carry RT/RW numbers, landmarks, and informal descriptions. Natural for humans, confusing for software that relies on deterministic matching.
+
+### The hierarchy changes
+
+New provinces are created, postal codes evolve, aliases appear.
+
+All of this is normal. The data source itself evolves, and there are many factors to account for. I wished a single service could handle it.
 
 ## What I tried first
 
 Before building anything, I tried the obvious approaches. All three failed in useful ways.
 
-**Regex rules per word.** Define rules like "Bandung goes to Jawa Barat". The problem: Bandung is also a kecamatan in Jawa Timur. A word-level rule cannot scale to a country where the same name means different administrative things in different places.
+### Regex rules per word
 
-**AI / RAG comparison.** Compare the address against a knowledge base using an LLM. The problems: latency dependency, and inconsistent reasoning. The same input could return different reasoning on different calls. For a validation service, this alone rules it out.
+Define rules like "Bandung goes to Jawa Barat". The problem: Bandung is also a kecamatan in Jawa Timur. A word-level rule cannot scale to a country where the same name means different administrative things in different places.
 
-**Fuzzy match to a database.** Fuzzy lookup plus extra checks. It worked, but it was complicated and hard to maintain.
+### AI / RAG comparison
+
+Compare the address against a knowledge base using an LLM. The problems: latency dependency, and inconsistent reasoning. The same input could return different reasoning on different calls. For a validation service, this alone rules it out.
+
+### Fuzzy match to a database
+
+Fuzzy lookup plus extra checks. It worked, but it was complicated and hard to maintain.
 
 The lesson: the engine needs to be **deterministic**. The same address must always produce the same result, with reasons you can inspect.
 
@@ -72,6 +98,32 @@ The engine does not use an AI/ML model at runtime. It uses deterministic phrase 
 8. **Rank:** sort by confidence, then filled-level count, then fewer conflicts
 9. **Respond:** formatted address plus structured metadata
 
+### A worked example
+
+Take this input:
+
+```text
+JL. Supratman No.72, Cihaur Geulis, Kec. Cibeunying Kaler, Kota Bandung, Jawa Barat 40114
+```
+
+Sanitize and normalize it to:
+
+```text
+supratman cihaur geulis cibeunying kaler bandung jawa barat 40114
+```
+
+Extract evidence and resolve. The engine recognizes Jawa Barat as a province, Bandung as a City, Cibeunying Kaler as a District, and Cihaur Geulis as a Subdistrict. The postal code `40114` supports the evidence.
+
+Discover candidates, limited to unique and relevant entities at each level. Kabupaten Bandung gets dropped here, because Cibeunying Kaler does not exist as a District in Kabupaten Bandung.
+
+Enrich and evaluate. Missing data is filled from the hierarchy, then the result is scored. Since all four levels match (Cihaur Geulis, Cibeunying Kaler, Bandung, Jawa Barat), the confidence is 100%. Any similar result, like Cibeunying Kaler, Bandung, Jawa Barat without the subdistrict, appears at a lower confidence.
+
+Rank and respond. The engine displays the data in a formatted response:
+
+```text
+Cihaur Geulis, Cibeunying Kaler, Kota Bandung, Jawa Barat 40114
+```
+
 ## The reference data
 
 The engine is only as good as its reference data. The seeder parses roughly 176,000 lines of upstream MySQL dumps: the Kemendagri `wilayah` administrative dump and the `wilayah_kodepos` postal-code dump. It rebuilds them into a normalized SQLite hierarchy:
@@ -89,11 +141,7 @@ The reference dataset is fully **offline**. No network dependency at validation 
 
 The backend is AI assisted, the frontend is vibe coded, and the whole thing runs on a 2c4g VPS in Indonesia. Ten phases took it from MVP to production CI/CD: API hardening, containerization, the data layer and seeder, caching and candidate sets, benchmarks and docs, a full evaluation-engine overhaul, Swagger documentation, the frontend, and deployment polish.
 
-Two design decisions worth calling out:
-
-**Two databases, two personalities.** `location.db`, the read-only administrative hierarchy, loaded once into memory. `address.db`, the append-only request log. Separating static reference data from mutable log data keeps the hierarchy safely read-only.
-
-**CI builds, but never deploys.** CI builds and pushes one container image to a registry, and never deploys. Deployment is a manual step on the production VPS. An operator pulls the chosen image tag, recreates the container, waits for the health check, verifies the reverse proxy, and records the deployed tag for one-command rollback. There is no CI-to-production path.
+One design decision worth knowing: **CI builds, but never deploys.** CI builds and pushes one container image to a registry, and never deploys. Deployment is a manual step on the production VPS. An operator pulls the chosen image tag, recreates the container, waits for the health check, verifies the reverse proxy, and records the deployed tag for one-command rollback. There is no CI-to-production path.
 
 ## The benchmark
 
@@ -148,7 +196,7 @@ Input: "JL. GATOT SUBROTO NO.86 BANDUNG"
 
 The current implementation resolved this input to Bandung, Bandung, Kabupaten Tulungagung, Jawa Timur 66274, **status AMBIGUOUS, confidence 0.43**. The formatted output shows why: "Bandung, Bandung" means the single token matched two levels at once, the kecamatan and the kelurahan, both in the wrong region. The scorer rewards matched levels, so one ambiguous word counted twice and inflated the score.
 
-Without clear context, it is hard to determine whether Bandung is input as a kota or a kecamatan. The engine needs a fallback when a known place exists at different levels. The decision for this iteration: without enough context, Bandung will always be Kota.
+Without clear context, it is hard to determine whether Bandung is input as a City or a District. The engine needs a fallback when a known place exists at different levels. The decision for this iteration: without enough context, Bandung will always be Kota.
 
 ## What the benchmark showed
 
