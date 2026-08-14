@@ -11,7 +11,7 @@
 This post covers the why and the how. It ends with the first benchmark: 49% accuracy on my own test set. I will explain later why that number turned out to be useful.">
 <meta name="author" content="Gary Samaita">
 <link rel="canonical" href="https://samaita.com/posts/address-quality-building-indonesian-address-validation-api/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.6ff46447b1fa3f8a5cc0bcae48088decc3ae37f5fbc99406a3aefc3bf0e6044a.css" integrity="sha256-b/RkR7H6P4pcwLyuSAiN7MOuN/X7yZQGo678O/DmBEo=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://samaita.com/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://samaita.com/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://samaita.com/favicon-32x32.png">
@@ -267,30 +267,30 @@ This post covers the why and the how. It ends with the first benchmark: 49% accu
 <p>The method is simple: run each address through the API, compare the resolved components against the tagged ground truth, and count a record as <strong>accurate</strong> when all four levels match exactly: province, city, district, and subdistrict. A record where the province is right but the subdistrict is wrong is not counted as accurate. The per-level numbers below show how often each level alone is correct.</p>
 <p><strong>The result: 52/106 exact matches = 49.1%.</strong></p>
 <table>
-  <thead>
-      <tr>
-          <th>Level</th>
-          <th>Correct</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>Province</td>
-          <td>82.1%</td>
-      </tr>
-      <tr>
-          <td>City</td>
-          <td>76.4%</td>
-      </tr>
-      <tr>
-          <td>District</td>
-          <td>71.7%</td>
-      </tr>
-      <tr>
-          <td><strong>Subdistrict</strong></td>
-          <td><strong>51.9%</strong></td>
-      </tr>
-  </tbody>
+	<thead>
+			<tr>
+					<th>Level</th>
+					<th>Correct</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Province</td>
+					<td>82.1%</td>
+			</tr>
+			<tr>
+					<td>City</td>
+					<td>76.4%</td>
+			</tr>
+			<tr>
+					<td>District</td>
+					<td>71.7%</td>
+			</tr>
+			<tr>
+					<td><strong>Subdistrict</strong></td>
+					<td><strong>51.9%</strong></td>
+			</tr>
+	</tbody>
 </table>
 <p>The subdistrict (kelurahan/desa) is where it falls apart.</p>
 <p>49% was not a result to celebrate. It was useful. It gave me a concrete baseline and a set of failure cases to investigate.</p>
