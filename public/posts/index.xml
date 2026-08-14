@@ -10,9 +10,17 @@
       <link>https://avatars.githubusercontent.com/u/6941042?v=4</link>
     </image>
     <generator>Hugo</generator>
-    <language>en-us</language>
-    <lastBuildDate>Fri, 20 Dec 2024 22:00:00 +0700</lastBuildDate>
+    <language>en-US</language>
+    <lastBuildDate>Thu, 13 Aug 2026 18:00:00 +0700</lastBuildDate>
     <atom:link href="https://samaita.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Building an Indonesian Address Validation API: An Underdog Story That Begins With 49% Accuracy</title>
+      <link>https://samaita.com/posts/address-quality-building-indonesian-address-validation-api/</link>
+      <pubDate>Thu, 13 Aug 2026 18:00:00 +0700</pubDate>
+      <guid>https://samaita.com/posts/address-quality-building-indonesian-address-validation-api/</guid>
+      <description>&lt;p&gt;This is the first post in a series about building &lt;a href=&#34;https://samaita.com/projects/address-quality/&#34;&gt;Address Quality&lt;/a&gt;, an API that validates Indonesian addresses. I want to document the real journey: the failures, the measurements, and the changes in thinking. It is not a &amp;ldquo;nailed it&amp;rdquo; story yet, because the journey is just on.&lt;/p&gt;
+&lt;p&gt;This post covers the &lt;strong&gt;why&lt;/strong&gt; and the &lt;strong&gt;how&lt;/strong&gt;, and ends with the benchmark that told me how far the engine still has to go: &lt;strong&gt;49% accuracy on my own test set.&lt;/strong&gt; I will explain later why that number is the best thing that happened to the project.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Easily Switch Go Version with GVM</title>
       <link>https://samaita.com/posts/easily-switch-go-version-with-gvm/</link>
