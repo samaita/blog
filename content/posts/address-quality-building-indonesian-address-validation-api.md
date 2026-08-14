@@ -178,7 +178,7 @@ Each release runs this benchmark again. The results are tracked so the next iter
 
 ### Case 1: a subdistrict the input already contained
 
-Input: "JL. Supratman No.72, Cihuar Geulis, Kec. Cibeunying Kaler, Kota Bandung, Jawa Barat 40114"
+Input: `JL. Supratman No.72, Cihuar Geulis, Kec. Cibeunying Kaler, Kota Bandung, Jawa Barat 40114`
 
 The address literally contains the subdistrict name "Cihuar Geulis". The result came back as Cibeunying Kaler, Kota Bandung, Jawa Barat 40114, **status VALID, confidence 0.90**, with no subdistrict resolved.
 
@@ -190,7 +190,7 @@ This is a concrete argument for the alias layer: a normalized name table would l
 
 ### Case 2: one word, two levels, wrong province
 
-Input: "JL. GATOT SUBROTO NO.86 BANDUNG"
+Input: `JL. GATOT SUBROTO NO.86 BANDUNG`
 
 "Bandung" is ambiguous. In the Kemendagri data, the name exists at multiple levels: Kota Bandung (`32.73`), Kabupaten Bandung (`32.04`), and a kecamatan Bandung in Tulungagung, Jawa Timur (`35.04.17`), which also contains a kelurahan named Bandung.
 
