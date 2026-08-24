@@ -25,6 +25,7 @@ You already gave the address in the form. So why do you have to enter it again i
 
 ![Cannot continue unless selected](https://samaita.com/projects/address-quality/images/checkout-usecase-destination-need-to-be-filled.png)
 
+
 ## My Guess? People and Software Have Their Own Way
 
 Let's look at it from the system's side. You can write an address in many ways.
@@ -41,11 +42,11 @@ You already typed the address. Now you have to select the province, then the cit
 
 On a desktop, that's annoying. On a phone, it's worse. You open a dropdown, search, scroll, and pick. You wait for the next dropdown to unlock. Then you do it again and again.
 
-![Some options even need more time to select. Which one is the correct postal code?](https://samaita.com/projects/address-quality/images/shipping-usecase-destination-need-to-be-filled-example.png)
-
 ---
 
 *One field is not a big deal. Four or five fields annoying.*
+
+![Some options even need more time to select. Which one is the correct postal code?](https://samaita.com/projects/address-quality/images/shipping-usecase-destination-need-to-be-filled-example.png)
 
 ## Complete Address Won't Save Time
 
@@ -61,13 +62,13 @@ That's a complete address. Other people input:
 
 Same place, different quality. The first one gives complete and correct information. But both users get the same form. Both users have to select the province, city, district, subdistrict.
 
-Then what's the point of entering a full and complete address? The information isn't being used to reduce the work. In some forms, the address may only need to pass basic validation, such as a minimum character length. I wont suprised if someone input even more vague address:
+**Then what's the point of entering a full and complete address? The information isn't being used to reduce the work**. In some forms, the address may only need to pass basic validation, such as a minimum character length. I wont suprised if someone input even more vague address:
 
 > SCBD
 
 Or even trying to benefit from the system by intentionally making different input between the forms and the actual address.
 
-![Some problem can be prevented before it being operational burden.](https://samaita.com/projects/address-quality/images/shipping-usecase-different-form-address.png)
+![Some problem can be prevented before it becomes an operational burden.](https://samaita.com/projects/address-quality/images/shipping-usecase-different-form-address.png)
 
 If your software doesn't really care about user address, that might be fine. But for use cases that rely on accurate addresses, like shipping and KYC, that may become a problem. 
 
