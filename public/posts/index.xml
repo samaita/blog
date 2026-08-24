@@ -11,8 +11,15 @@
     </image>
     <generator>Hugo</generator>
     <language>en-US</language>
-    <lastBuildDate>Thu, 13 Aug 2026 18:00:00 +0700</lastBuildDate>
+    <lastBuildDate>Mon, 24 Aug 2026 16:23:45 +0700</lastBuildDate>
     <atom:link href="https://samaita.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Why Are We Still Asked to Fill Our Address Twice?</title>
+      <link>https://samaita.com/posts/why-are-we-still-asked-to-fill-our-address-twice/</link>
+      <pubDate>Mon, 24 Aug 2026 16:23:45 +0700</pubDate>
+      <guid>https://samaita.com/posts/why-are-we-still-asked-to-fill-our-address-twice/</guid>
+      <description>You already typed your address. So why some sites ask you to select it again from their own dropdown? A look at how Indonesian address forms work and why software should get better at understanding what you already typed.</description>
+    </item>
     <item>
       <title>Building an Indonesian Address Validation API: Starting With 49% Accuracy</title>
       <link>https://samaita.com/posts/address-quality-building-indonesian-address-validation-api/</link>

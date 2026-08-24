@@ -2,13 +2,28 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://samaita.com/</loc>
-    <lastmod>2026-08-13T18:00:00+07:00</lastmod>
+    <loc>https://samaita.com/tags/address-quality/</loc>
+    <lastmod>2026-08-24T16:23:45+07:00</lastmod>
   </url><url>
-    <loc>https://samaita.com/posts/address-quality-building-indonesian-address-validation-api/</loc>
-    <lastmod>2026-08-13T18:00:00+07:00</lastmod>
+    <loc>https://samaita.com/</loc>
+    <lastmod>2026-08-24T16:23:45+07:00</lastmod>
+  </url><url>
+    <loc>https://samaita.com/tags/indonesia/</loc>
+    <lastmod>2026-08-24T16:23:45+07:00</lastmod>
   </url><url>
     <loc>https://samaita.com/posts/</loc>
+    <lastmod>2026-08-24T16:23:45+07:00</lastmod>
+  </url><url>
+    <loc>https://samaita.com/tags/</loc>
+    <lastmod>2026-08-24T16:23:45+07:00</lastmod>
+  </url><url>
+    <loc>https://samaita.com/tags/ux/</loc>
+    <lastmod>2026-08-24T16:23:45+07:00</lastmod>
+  </url><url>
+    <loc>https://samaita.com/posts/why-are-we-still-asked-to-fill-our-address-twice/</loc>
+    <lastmod>2026-08-24T16:23:45+07:00</lastmod>
+  </url><url>
+    <loc>https://samaita.com/posts/address-quality-building-indonesian-address-validation-api/</loc>
     <lastmod>2026-08-13T18:00:00+07:00</lastmod>
   </url><url>
     <loc>https://samaita.com/posts/easily-switch-go-version-with-gvm/</loc>
@@ -27,7 +42,5 @@
     <lastmod>2022-04-06T05:33:50+07:00</lastmod>
   </url><url>
     <loc>https://samaita.com/categories/</loc>
-  </url><url>
-    <loc>https://samaita.com/tags/</loc>
   </url>
 </urlset>
