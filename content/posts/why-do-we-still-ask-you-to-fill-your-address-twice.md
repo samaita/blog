@@ -1,7 +1,7 @@
 +++
 title = 'Why Do We Still Ask You to Fill Your Address Twice?'
 date = 2026-08-24T16:00:00+07:00
-draft = false
+draft = true
 tags = ['address-quality', 'ux', 'indonesia']
 description = 'You already typed your address. So why do you have to enter it again? A look at how Indonesian address forms work and why software should get better at understanding what you already typed.'
 series = ['Address Quality']
