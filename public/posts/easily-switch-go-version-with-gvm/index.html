@@ -11,7 +11,7 @@
 Without using same version, it is painful just to start in local. I have to run go mod vendor, met incompatibilities, go get, go mod vendor, broken there broken here.. Waste of time!">
 <meta name="author" content="Gary Samaita">
 <link rel="canonical" href="https://samaita.com/posts/easily-switch-go-version-with-gvm/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.6ff46447b1fa3f8a5cc0bcae48088decc3ae37f5fbc99406a3aefc3bf0e6044a.css" integrity="sha256-b/RkR7H6P4pcwLyuSAiN7MOuN/X7yZQGo678O/DmBEo=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.cd9298b33628769aa1bc1acebbbfd7aa11ce81dfe03484d479e1907760249a1d.css" integrity="sha256-zZKYszYodpqhvBrOu7/XqhHOgd/gNITUeeGQd2Akmh0=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://samaita.com/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://samaita.com/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://samaita.com/favicon-32x32.png">
@@ -83,8 +83,8 @@ Without using same version, it is painful just to start in local. I have to run 
   "keywords": [
     
   ],
-  "articleBody": "There are various challenge in managing multiple golang microservice. One of them is develop the service with right golang version. I’ve work on a legacy service that set with go1.16. But the thing is I have go1.23.\nWithout using same version, it is painful just to start in local. I have to run go mod vendor, met incompatibilities, go get, go mod vendor, broken there broken here.. Waste of time!\nThe easiest solution might be just to upgrade the repository to using the latest one. Why would let it stick with outdated go version? Yes! But sometimes, it is not an option.\nThe simpler solution is just to change the golang version anytime you need. I’ve use gvm 1, short of Golang Version Manager – I guess. It is dead simple and super easy to use.\nBasic Usage GVM First, you have to install a golang version first. Further reading, just access the Github GVM.\nIf it installed. You might be a certain golang version and your gvm doesn’t have it. Install it, with:\ng v m i n s t a l l 1 . 2 3 After install, you can use it for switch.\nWhenever I need to change my go version, i just have to switch. Lets say the repository is using go1.18, but I got go1.23. In terminal i just have to type:\ng v m u s e g o 1 . 1 8 Or if I want to set a certain version as default\ng v m d e f a u l t 1 . 1 8 That’s it!\nThis service manager put my life easier to switch my golang versions. I hope gvm would help you too.\nReference Github GVM ↩︎\n",
-  "wordCount" : "288",
+  "articleBody": "There are various challenge in managing multiple golang microservice. One of them is develop the service with right golang version. I’ve work on a legacy service that set with go1.16. But the thing is I have go1.23.\nWithout using same version, it is painful just to start in local. I have to run go mod vendor, met incompatibilities, go get, go mod vendor, broken there broken here.. Waste of time!\nThe easiest solution might be just to upgrade the repository to using the latest one. Why would let it stick with outdated go version? Yes! But sometimes, it is not an option.\nThe simpler solution is just to change the golang version anytime you need. I’ve use gvm 1, short of Golang Version Manager – I guess. It is dead simple and super easy to use.\nBasic Usage GVM First, you have to install a golang version first. Further reading, just access the Github GVM.\nIf it installed. You might be a certain golang version and your gvm doesn’t have it. Install it, with:\ngvm install 1.23 After install, you can use it for switch.\nWhenever I need to change my go version, i just have to switch. Lets say the repository is using go1.18, but I got go1.23. In terminal i just have to type:\ngvm use go1.18 Or if I want to set a certain version as default\ngvm default 1.18 That’s it!\nThis service manager put my life easier to switch my golang versions. I hope gvm would help you too.\nReference Github GVM ↩︎\n",
+  "wordCount" : "257",
   "inLanguage": "en",
   "image": "https://avatars.githubusercontent.com/u/6941042?v=4","datePublished": "2024-12-20T22:00:00+07:00",
   "dateModified": "2024-12-20T22:00:00+07:00",
@@ -185,101 +185,13 @@ Without using same version, it is painful just to start in local. I have to run 
 <h1 id="basic-usage-gvm">Basic Usage GVM<a hidden class="anchor" aria-hidden="true" href="#basic-usage-gvm">#</a></h1>
 <p>First, you have to install a golang version first. Further reading, just access the <a href="https://github.com/benms/gvm">Github GVM</a>.</p>
 <p>If it installed. You might be a certain golang version and your gvm doesn&rsquo;t have it. Install it, with:</p>
-
-
-
-<div class="goat svg-container ">
-  
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      font-family="Menlo,Lucida Console,monospace"
-      
-        viewBox="0 0 136 25"
-      >
-      <g transform='translate(8,16)'>
-<text text-anchor='middle' x='0' y='4' fill='currentColor' style='font-size:1em'>g</text>
-<text text-anchor='middle' x='8' y='4' fill='currentColor' style='font-size:1em'>v</text>
-<text text-anchor='middle' x='16' y='4' fill='currentColor' style='font-size:1em'>m</text>
-<text text-anchor='middle' x='32' y='4' fill='currentColor' style='font-size:1em'>i</text>
-<text text-anchor='middle' x='40' y='4' fill='currentColor' style='font-size:1em'>n</text>
-<text text-anchor='middle' x='48' y='4' fill='currentColor' style='font-size:1em'>s</text>
-<text text-anchor='middle' x='56' y='4' fill='currentColor' style='font-size:1em'>t</text>
-<text text-anchor='middle' x='64' y='4' fill='currentColor' style='font-size:1em'>a</text>
-<text text-anchor='middle' x='72' y='4' fill='currentColor' style='font-size:1em'>l</text>
-<text text-anchor='middle' x='80' y='4' fill='currentColor' style='font-size:1em'>l</text>
-<text text-anchor='middle' x='96' y='4' fill='currentColor' style='font-size:1em'>1</text>
-<text text-anchor='middle' x='104' y='4' fill='currentColor' style='font-size:1em'>.</text>
-<text text-anchor='middle' x='112' y='4' fill='currentColor' style='font-size:1em'>2</text>
-<text text-anchor='middle' x='120' y='4' fill='currentColor' style='font-size:1em'>3</text>
-</g>
-
-    </svg>
-  
-</div>
-<p>After install, you can use it for switch.</p>
+<pre tabindex="0"><code>gvm install 1.23
+</code></pre><p>After install, you can use it for switch.</p>
 <p>Whenever I need to change my go version, i just have to switch. Lets say the repository is using go1.18, but I got go1.23. In terminal i just have to type:</p>
-
-
-
-<div class="goat svg-container ">
-  
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      font-family="Menlo,Lucida Console,monospace"
-      
-        viewBox="0 0 120 25"
-      >
-      <g transform='translate(8,16)'>
-<text text-anchor='middle' x='0' y='4' fill='currentColor' style='font-size:1em'>g</text>
-<text text-anchor='middle' x='8' y='4' fill='currentColor' style='font-size:1em'>v</text>
-<text text-anchor='middle' x='16' y='4' fill='currentColor' style='font-size:1em'>m</text>
-<text text-anchor='middle' x='32' y='4' fill='currentColor' style='font-size:1em'>u</text>
-<text text-anchor='middle' x='40' y='4' fill='currentColor' style='font-size:1em'>s</text>
-<text text-anchor='middle' x='48' y='4' fill='currentColor' style='font-size:1em'>e</text>
-<text text-anchor='middle' x='64' y='4' fill='currentColor' style='font-size:1em'>g</text>
-<text text-anchor='middle' x='72' y='4' fill='currentColor' style='font-size:1em'>o</text>
-<text text-anchor='middle' x='80' y='4' fill='currentColor' style='font-size:1em'>1</text>
-<text text-anchor='middle' x='88' y='4' fill='currentColor' style='font-size:1em'>.</text>
-<text text-anchor='middle' x='96' y='4' fill='currentColor' style='font-size:1em'>1</text>
-<text text-anchor='middle' x='104' y='4' fill='currentColor' style='font-size:1em'>8</text>
-</g>
-
-    </svg>
-  
-</div>
-<p>Or if I want to set a certain version as default</p>
-
-
-
-<div class="goat svg-container ">
-  
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      font-family="Menlo,Lucida Console,monospace"
-      
-        viewBox="0 0 136 25"
-      >
-      <g transform='translate(8,16)'>
-<text text-anchor='middle' x='0' y='4' fill='currentColor' style='font-size:1em'>g</text>
-<text text-anchor='middle' x='8' y='4' fill='currentColor' style='font-size:1em'>v</text>
-<text text-anchor='middle' x='16' y='4' fill='currentColor' style='font-size:1em'>m</text>
-<text text-anchor='middle' x='32' y='4' fill='currentColor' style='font-size:1em'>d</text>
-<text text-anchor='middle' x='40' y='4' fill='currentColor' style='font-size:1em'>e</text>
-<text text-anchor='middle' x='48' y='4' fill='currentColor' style='font-size:1em'>f</text>
-<text text-anchor='middle' x='56' y='4' fill='currentColor' style='font-size:1em'>a</text>
-<text text-anchor='middle' x='64' y='4' fill='currentColor' style='font-size:1em'>u</text>
-<text text-anchor='middle' x='72' y='4' fill='currentColor' style='font-size:1em'>l</text>
-<text text-anchor='middle' x='80' y='4' fill='currentColor' style='font-size:1em'>t</text>
-<text text-anchor='middle' x='96' y='4' fill='currentColor' style='font-size:1em'>1</text>
-<text text-anchor='middle' x='104' y='4' fill='currentColor' style='font-size:1em'>.</text>
-<text text-anchor='middle' x='112' y='4' fill='currentColor' style='font-size:1em'>1</text>
-<text text-anchor='middle' x='120' y='4' fill='currentColor' style='font-size:1em'>8</text>
-</g>
-
-    </svg>
-  
-</div>
-<p>That&rsquo;s it!</p>
+<pre tabindex="0"><code>gvm use go1.18
+</code></pre><p>Or if I want to set a certain version as default</p>
+<pre tabindex="0"><code>gvm default 1.18
+</code></pre><p>That&rsquo;s it!</p>
 <p>This service manager put my life easier to switch my golang versions. I hope gvm would help you too.</p>
 <h1 id="reference">Reference<a hidden class="anchor" aria-hidden="true" href="#reference">#</a></h1>
 <div class="footnotes" role="doc-endnotes">

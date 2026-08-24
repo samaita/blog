@@ -1,4 +1,4 @@
-import { readdirSync, existsSync, statSync, readFileSync, cpSync } from "node:fs"
+import { readdirSync, existsSync, statSync, readFileSync, cpSync, rmSync, mkdirSync } from "node:fs"
 import { join, dirname } from "node:path"
 import { fileURLToPath } from "node:url"
 import type { Plugin, ResolvedConfig } from "vite"
@@ -63,8 +63,16 @@ export default function benchmarkStatic(): Plugin {
         }
 
         const rel = pathname.slice("/benchmark/".length)
-        const file = join(benchmarkRoot, rel)
-        if (!file.startsWith(benchmarkRoot) || !existsSync(file) || statSync(file).isDirectory()) {
+        let file = join(benchmarkRoot, rel)
+        if (!file.startsWith(benchmarkRoot)) {
+          next()
+          return
+        }
+        if (existsSync(file) && statSync(file).isDirectory()) {
+          const index = join(file, "index.html")
+          file = existsSync(index) ? index : join(file, "benchmark.html")
+        }
+        if (!existsSync(file) || statSync(file).isDirectory()) {
           next()
           return
         }
@@ -78,7 +86,12 @@ export default function benchmarkStatic(): Plugin {
     closeBundle() {
       if (!existsSync(benchmarkRoot)) return
       const target = join(config.build.outDir, "benchmark")
-      cpSync(benchmarkRoot, target, { recursive: true })
+      rmSync(target, { recursive: true, force: true })
+      for (const version of listBenchmarkVersions()) {
+        const dir = join(target, version)
+        mkdirSync(dir, { recursive: true })
+        cpSync(join(benchmarkRoot, version, "benchmark.html"), join(dir, "index.html"))
+      }
     },
   }
 }

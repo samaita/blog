@@ -45,7 +45,7 @@ export default function BenchmarkDetail() {
 
       <iframe
         ref={iframeRef}
-        src={`${import.meta.env.BASE_URL}benchmark/${version}/benchmark.html`}
+        src={`${import.meta.env.BASE_URL}benchmark/${version}/`}
         title="Address Quality Benchmark"
         width="100%"
         height={height}
