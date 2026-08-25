@@ -1,9 +1,16 @@
 .post-single .post-content img {
-    max-width: 500px;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-    border: 1px solid #888;
-    border-radius: 6px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  max-width: 500px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  border: 1px solid #888;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 600px) {
+  .post-single .post-content img {
+    width: 100%;
+    max-width: 100%;
+  }
 }
