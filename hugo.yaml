@@ -6,6 +6,20 @@ languages:
     languageCode: en-US
 title: Backend Dev Story
 theme: ["PaperMod"]
+menus:
+  main:
+    - name: Projects
+      url: /projects/
+      weight: 10
+    - name: Writing
+      url: /posts/
+      weight: 20
+    - name: About
+      url: /about/
+      weight: 30
+    - name: GitHub
+      url: https://github.com/samaita
+      weight: 40
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
   title: Backend Dev Story
@@ -17,6 +31,9 @@ params:
   DateFormat: "January 2, 2006"
   defaultTheme: dark # dark, light
   disableThemeToggle: false
+  mainSections: [posts]
+  label:
+    text: Gary Samaita
 
   ShowCodeCopyButtons: true
   ShowPostNavLinks: true

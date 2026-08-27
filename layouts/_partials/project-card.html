@@ -1,0 +1,33 @@
+{{- $project := .project -}}
+{{- $featured := .featured | default false -}}
+<article class="project-card{{ if $featured }} project-card--featured{{ end }}">
+  <div class="project-card__body">
+    <div class="project-card__eyebrow">
+      {{- if $featured }}<span>Featured project</span>{{ end -}}
+      {{- with $project.status }}<span class="project-card__status">{{ . }}</span>{{ end -}}
+    </div>
+    <h3><a href="{{ $project.url | relURL }}">{{ $project.title }}</a></h3>
+    <p class="project-card__description">{{ $project.description }}</p>
+    {{- with $project.metric }}
+    <p class="project-card__metric">{{ . }}</p>
+    {{- end }}
+    {{- with $project.technologies }}
+    <ul class="project-card__tech" aria-label="Technologies">
+      {{- range . }}<li>{{ . }}</li>{{ end -}}
+    </ul>
+    {{- end }}
+  </div>
+  <footer class="project-card__footer">
+    <a class="project-card__link" href="{{ $project.url | relURL }}" aria-label="View {{ $project.title }} project">View project <span aria-hidden="true">→</span></a>
+    {{- if and $featured $project.related }}
+    <div class="project-card__related">
+      <span>Related writing</span>
+      <ul>
+        {{- range $project.related }}
+        <li><a href="{{ .url | relURL }}">{{ .title }}</a></li>
+        {{- end }}
+      </ul>
+    </div>
+    {{- end }}
+  </footer>
+</article>

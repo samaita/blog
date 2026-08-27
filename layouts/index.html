@@ -1,0 +1,43 @@
+{{- define "main" }}
+{{- $projects := sort hugo.Data.projects "weight" "asc" -}}
+<section class="home-hero" aria-labelledby="home-title">
+  <p class="home-hero__role">Backend Engineer</p>
+  <h1 id="home-title">Gary Samaita</h1>
+  <p class="home-hero__intro">{{ site.Params.homeInfoParams.Content }}</p>
+  <p class="home-hero__principle"><mark>Never Improve Blindly.</mark></p>
+  <div class="home-hero__links">
+    <a class="home-button" href="{{ "/projects/" | relURL }}">Explore projects</a>
+    <a class="home-text-link" href="{{ "/posts/" | relURL }}">Read the writing <span aria-hidden="true">→</span></a>
+  </div>
+</section>
+
+<section class="home-section" aria-labelledby="projects-title">
+  <div class="home-section__heading">
+    <h2 id="projects-title" class="home-section__title">Projects</h2>
+    <a href="{{ "/projects/" | relURL }}">View all projects <span aria-hidden="true">→</span></a>
+  </div>
+  <div class="project-grid{{ if eq (len $projects) 1 }} project-grid--single{{ end }}">
+    {{- range first 3 $projects }}
+      {{ partial "project-card.html" (dict "project" .) }}
+    {{- end }}
+  </div>
+</section>
+
+<section class="home-section home-writing" aria-labelledby="writing-title">
+  <div class="home-section__heading">
+    <h2 id="writing-title" class="home-section__title">Latest Writing</h2>
+    <a href="{{ "/posts/" | relURL }}">View all writing <span aria-hidden="true">→</span></a>
+  </div>
+  <div class="writing-list">
+    {{- range first 4 (where site.RegularPages.ByDate.Reverse "Section" "posts") }}
+    <article class="writing-item">
+      <div>
+        <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+        <p>{{ .Summary | plainify | htmlUnescape | truncate 180 }}</p>
+      </div>
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format (site.Params.DateFormat | default "January 2, 2006") }}</time>
+    </article>
+    {{- end }}
+  </div>
+</section>
+{{- end }}
