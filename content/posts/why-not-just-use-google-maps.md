@@ -12,8 +12,6 @@ One question keeps coming up while I build [Address Quality](https://samaita.com
 
 Why not just use Google Maps?
 
-It is a fair question.
-
 If I have a messy address, Google can often turn it into a structured result. It also knows roads, buildings, businesses, and landmarks that my administrative data does not.
 
 Take this place name:
@@ -56,6 +54,8 @@ The raw numbers looked like this:
 I do not think that means Google Maps is wrong 20% of the time.
 
 The benchmark can be wrong. Addresses can use old administrative names. They can contain aliases. They can even contain bad data. Two sources can also disagree about where a boundary belongs.
+
+This was not a formal accuracy test of Google Maps. It was a comparison against my tagged data, followed by a review of the disagreements.
 
 So I went through the failures one by one.
 
@@ -305,7 +305,7 @@ Just not for everything.
 
 Google is good at places, roads, businesses, and landmarks.
 
-My local resolver is better at checking whether an address already contains consistent administrative evidence.
+My local resolver is designed to check whether an address already contains consistent administrative evidence.
 
 Google gives me broader place knowledge. The local resolver gives me evidence I can inspect and test.
 
