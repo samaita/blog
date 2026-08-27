@@ -4,7 +4,7 @@ languages:
   en:
     languageName: English
     languageCode: en-US
-title: Backend Dev Story
+title: Gary Samaita — Backend Engineer
 theme: ["PaperMod"]
 menus:
   main:
@@ -22,7 +22,7 @@ menus:
       weight: 40
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
-  title: Backend Dev Story
+  title: Gary Samaita — Backend Engineer
   description: "Learning Series of Scaling Backend System"
   keywords: [Blog, Backend, Scaling]
   author: Gary Samaita
@@ -34,6 +34,8 @@ params:
   mainSections: [posts]
   label:
     text: Gary Samaita
+  schema:
+    publisherType: Person
 
   ShowCodeCopyButtons: true
   ShowPostNavLinks: true

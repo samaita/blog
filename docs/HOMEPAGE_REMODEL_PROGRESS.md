@@ -197,6 +197,58 @@ Verification:
 Next:
 - User review.
 
+### 2026-08-27 — Site Title
+
+Status: COMPLETE
+
+Changed:
+- `hugo.yaml`
+
+Result:
+- Changed the site and metadata title from `Backend Dev Story` to `Gary Samaita — Backend Engineer`.
+- Kept the compact header label as `Gary Samaita`.
+
+Decision:
+- Used the requested personal-site title consistently for browser titles, metadata, schema, RSS, and footer identity.
+
+Verification:
+- Production Hugo build: PASS
+- Homepage `<title>`: PASS
+- Schema identity: PASS
+- Footer identity: PASS
+- Compact header label unchanged: PASS
+
+Next:
+- User review.
+
+### 2026-08-27 — Identity and SEO Separation
+
+Status: COMPLETE
+
+Changed:
+- `hugo.yaml`
+
+Result:
+- Confirmed no `Backend Dev Story` identity remains in site source.
+- Kept `Gary Samaita` as the compact visible header identity.
+- Kept `Gary Samaita — Backend Engineer` as the document, metadata, RSS, and footer title.
+- Marked the schema publisher as a `Person`.
+- Preserved `Never Improve Blindly.` solely as the highlighted homepage engineering principle.
+
+Decision:
+- Separated the concise navigation label from the descriptive SEO title using PaperMod configuration.
+
+Verification:
+- Production Hugo build: PASS
+- Visible header identity `Gary Samaita`: PASS
+- Document title `Gary Samaita — Backend Engineer`: PASS
+- Person schema metadata: PASS
+- Highlighted engineering principle preserved: PASS
+- `Backend Dev Story` absent from generated homepage: PASS
+
+Next:
+- User review.
+
 ### 2026-08-27 — Featured Section Removal and Principle Highlight
 
 Status: COMPLETE
