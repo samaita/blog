@@ -2,3 +2,5 @@
 /public/
 .wrangler/
 /anti-slop/
+.DS_Store
+.agents/
