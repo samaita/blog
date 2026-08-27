@@ -1,76 +1,90 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Backend Dev Story</title>
-    <link>https://samaita.com/</link>
-    <description>Recent content on Backend Dev Story</description>
+    <title>Gary Samaita — Backend Engineer</title>
+    <link>http://localhost:1313/</link>
+    <description>Recent content on Gary Samaita — Backend Engineer</description>
     <image>
-      <title>Backend Dev Story</title>
+      <title>Gary Samaita — Backend Engineer</title>
       <url>https://avatars.githubusercontent.com/u/6941042?v=4</url>
       <link>https://avatars.githubusercontent.com/u/6941042?v=4</link>
     </image>
     <generator>Hugo</generator>
     <language>en-US</language>
-    <lastBuildDate>Mon, 24 Aug 2026 16:23:45 +0700</lastBuildDate>
-    <atom:link href="https://samaita.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 27 Aug 2026 14:21:40 +0700</lastBuildDate>
+    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Where Does Google Maps API Fit in Address Validation?</title>
+      <link>http://localhost:1313/posts/where-google-maps-fit-in-address-validation/</link>
+      <pubDate>Thu, 27 Aug 2026 14:21:40 +0700</pubDate>
+      <guid>http://localhost:1313/posts/where-google-maps-fit-in-address-validation/</guid>
+      <description>Google is very good at finding places. But does that mean it should be the first tool for validating Indonesian addresses? This draft looks at what the benchmark showed and where Google fits in the pipeline.</description>
+    </item>
     <item>
       <title>Why Are We Still Asked to Fill Our Address Twice?</title>
-      <link>https://samaita.com/posts/why-are-we-still-asked-to-fill-our-address-twice/</link>
+      <link>http://localhost:1313/posts/why-are-we-still-asked-to-fill-our-address-twice/</link>
       <pubDate>Mon, 24 Aug 2026 16:23:45 +0700</pubDate>
-      <guid>https://samaita.com/posts/why-are-we-still-asked-to-fill-our-address-twice/</guid>
+      <guid>http://localhost:1313/posts/why-are-we-still-asked-to-fill-our-address-twice/</guid>
       <description>You already typed your address. So why some sites ask you to select it again from their own dropdown? A look at how Indonesian address forms work and why software should get better at understanding what you already typed.</description>
     </item>
     <item>
       <title>Building an Indonesian Address Validation API: Starting With 49% Accuracy</title>
-      <link>https://samaita.com/posts/address-quality-building-indonesian-address-validation-api/</link>
+      <link>http://localhost:1313/posts/address-quality-building-indonesian-address-validation-api/</link>
       <pubDate>Thu, 13 Aug 2026 18:00:00 +0700</pubDate>
-      <guid>https://samaita.com/posts/address-quality-building-indonesian-address-validation-api/</guid>
+      <guid>http://localhost:1313/posts/address-quality-building-indonesian-address-validation-api/</guid>
       <description>&lt;p&gt;This is the first post in a series about building &lt;a href=&#34;https://samaita.com/projects/address-quality/&#34;&gt;Address Quality&lt;/a&gt;, an API that validates Indonesian addresses. I want to document it honestly: the failures, the measurements, and the changes in thinking. It is not a &amp;ldquo;nailed it&amp;rdquo; story yet, because the work is just getting started.&lt;/p&gt;
 &lt;p&gt;This post covers the why and the how. It ends with the first benchmark: &lt;strong&gt;49% accuracy on my own test set.&lt;/strong&gt; I will explain later why that number turned out to be useful.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Easily Switch Go Version with GVM</title>
-      <link>https://samaita.com/posts/easily-switch-go-version-with-gvm/</link>
+      <link>http://localhost:1313/posts/easily-switch-go-version-with-gvm/</link>
       <pubDate>Fri, 20 Dec 2024 22:00:00 +0700</pubDate>
-      <guid>https://samaita.com/posts/easily-switch-go-version-with-gvm/</guid>
+      <guid>http://localhost:1313/posts/easily-switch-go-version-with-gvm/</guid>
       <description>&lt;p&gt;There are various challenge in managing multiple golang microservice. One of them is develop the service with right golang version. I&amp;rsquo;ve work on a legacy service that set with go1.16. But the thing is I have go1.23.&lt;/p&gt;
 &lt;p&gt;Without using same version, it is painful just to start in local. I have to run &lt;code&gt;go mod vendor&lt;/code&gt;, met incompatibilities, &lt;code&gt;go get&lt;/code&gt;, &lt;code&gt;go mod vendor&lt;/code&gt;, broken there broken here.. Waste of time!&lt;/p&gt;</description>
     </item>
     <item>
       <title>Benchmark API Performance with WRK: A Brief Guide</title>
-      <link>https://samaita.com/posts/benchmark-api-performance-using-wrk-brief-guide/</link>
+      <link>http://localhost:1313/posts/benchmark-api-performance-using-wrk-brief-guide/</link>
       <pubDate>Thu, 25 Apr 2024 20:22:00 +0700</pubDate>
-      <guid>https://samaita.com/posts/benchmark-api-performance-using-wrk-brief-guide/</guid>
+      <guid>http://localhost:1313/posts/benchmark-api-performance-using-wrk-brief-guide/</guid>
       <description>&lt;p&gt;Fellas, imagine you&amp;rsquo;ve built a powerful API. It perform well at first. No sign of sluggish, your users is happy as the app feels smooth.&lt;/p&gt;
 &lt;p&gt;The business is thriving, your user base grows. Things start slowing down. Loading after click button take longer, and sometimes, the server crashes returning error. Looking at the server metric, it&amp;rsquo;s your API that doesn&amp;rsquo;t run as fast as your first deployment.&lt;/p&gt;
 &lt;p&gt;The problem, you notice that the API goes slow only during high concurrent requests. While at single request it does fine. Now, how will you replicate this condition?&lt;/p&gt;</description>
     </item>
     <item>
       <title>Resolve Port Already in Use</title>
-      <link>https://samaita.com/posts/resolve-port-already-in-use/</link>
+      <link>http://localhost:1313/posts/resolve-port-already-in-use/</link>
       <pubDate>Thu, 13 Apr 2023 05:49:16 +0700</pubDate>
-      <guid>https://samaita.com/posts/resolve-port-already-in-use/</guid>
+      <guid>http://localhost:1313/posts/resolve-port-already-in-use/</guid>
       <description>&lt;p&gt;Port conflict usually happen whenever a service try to run and listen to a specific port while another server currently utilizing it. For those who manage multiple service repository, this could be quite common.&lt;/p&gt;
 &lt;p&gt;The simplest way is to search and terminate the binary. But what if the binary stalled or we have no idea where did we ran it.&lt;/p&gt;
 &lt;p&gt;No worry, with a simple command, we can figure it out in less than a minute!&lt;/p&gt;</description>
     </item>
     <item>
       <title>Measure Code Performance With Code Benchmark in Go</title>
-      <link>https://samaita.com/posts/measure-code-performance-with-code-benchmark-in-go/</link>
+      <link>http://localhost:1313/posts/measure-code-performance-with-code-benchmark-in-go/</link>
       <pubDate>Fri, 06 Jan 2023 05:44:20 +0700</pubDate>
-      <guid>https://samaita.com/posts/measure-code-performance-with-code-benchmark-in-go/</guid>
+      <guid>http://localhost:1313/posts/measure-code-performance-with-code-benchmark-in-go/</guid>
       <description>&lt;p&gt;Golang provide a way to know our code efficiency by benchmark our code. By benchmarking our code, we able to see how fast our code can run and even gain more insight.&lt;/p&gt;
 &lt;p&gt;An efficient code displayed from the resource required to complete it execution. The faster it can run, the better. The lower resource required, the better.&lt;/p&gt;
 &lt;p&gt;This concept also applied for codes that run with serverless platform such as AWS Lambda or Google Cloud Function. You are charged based on the number of requests for your functions and the duration it takes to execute.&lt;/p&gt;</description>
     </item>
     <item>
       <title>How to Delete Multiple Local Git Branches</title>
-      <link>https://samaita.com/posts/how-to-delete-multiple-local-git-branches/</link>
+      <link>http://localhost:1313/posts/how-to-delete-multiple-local-git-branches/</link>
       <pubDate>Wed, 06 Apr 2022 05:33:50 +0700</pubDate>
-      <guid>https://samaita.com/posts/how-to-delete-multiple-local-git-branches/</guid>
+      <guid>http://localhost:1313/posts/how-to-delete-multiple-local-git-branches/</guid>
       <description>&lt;p&gt;For you, productive engineer, who dedicate a lot of time for a repo. Have you clean your git branch locally? Just like our home, a project&amp;rsquo;s local branch need decluttering too.&lt;/p&gt;
 &lt;p&gt;In my point of view, I&amp;rsquo;d rather see clear git branch locally to help me find any unmerged branch. Or simply pursue peace of mind.&lt;/p&gt;
 &lt;p&gt;Since Git doesn&amp;rsquo;t have a built in feature to delete multiple git branch in local project, deleting many branches in your local Git project might take you a while.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>About</title>
+      <link>http://localhost:1313/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/about/</guid>
+      <description>About Gary Samaita.</description>
     </item>
   </channel>
 </rss>

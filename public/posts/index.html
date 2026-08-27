@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="dark">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>Posts | Backend Dev Story</title>
+<title>Posts | Gary Samaita — Backend Engineer</title>
 <meta name="keywords" content="">
-<meta name="description" content="Posts - Backend Dev Story">
+<meta name="description" content="Posts - Gary Samaita — Backend Engineer">
 <meta name="author" content="Gary Samaita">
-<link rel="canonical" href="https://samaita.com/posts/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.a9e04c337ce9b559127ebd9f6038ca4c215e99c8820925d595071855e19218eb.css" integrity="sha256-qeBMM3zptVkSfr2fYDjKTCFemciCCSXVlQcYVeGSGOs=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://samaita.com/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://samaita.com/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://samaita.com/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://samaita.com/apple-touch-icon.png">
-<link rel="mask-icon" href="https://samaita.com/safari-pinned-tab.svg">
+<link rel="canonical" href="http://localhost:1313/posts/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.7c7c2654d214caba16c706d930039da064bf0d7a3b1841fb70ad1d4e7e5550d8.css" integrity="sha256-fHwmVNIUyroWxwbZMAOdoGS/DXo7GEH7cK0dTn5VUNg=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="https://samaita.com/posts/index.xml" title="rss">
-<link rel="alternate" hreflang="en" href="https://samaita.com/posts/">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/posts/index.xml" title="rss">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/">
 <noscript>
     <style>
         #theme-toggle,
@@ -34,8 +34,8 @@
         document.querySelector("html").dataset.theme = 'light';
     }
 
-</script><meta property="og:url" content="https://samaita.com/posts/">
-  <meta property="og:site_name" content="Backend Dev Story">
+</script><meta property="og:url" content="http://localhost:1313/posts/">
+  <meta property="og:site_name" content="Gary Samaita — Backend Engineer">
   <meta property="og:title" content="Posts">
   <meta property="og:description" content="Learning Series of Scaling Backend System">
   <meta property="og:locale" content="en_US">
@@ -57,7 +57,7 @@
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "https://samaita.com/posts/"
+      "item": "http://localhost:1313/posts/"
     }
   ]
 }
@@ -67,7 +67,7 @@
     <header class="header">
     <nav class="header-nav">
         <div class="logo">
-            <a href="https://samaita.com/" accesskey="h" title="Backend Dev Story (Alt + H)">Backend Dev Story</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Gary Samaita (Alt + H)">Gary Samaita</a>
             <div class="logo-switches">
                 <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
@@ -92,6 +92,32 @@
             </div>
         </div>
         <ul id="menu" class="menu">
+            <li>
+                <a href="http://localhost:1313/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/posts/" title="Writing">
+                    <span class="active">Writing</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/samaita" title="GitHub">
+                    <span>GitHub</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
         </ul>
     </nav>
 </header>
@@ -110,6 +136,26 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">Where Does Google Maps API Fit in Address Validation?
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>One question keeps coming up while I build Address Quality:
+Why not just use Google Maps API?
+If I have a messy address, Google Maps API can turn it into a structured result. It also knows roads, buildings, businesses, and landmarks that my administrative data doesn’t. It is the top of mind when we are trying to solve an address problem.
+Take this place name:
+Paskal Hyper Square
+On its own, that doesn’t tell me much about province, city, district, or subdistrict. Yet, Google can still make sense of it.
+...</p>
+  </div>
+  <footer class="entry-footer">
+
+<span title='2026-08-27 14:21:40 +0700 WIB'>August 27, 2026</span>&nbsp;·&nbsp;<span>7 min</span>&nbsp;·&nbsp;<span>Gary Samaita</span></footer>
+  <a class="entry-link" aria-label="post link to Where Does Google Maps API Fit in Address Validation?" href="http://localhost:1313/posts/where-google-maps-fit-in-address-validation/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">Why Are We Still Asked to Fill Our Address Twice?
     </h2>
   </header>
@@ -123,7 +169,7 @@ Complete and well structured. But then you have to select again:
   <footer class="entry-footer">
 
 <span title='2026-08-24 16:23:45 +0700 WIB'>August 24, 2026</span>&nbsp;·&nbsp;<span>5 min</span>&nbsp;·&nbsp;<span>Gary Samaita</span></footer>
-  <a class="entry-link" aria-label="post link to Why Are We Still Asked to Fill Our Address Twice?" href="https://samaita.com/posts/why-are-we-still-asked-to-fill-our-address-twice/"></a>
+  <a class="entry-link" aria-label="post link to Why Are We Still Asked to Fill Our Address Twice?" href="http://localhost:1313/posts/why-are-we-still-asked-to-fill-our-address-twice/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -139,7 +185,7 @@ This post covers the why and the how. It ends with the first benchmark: 49% accu
   <footer class="entry-footer">
 
 <span title='2026-08-13 18:00:00 +0700 WIB'>August 13, 2026</span>&nbsp;·&nbsp;<span>11 min</span>&nbsp;·&nbsp;<span>Gary Samaita</span></footer>
-  <a class="entry-link" aria-label="post link to Building an Indonesian Address Validation API: Starting With 49% Accuracy" href="https://samaita.com/posts/address-quality-building-indonesian-address-validation-api/"></a>
+  <a class="entry-link" aria-label="post link to Building an Indonesian Address Validation API: Starting With 49% Accuracy" href="http://localhost:1313/posts/address-quality-building-indonesian-address-validation-api/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -155,7 +201,7 @@ Without using same version, it is painful just to start in local. I have to run 
   <footer class="entry-footer">
 
 <span title='2024-12-20 22:00:00 +0700 WIB'>December 20, 2024</span>&nbsp;·&nbsp;<span>2 min</span>&nbsp;·&nbsp;<span>Gary Samaita</span></footer>
-  <a class="entry-link" aria-label="post link to Easily Switch Go Version with GVM" href="https://samaita.com/posts/easily-switch-go-version-with-gvm/"></a>
+  <a class="entry-link" aria-label="post link to Easily Switch Go Version with GVM" href="http://localhost:1313/posts/easily-switch-go-version-with-gvm/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -172,7 +218,7 @@ The problem, you notice that the API goes slow only during high concurrent reque
   <footer class="entry-footer">
 
 <span title='2024-04-25 20:22:00 +0700 WIB'>April 25, 2024</span>&nbsp;·&nbsp;<span>10 min</span>&nbsp;·&nbsp;<span>Gary Samaita</span></footer>
-  <a class="entry-link" aria-label="post link to Benchmark API Performance with WRK: A Brief Guide" href="https://samaita.com/posts/benchmark-api-performance-using-wrk-brief-guide/"></a>
+  <a class="entry-link" aria-label="post link to Benchmark API Performance with WRK: A Brief Guide" href="http://localhost:1313/posts/benchmark-api-performance-using-wrk-brief-guide/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -189,7 +235,7 @@ No worry, with a simple command, we can figure it out in less than a minute!
   <footer class="entry-footer">
 
 <span title='2023-04-13 05:49:16 +0700 WIB'>April 13, 2023</span>&nbsp;·&nbsp;<span>3 min</span>&nbsp;·&nbsp;<span>Gary Samaita</span></footer>
-  <a class="entry-link" aria-label="post link to Resolve Port Already in Use" href="https://samaita.com/posts/resolve-port-already-in-use/"></a>
+  <a class="entry-link" aria-label="post link to Resolve Port Already in Use" href="http://localhost:1313/posts/resolve-port-already-in-use/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -206,7 +252,7 @@ This concept also applied for codes that run with serverless platform such as AW
   <footer class="entry-footer">
 
 <span title='2023-01-06 05:44:20 +0700 WIB'>January 6, 2023</span>&nbsp;·&nbsp;<span>7 min</span>&nbsp;·&nbsp;<span>Gary Samaita</span></footer>
-  <a class="entry-link" aria-label="post link to Measure Code Performance With Code Benchmark in Go" href="https://samaita.com/posts/measure-code-performance-with-code-benchmark-in-go/"></a>
+  <a class="entry-link" aria-label="post link to Measure Code Performance With Code Benchmark in Go" href="http://localhost:1313/posts/measure-code-performance-with-code-benchmark-in-go/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -223,12 +269,12 @@ Since Git doesn’t have a built in feature to delete multiple git branch in loc
   <footer class="entry-footer">
 
 <span title='2022-04-06 05:33:50 +0700 WIB'>April 6, 2022</span>&nbsp;·&nbsp;<span>2 min</span>&nbsp;·&nbsp;<span>Gary Samaita</span></footer>
-  <a class="entry-link" aria-label="post link to How to Delete Multiple Local Git Branches" href="https://samaita.com/posts/how-to-delete-multiple-local-git-branches/"></a>
+  <a class="entry-link" aria-label="post link to How to Delete Multiple Local Git Branches" href="http://localhost:1313/posts/how-to-delete-multiple-local-git-branches/"></a>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="https://samaita.com/">Backend Dev Story</a></span> · 
+        <span>&copy; 2026 <a href="http://localhost:1313/">Gary Samaita — Backend Engineer</a></span> · 
 
     
     
