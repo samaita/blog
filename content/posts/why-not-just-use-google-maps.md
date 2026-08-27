@@ -8,13 +8,13 @@ series = ['Address Quality']
 part = 3
 +++
 
-One question keeps coming up while I build Address Quality:
+One question keeps coming up while I build [Address Quality](https://samaita.com/projects/address-quality/):
 
 Why not just use Google Maps?
 
 It is a fair question.
 
-If I have a messy address, Google can often turn it into a structured place. It also knows things my administrative data does not know. Roads. Buildings. Businesses. Landmarks. The things people actually type when they write addresses.
+If I have a messy address, Google can often turn it into a structured result. It also knows roads, buildings, businesses, and landmarks that my administrative data does not.
 
 Take this place name:
 
@@ -28,7 +28,7 @@ So I stopped treating the question as a distraction. I put Google into the bench
 
 ## I started with Google as a baseline
 
-Before I tested my own resolver, I wanted a baseline that people would trust.
+Before I tested my own resolver, I wanted a useful baseline.
 
 So I took 106 addresses from the evaluation set and resolved them with Google Maps. Then I compared the result against four administrative levels in the expected address:
 
@@ -39,9 +39,9 @@ So I took 106 addresses from the evaluation set and resolved them with Google Ma
 
 Google found a result for 104 of the 106 addresses.
 
-That part was expected.
+That part did not surprise me.
 
-What changed my view was what happened after that.
+What surprised me was what happened next.
 
 Only 85 addresses matched all four expected administrative levels. That left 21 addresses where at least one level disagreed.
 
@@ -121,13 +121,13 @@ I was looking at two Google surfaces giving different administrative information
 
 [IMAGE PLACEHOLDER. Side-by-side screenshot showing the Google Maps result for LLRE Martadinata No.97 and the Geocoding API v4 response. Highlight Citarum/40115 versus Cihapit/40113.]
 
-The important part is not which one wins.
+I am not sure which one is right.
 
-It is that both results look reasonable.
+That is the point. Both results look reasonable.
 
 ## A successful geocode is not the same as a validated address
 
-That is where I think the difference matters.
+That is where the difference matters.
 
 A geocoder is trying to answer a simple question:
 
@@ -307,9 +307,7 @@ Google is good at places, roads, businesses, and landmarks.
 
 My local resolver is better at checking whether an address already contains consistent administrative evidence.
 
-One knows the broader world.
-
-The other knows the rules I need to test.
+Google gives me broader place knowledge. The local resolver gives me evidence I can inspect and test.
 
 That is why the real question is not whether Google can help.
 
