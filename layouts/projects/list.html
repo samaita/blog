@@ -5,7 +5,7 @@
   {{- with .Description }}<p>{{ . }}</p>{{ end }}
 </header>
 <div class="project-grid project-grid--index">
-  {{- range sort hugo.Data.projects "weight" "asc" }}
+  {{- range sort site.Data.projects "weight" "asc" }}
     {{ partial "project-card.html" (dict "project" .) }}
   {{- end }}
 </div>
