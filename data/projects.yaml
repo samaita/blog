@@ -1,0 +1,17 @@
+- title: Address Quality
+  description: An API that validates Indonesian addresses.
+  status: Public Alpha
+  technologies:
+    - Go
+    - SQLite
+    - React
+    - TypeScript
+  metric: 49% accuracy on the first 106-address test set
+  url: /projects/address-quality/
+  featured: true
+  weight: 10
+  related:
+    - title: "Building an Indonesian Address Validation API: Starting With 49% Accuracy"
+      url: /posts/address-quality-building-indonesian-address-validation-api/
+    - title: Why Are We Still Asked to Fill Our Address Twice?
+      url: /posts/why-are-we-still-asked-to-fill-our-address-twice/
