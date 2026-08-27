@@ -25,6 +25,9 @@ You already gave the address in the form. So why do you have to enter it again i
 
 ![Cannot continue unless selected](https://samaita.com/projects/address-quality/images/checkout-usecase-destination-need-to-be-filled.png)
 
+--- 
+
+*One of the trick is to select from dropdown first before fill full address.*
 
 ## My Guess? People and Software Have Their Own Way
 
