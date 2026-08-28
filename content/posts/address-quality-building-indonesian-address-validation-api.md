@@ -2,6 +2,7 @@
 title = 'Building an Indonesian Address Validation API: Starting With 49% Accuracy'
 date = 2026-08-13T18:00:00+07:00
 draft = false
+tags = ['Address-Quality']
 +++
 
 This is the first post in a series about building [Address Quality](https://samaita.com/projects/address-quality/), an API that validates Indonesian addresses. I want to document it honestly: the failures, the measurements, and the changes in thinking. It is not a "nailed it" story yet, because the work is just getting started.
