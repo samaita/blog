@@ -39,6 +39,12 @@ The first version uses a simple idea:
 
 That difference between a possibility and a credible location is where most of the algorithm lives.
 
+At first, exact matching sounds simple. Split the address by spaces, then compare every word with the known administrative names.
+
+That works for a one-word name such as `Citarum`. It becomes a problem with `Bandung Wetan`. If I split it, `Bandung` matches many places while `Wetan` does not identify the district on its own. The split removes the meaning carried by the two words together.
+
+So exact matching should not mean matching only one word at a time. It should also keep checking whether adjacent words form a longer known place name.
+
 ## Find the longest known place name
 
 The engine first looks for administrative names it recognizes in the address.
