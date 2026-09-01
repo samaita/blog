@@ -56,6 +56,8 @@ That means `Citarum`, `Bandung Wetan`, `Kota Bandung`, `Jawa Barat`, and `40115`
 
 `LLRE Martadinata` cannot help yet because road names cannot be found in the Kemendagri data.
 
+![Extracting Evidence From a Single Address](https://samaita.com/projects/address-quality/images/address-quality-extract-evidence.png)
+
 ## Why Matching Individual Words isn't Enough
 
 Before matching begins, the engine normalizes the address. It standardizes the text and removes administrative prefixes such as `kota` and `kecamatan`.
