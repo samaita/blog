@@ -14,14 +14,14 @@ My proposed solution was to move that effort into an API. You provide the addres
 
 So I built [Address Quality](https://samaita.com/projects/address-quality/), an experiment for turning free-text Indonesian addresses into structured administrative data.
 
+![Address Quality landing page](https://samaita.com/projects/address-quality/images/landing-page.png)
+
 The first alpha version tries to answer two questions:
 
 1. Which parts of the address can it recognize?
 2. Which possible location matches those parts best?
 
 That sounds simple. But something that sounds simple isn't always easy to solve.
-
-![Address Quality landing page](https://samaita.com/projects/address-quality/images/landing-page.png)
 
 ## How Humans and Computers Read Addresses Differently
 
@@ -79,11 +79,11 @@ After this step, the engine has a collection of recognized phrases and the admin
 
 ## One Phrase Can Point to Several Locations
 
-Finding a name isn't the same as knowing which place the writer meant.
+Each recognized evidence helps the engine understand the address. But recognizing a name doesn't mean we already know which place the address writer meant.
 
-Each recognized phrase may point to one or more administrative entities. The engine compares their hierarchies and groups compatible matches into unique candidates.
+One evidence may match one or more administrative entities. For each match, the engine follows its administrative hierarchy and adds that hierarchy as a **candidate**.
 
-`Citarum`, `Bandung Wetan`, `Kota Bandung`, and `Jawa Barat` belong to the same administrative chain. Together, they form one candidate:
+For example, Citarum, Bandung Wetan, Kota Bandung, and Jawa Barat all point to the same administrative chain:
 
 ```text
 Jawa Barat
@@ -96,7 +96,7 @@ Different evidence may discover the same hierarchy more than once. The engine re
 
 `Bandung` behaves differently. The name exists at several administrative levels and under different hierarchies. In the current reference data, that single phrase produces 19 unique candidates.
 
-Some examples are can be seen here:
+Some examples can be seen here:
 
 ![Bandung at every level of the hierarchy](https://samaita.com/projects/address-quality/images/address-quality-find-bandung-every-level-hierarchy.png)
 
