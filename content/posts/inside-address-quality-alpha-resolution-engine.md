@@ -1,111 +1,106 @@
 +++
-title = 'Finding the Name Is Not Enough'
+title = 'How I Built Address Quality API to Read Indonesian Addresses'
 date = 2026-08-31T18:15:20+07:00
 draft = true
 tags = ['address-quality', 'engineering', 'indonesia']
-description = 'How Address Quality turns place names into possible locations, then uses the administrative hierarchy to decide which possibility makes sense.'
+description = 'I built Address Quality API to find possible locations in an Indonesian address, then rank them by how well they match the available evidence.'
 series = ['Address Quality']
 part = 4
 +++
 
-## Start with one complete address
+In the previous post, I asked [why address forms still make you select information you have already typed](https://samaita.com/posts/why-are-we-still-asked-to-fill-our-address-twice/).
+
+My proposed solution was to put the effort to an API. You provide the address, the API interprets it, then you confirm the result.
+
+So I built [Address Quality](https://samaita.com/projects/address-quality/), an experiment for turning free-text Indonesian addresses into structured administrative data.
+
+The first alpha version tries to answer two questions:
+
+1. Which parts of the address can it recognize?
+2. Which possible location matches those parts best?
+
+That sounds simple. But something simple doesn't always easy to solve.
+
+![Address Quality landing page](https://samaita.com/projects/address-quality/images/landing-page.png)
+
+
+## The Different Way of Human and Computer In Understanding Address
 
 Take this address:
 
 ```text
 JL. LLRE MARTADINATA ST NO.97, CITARUM, Kec. BANDUNG WETAN,
-BANDUNG CITY, WEST JAVA 40115
+KOTA BANDUNG, JAWA BARAT 40115
 ```
 
-A person familiar with Bandung can probably read it without much effort. It points to:
+It contains almost everything we need:
 
 ```text
-West Java
--> Bandung City
--> Bandung Wetan
--> Citarum
--> 40115
+- Jawa Barat :check:
+- Kota Bandung :check:
+- Bandung Wetan :check:
+- Citarum :check:
+- 40115 as Postal Code :check:
 ```
 
-Software does not get that understanding for free.
+A person familiar with Indonesia's address can read it without much effort.
+However, software need more efforts. Which words trully matter? Does each words related to each other? 
 
-It sees a line of words. Some describe a road. Some describe administrative areas. Some may be names that exist in several parts of Indonesia. The postal code helps, but it should not be the only thing holding the result together.
+I call a phrase **evidence** when the engine can recognize it and find it in the reference data. Evidence doesn't always help. A common name may point to many places. But at least the engine knows that the phrase exists and what it may refer to.
 
-This is the basic problem behind [Address Quality](https://samaita.com/projects/address-quality/). How can the software turn those words into one administrative location without pretending that every name match is already an answer?
+The alpha version uses Kemendagri administrative data as its reference. It knows provinces, cities, districts, subdistricts, and their postal codes. It doesn't know roads yet.
 
-The first version uses a simple idea:
+That means `Citarum`, `Bandung Wetan`, `Kota Bandung`, `Jawa Barat`, and `40115` may help resolve the address actual location. `LLRE Martadinata` cannot help, because road names can't be found in Kemendagri administrative data.
 
-> A word match creates a possibility. A matching hierarchy makes it credible.
+## Exact Matching vs Longest Phrase Matching
 
-That difference between a possibility and a credible location is where most of the algorithm lives.
+Before any algorithm run, it is only make sense to do Normalization. During normalization, administrative prefixes such as `kota` and `kecamatan` are removed. The remaining place name is then matched against the reference data. It might work as clue, but I want to test wether without those prefix, the API can fulfill it purpose.
 
-At first, exact matching sounds simple. Split the address by spaces, then compare every word with the known administrative names.
+Then a basic matcher could split the address by spaces and search for every word.
 
-That works for a one-word name such as `Citarum`. It becomes a problem with `Bandung Wetan`. If I split it, `Bandung` matches many places while `Wetan` does not identify the district on its own. The split removes the meaning carried by the two words together.
+That would work for `Citarum`, simple exact match would match to data reference. It wouldn't work well for `Bandung Wetan`.
 
-So exact matching should not mean matching only one word at a time. It should also keep checking whether adjacent words form a longer known place name.
-
-## Find the longest known place name
-
-The engine first looks for administrative names it recognizes in the address.
-
-In this example, `Citarum` is a known subdistrict. `Bandung Wetan` is a known district. `Bandung` is also a known administrative name. The postal code `40115` is another clue.
-
-I call a recognized clue **evidence**. Evidence is a phrase from the input that may refer to one or more administrative entities. It is not the final answer.
-
-The phrase part matters.
-
-`Bandung Wetan` is one district name. The matcher searches for the longest known phrase starting at each point in the address, so it recognizes `Bandung Wetan` before considering the shorter `Bandung` at that same position.
-
-If I split it into two independent clues, I would manufacture evidence that the person did not provide:
+Splitting the phrase by space gives us:
 
 ```text
-Wrong idea:
-"Bandung Wetan" -> "Bandung" + "Wetan"
+Bandung
+Wetan
 ```
 
-Now `Bandung` could appear to support every city, district, or subdistrict with that name. The software would have created ambiguity by breaking a valid place name apart.
+`Bandung` exists at several administrative levels and in several locations. `Wetan` doesn't identify the district on its own.
+The original phrase was clear. Splitting it created a weaker clue.
 
-Preserving the longest phrase does not mean every phrase has only one meaning. The same normalized name can still exist at different administrative levels or in different regions. It only means the engine should not weaken a known phrase before it starts resolving what that phrase could mean.
+So the engine checks whether nearby words form a longer name found in the reference data. When it finds `Bandung Wetan`, it keeps the full phrase instead of also taking `Bandung` from the same position.
 
-## Turn evidence into candidates
+This is **longest-phrase matching**. The idea is simpler than the name: if several words form one known place name, keep them together.
 
-Finding `Citarum` in the reference data tells the engine that Citarum is possible. It still needs to ask: which Citarum, and where does it belong?
+After this step, the engine has recognized phrases and every administrative entity they may refer to. Bandung for example, it would list all location that related to Bandung as City, District, and Subdistrict. The algorithm has not chosen a specific location.
 
-Each matched administrative entity becomes a starting point. The engine then restores the parent hierarchy available from that point.
+## One phrase can point to several locations
 
-For the Citarum in this address, the reference hierarchy gives:
+Finding a name isn't the same as knowing which place the writer meant.
 
-```text
-Citarum
--> Bandung Wetan
--> Kota Bandung
--> Jawa Barat
--> 40115
-```
+Suppose `Citarum` matches more than one entity in the reference data. Each match belongs to its own district, city, and province. Choosing the first database row would only hide that ambiguity.
 
-That restored path is a **candidate**: a possible administrative location that could explain the evidence.
+Instead, every unique administrative entity can start a **candidate**.
 
-The engine does not literally begin at province and search downward. Matches are discovered independently. A province match can start one candidate. A city match can start another. A district or subdistrict match can start another.
+A candidate is one possible interpretation of the address. It may contain only the level where it was found:
 
-The hierarchy is filled upward from each matched entity where the parent relationship is known. A subdistrict can restore its district, city, and province. A district can restore its city and province, but it cannot invent a subdistrict below it.
+Citarum only found as subdistrict, so Citarum generate only one candidate to calculate. Another example is Bandung. It generate a lot of candidates. Bandung is listed as city, district, and subdistrict.
 
-This distinction helps:
+![Bandung's At Every Level of Hierarchy](https://samaita.com/projects/address-quality/images/address-quality-find-bandung-every-level-hierarchy.png)
 
-| Term | Meaning |
-|---|---|
-| Evidence | A recognized phrase or postal code from the input that may point to one or more entities |
-| Candidate | The administrative path the engine can build from one of those matched entities |
+The engine builds one candidate for each unique province, city, district, or subdistrict entity it finds. The same phrase can therefore create several candidates when it matches several entities.
 
-Several pieces of evidence can support the same candidate. `Citarum`, `Bandung Wetan`, `Bandung`, and `40115` can all point toward the same Bandung hierarchy.
+Postal code works a little differently. It can resolve matching subdistricts and later support a candidate, but it doesn't start a normal candidate in this part of the pipeline.
 
-Ambiguous names can do the opposite. One phrase may refer to entities in different hierarchies, producing several candidates. The engine keeps those possibilities instead of choosing the first database row it finds.
+## Which candidate explains the address best?
 
-## Let the hierarchy choose the winner
+Now the engine compares every candidate with all available evidence.
 
-Once the candidates exist, the engine asks how much of the address each one explains.
+![High Confidence Example](https://samaita.com/projects/address-quality/images/address-quality-confidence-high-example.png)
 
-The expected candidate has a useful advantage. Its pieces agree:
+For the expected candidate, the pieces agree:
 
 ```text
 Citarum belongs to Bandung Wetan
@@ -114,30 +109,64 @@ Kota Bandung belongs to Jawa Barat
 40115 supports Citarum
 ```
 
-The candidate is not credible only because `Citarum` appeared in the input. It is credible because the other recognized evidence supports the same hierarchy.
+A different candidate may also match `Citarum` or `Bandung`. That makes it possible, but it doesn't make it equally strong. If it cannot explain the district, city, province, or postal code, its compatibility with the whole address is lower.
 
-Another candidate might match one name from the address. That makes it possible, but not equally convincing. If it cannot explain Bandung Wetan, the city, or the postal code, it should rank below the candidate that connects those clues.
+The confidence score combines several signals:
 
-The engine checks that city and province agree, district and city agree, and subdistrict and district agree. It also checks which evidence belongs to each candidate and whether the postal code supports the resolved subdistrict.
+- whether the engine found an exact match
+- whether the hierarchy is valid
+- which administrative levels match the evidence
+- whether the postal code supports the candidate
+- whether several pieces of evidence support the same entity
 
-It then ranks the candidates by their support. If confidence is tied, the engine prefers the candidate with more of the administrative path filled, then the one with fewer conflicts.
+The candidate with the highest confidence ranks first. If two candidates have the same score, the engine prefers the one with more administrative levels filled, then the one with fewer conflicts.
 
-I do not want to present this as a perfect measure of truth. A hierarchy can be internally valid and still be the wrong interpretation of a messy address. But checking agreement across several levels is stronger than trusting one matching word.
+If the top two valid candidates are less than `0.1` apart, the alpha marks the result as ambiguous instead of hiding the close result.
 
-That is the base resolution logic in one sentence:
+The score isn't proof that a location is correct. It answers a narrower question:
 
-> Find the possible places first. Trust the one that explains the address as one consistent hierarchy.
+> Which candidate is most compatible with all the evidence it can recognize?
 
-## Real addresses do not always give enough evidence
+That is stronger than trusting the first name match, but it still depends on the evidence available.
 
-The example above is generous. It includes a subdistrict, district, city, province, and postal code. Most real addresses are less cooperative.
+## What if the useful evidence is missing?
 
-Someone may write only a road and city. A place name may be misspelled. An old postal code may disagree with current reference data. The same name may exist at several levels, and the remaining text may not be enough to separate them.
+Now consider this address:
 
-Longest-phrase matching cannot fix a spelling it does not recognize. Hierarchy checks cannot recover evidence that was never written. A candidate may still look reasonable while leaving part of the address unexplained.
+```text
+JL. GATOT SUBROTO NO.86 BANDUNG
+```
 
-So the first version is not trying to make uncertainty disappear. It is trying to keep a name match in its proper place.
+A person may assume it points to Kota Bandung. The alpha version cannot safely make that assumption.
 
-A match is a possibility. The hierarchy tells us whether the rest of the address supports it.
+`Gatot Subroto` is a road name. Since the Kemendagri data doesn't contain roads, the alpha cannot resolve it to a location. The only recognized administrative evidence is `Bandung`.
 
-That is more useful than treating the first familiar word as the answer, but it still leaves the hardest question for later: what should the engine do when the address does not provide enough evidence to choose safely?
+That evidence is valid, but not very helpful. `Bandung` can refer to several entities and produce several candidates. There is no recognized district, subdistrict, province, or postal code to make one of them clearly more compatible than the others.
+
+![Bandung is Everywhere](https://samaita.com/projects/address-quality/images/address-quality-find-bandung-every-level-hierarchy.png)
+
+The engine can still rank the candidates. But scoring the same weak evidence more carefully cannot create information that the address and reference data don't provide. However, it still return result with low confidence with it own reason.
+
+That is where the current alpha version stops.
+
+[Address Quality](https://samaita.com/projects/address-quality/) can keep `Bandung Wetan` together, build possible locations, remove duplicates, and rank them against the evidence. It still cannot use a road name to solve an address that only says `Bandung`.
+
+![Low Confidence Example](https://samaita.com/projects/address-quality/images/address-quality-confidence-low-example.png)
+
+## What's next?
+
+Having a working API for a few addresses doesn't mean it is useful yet.
+
+Two clean examples can make the logic look better than it is. Real addresses aren't that simple. People skip districts, mix old and new names, write road names as landmarks, mistype subdistricts, or include postal codes that don't match with the rest of the address.
+
+So the next question is:
+
+> How accurate does it choose the right hierarchy across many messy addresses?
+
+The alpha version is already useful as a starting point. It can find evidence, build candidates, remove duplicates, and rank the most compatible hierarchy. I need to test it against more addresses, find where it fails, and separate three things:
+
+- cases the engine resolves correctly
+- cases the engine should mark as uncertain
+- cases where the benchmark or expected answer is wrong
+
+That is where the next part begins: measuring the engine against real data, not just trusting the examples that make it look good.
