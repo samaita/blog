@@ -1,7 +1,7 @@
 +++
 title = 'How I Built Address Quality API to Read Indonesian Addresses'
 date = 2026-08-31T18:15:20+07:00
-draft = true
+draft = false
 tags = ['address-quality', 'engineering', 'indonesia']
 description = 'I built Address Quality API to find possible locations in an Indonesian address, then rank them by how well they match the available evidence.'
 series = ['Address Quality']
