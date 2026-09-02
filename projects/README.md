@@ -98,6 +98,10 @@ Open:
 http://localhost:1313/projects/my-project/
 ```
 
+If you are testing through Cloudflare Pages preview or a temporary Cloudflare Tunnel, set `HUGO_BASEURL` to the public URL first so absolute links do not point at `localhost`.
+
+For a temporary tunnel run, use `scripts/cloudflare-preview.sh`; it discovers the tunnel URL, rebuilds the site with that URL as the base, and serves the result through the tunnel.
+
 ---
 
 ## Deployment
