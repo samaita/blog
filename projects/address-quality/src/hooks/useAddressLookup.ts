@@ -4,7 +4,8 @@ import { matchAdmin, type AdminSelection } from "@/services/adminDb"
 import type { AddressResponse } from "@/types/api"
 
 const DEBOUNCE_MS = 800
-const CONFIDENCE_THRESHOLD = 0.8
+/** Minimum API confidence for the suggestion to be auto-applied. */
+export const CONFIDENCE_THRESHOLD = 0.8
 /** Below this length (trimmed), an address is not worth a lookup. */
 const MIN_ADDRESS_LENGTH = 8
 

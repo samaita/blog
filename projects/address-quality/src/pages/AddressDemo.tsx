@@ -4,7 +4,8 @@ import Container from "@/components/layout/Container"
 import { Button } from "@cloudflare/kumo/components/button"
 import { SparklesIcon } from "@/components/icons"
 import AdminComboBox from "@/components/address/AdminComboBox"
-import useAddressLookup from "@/hooks/useAddressLookup"
+import useAddressLookup, { CONFIDENCE_THRESHOLD } from "@/hooks/useAddressLookup"
+import { normalizeAdminName } from "@/services/adminDb"
 import { EXAMPLE_ADDRESSES } from "@/data/mock"
 
 const countries = ["Indonesia", "Malaysia"] as const
@@ -60,8 +61,32 @@ export default function AddressDemo() {
     return undefined
   }, [showErrors, errors.kota, status, manualReason])
 
+  const isLoading = status === "loading"
+
   const payload = useMemo(() => {
     if (!submitted || !selection) return null
+
+    /**
+     * address_suggestion — did the committed selection come from Address Quality?
+     * USED             : selection matches the API suggestion (confidence ≥ 0.8)
+     * UNUSED           : user picked a different city/district via the dropdown
+     * BELOW_THRESHOLD  : API confidence below threshold (or lookup failed/no result)
+     */
+    const { confidence, location } = result?.data ?? {}
+    const suggested =
+      result != null &&
+      (confidence ?? 0) >= CONFIDENCE_THRESHOLD &&
+      Boolean(location?.city?.trim()) &&
+      Boolean(location?.district?.trim())
+
+    let addressSuggestion: "USED" | "UNUSED" | "BELOW_THRESHOLD" = "BELOW_THRESHOLD"
+    if (suggested && location) {
+      const sameCity = normalizeAdminName(location.city) === normalizeAdminName(selection.city.displayName)
+      const sameDistrict =
+        normalizeAdminName(location.district) === normalizeAdminName(selection.district.name)
+      addressSuggestion = sameCity && sameDistrict ? "USED" : "UNUSED"
+    }
+
     return {
       recipient_name: form.name.trim(),
       recipient_phone: form.phone.trim(),
@@ -69,6 +94,7 @@ export default function AddressDemo() {
       country,
       city: selection.city.displayName,
       district: selection.district.name,
+      address_suggestion: addressSuggestion,
       address_quality: result
         ? {
             confidence: result.data.confidence,
@@ -206,7 +232,7 @@ export default function AddressDemo() {
                 }}
                 aria-invalid={showErrors && errors.address ? true : undefined}
                 aria-describedby={
-                  status === "loading"
+                  isLoading
                     ? "detail-address-status"
                     : showErrors && errors.address
                       ? "detail-address-error"
@@ -224,7 +250,7 @@ export default function AddressDemo() {
                   {errors.address}
                 </p>
               )}
-              {status === "loading" && (
+              {isLoading && (
                 <p id="detail-address-status" aria-live="polite" className="mt-1 text-sm text-surface-500">
                   Checking address...
                 </p>
@@ -241,7 +267,7 @@ export default function AddressDemo() {
                   onSelect={onManualSelect}
                   helperText={kotaHelper}
                   invalid={showErrors && !!errors.kota}
-                  disabled={status === "loading"}
+                  disabled={isLoading}
                   badge={
                     status === "auto-filled" ? (
                       <span className="inline-flex items-center gap-1 rounded-full border border-accent-200 bg-accent-50 px-2 py-0.5 text-xs font-medium text-accent-700">
@@ -260,7 +286,7 @@ export default function AddressDemo() {
                 demo only.
               </p>
               <div className="shrink-0">
-                <Button type="submit" variant="primary" size="lg">
+                <Button type="submit" variant="primary" size="lg" disabled={isLoading}>
                   Save
                 </Button>
               </div>
