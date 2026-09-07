@@ -142,7 +142,9 @@ export function getAdminDb(): Promise<PGlite> {
 
 /**
  * Search cities and districts by free text. Returns up to `limit` results,
- * districts rendered as "Kota Bandung, Sumur Bandung".
+ * districts rendered as "Kota Bandung, Sumur Bandung". An empty query returns
+ * a default browse list (major cities first) so the combobox can open a
+ * dropdown before the user types.
  */
 export async function searchAdmin(
   query: string,
@@ -150,7 +152,6 @@ export async function searchAdmin(
 ): Promise<Array<AdminSelection & { label: string }>> {
   const db = await getAdminDb()
   const q = normalizeSearchTerm(query)
-  if (!q) return []
 
   const districtRes = await db.query<{
     d_code: string
@@ -161,7 +162,8 @@ export async function searchAdmin(
     c_display: string
     province: string
   }>(
-    `SELECT d.code AS d_code, d.name AS d_name, d.name_norm AS d_norm,
+    q
+      ? `SELECT d.code AS d_code, d.name AS d_name, d.name_norm AS d_norm,
             c.code AS c_code, c.kind AS c_kind, c.name AS c_name,
             c.display_name AS c_display, c.province AS province
      FROM districts d
@@ -169,8 +171,24 @@ export async function searchAdmin(
      WHERE d.name_norm LIKE $1
         OR c.bare_norm LIKE $1
      ORDER BY (d.name_norm LIKE $1) DESC, d.name ASC
-     LIMIT $2`,
-    [`%${q}%`, limit],
+     LIMIT $2`
+      : `SELECT d.code AS d_code, d.name AS d_name, d.name_norm AS d_norm,
+            c.code AS c_code, c.kind AS c_kind, c.name AS c_name,
+            c.display_name AS c_display, c.province AS province
+     FROM districts d
+     JOIN cities c ON c.code = d.city_code
+     ORDER BY CASE c.code
+       WHEN '31.71' THEN 1  WHEN '31.72' THEN 2  WHEN '31.73' THEN 3
+       WHEN '31.74' THEN 4  WHEN '31.75' THEN 5  WHEN '32.73' THEN 6
+       WHEN '32.71' THEN 7  WHEN '35.78' THEN 8  WHEN '34.71' THEN 9
+       WHEN '33.74' THEN 10 WHEN '12.71' THEN 11 WHEN '73.71' THEN 12
+       WHEN '51.71' THEN 13 WHEN '32.76' THEN 14 WHEN '32.75' THEN 15
+       WHEN '36.71' THEN 16 WHEN '33.73' THEN 17 WHEN '35.71' THEN 18
+       WHEN '62.71' THEN 19 WHEN '16.71' THEN 20
+       ELSE 999 END,
+       c.code, d.code
+     LIMIT $1`,
+    q ? [`%${q}%`, limit] : [limit],
   )
 
   const out: Array<AdminSelection & { label: string }> = districtRes.rows.map((r) => ({

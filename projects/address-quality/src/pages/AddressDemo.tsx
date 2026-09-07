@@ -3,8 +3,9 @@ import { Link } from "react-router-dom"
 import Container from "@/components/layout/Container"
 import { Button } from "@cloudflare/kumo/components/button"
 import { SparklesIcon } from "@/components/icons"
-import AdminComboBox from "@/components/shipping/AdminComboBox"
-import useShippingLookup from "@/hooks/useShippingLookup"
+import AdminComboBox from "@/components/address/AdminComboBox"
+import useAddressLookup from "@/hooks/useAddressLookup"
+import { EXAMPLE_ADDRESSES } from "@/data/mock"
 
 const countries = ["Indonesia", "Malaysia"] as const
 type Country = (typeof countries)[number]
@@ -16,29 +17,37 @@ const initialForm = {
 }
 
 const helperCopy: Record<string, string> = {
-  "low-confidence": "Pilih kota dan kecamatan.",
+  "low-confidence": "Pick a city and district.",
   "no-match":
-    "Kami menemukan kemungkinan lokasi, tetapi belum dapat mencocokkannya dengan data wilayah. Silakan pilih kota dan kecamatan.",
-  "api-error": "Alamat tidak dapat diperiksa saat ini. Silakan pilih kota dan kecamatan.",
+    "We found a possible location, but could not match it to regional data. Please pick a city and district.",
+  "api-error": "The address could not be checked right now. Please pick a city and district.",
 }
 
-export default function ShippingDemo() {
+/** Three sample addresses reused from the Playground page. */
+const EXAMPLE_SELECTIONS = EXAMPLE_ADDRESSES.slice(0, 3)
+
+const EXAMPLE_RECIPIENT = {
+  name: "Gary",
+  phone: "6280989999",
+}
+
+export default function AddressDemo() {
   const [form, setForm] = useState(initialForm)
   const [country] = useState<Country>("Indonesia")
   const [submitted, setSubmitted] = useState(false)
   const [showErrors, setShowErrors] = useState(false)
 
   const { status, result, selection, manualReason, onAddressChange, onManualSelect, resetManualOverride } =
-    useShippingLookup()
+    useAddressLookup()
 
   const revealAdminFields = status !== "idle"
 
   const errors = useMemo(() => {
     const errs: { name?: string; phone?: string; address?: string; kota?: string } = {}
-    if (form.name.trim() === "") errs.name = "Nama Penerima wajib diisi."
-    if (form.phone.trim() === "") errs.phone = "Nomor HP Penerima wajib diisi."
-    if (form.address.trim() === "") errs.address = "Detail Alamat wajib diisi."
-    if (revealAdminFields && !selection) errs.kota = "Pilih kota dan kecamatan."
+    if (form.name.trim() === "") errs.name = "Recipient name is required."
+    if (form.phone.trim() === "") errs.phone = "Recipient phone is required."
+    if (form.address.trim() === "") errs.address = "Address details are required."
+    if (revealAdminFields && !selection) errs.kota = "Pick a city and district."
     return errs
   }, [form, revealAdminFields, selection])
 
@@ -46,7 +55,7 @@ export default function ShippingDemo() {
 
   const kotaHelper = useMemo(() => {
     if (showErrors && errors.kota) return errors.kota
-    if (status === "auto-filled") return "Periksa kembali apakah lokasi ini sudah benar."
+    if (status === "auto-filled") return "Double-check this location is correct."
     if (manualReason) return helperCopy[manualReason]
     return undefined
   }, [showErrors, errors.kota, status, manualReason])
@@ -70,23 +79,34 @@ export default function ShippingDemo() {
     }
   }, [submitted, selection, form, country, result, status])
 
+  /** Fill the form from an example: recipient + address, then re-run lookup. */
+  const applyExample = (address: string) => {
+    setForm({ ...EXAMPLE_RECIPIENT, address })
+    setSubmitted(false)
+    setShowErrors(false)
+    resetManualOverride()
+    onAddressChange(address)
+  }
+
   return (
     <Container className="pb-24">
       <div className="py-12 lg:py-16">
         <p className="text-sm font-semibold uppercase tracking-wider text-accent-600">Demo</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight text-surface-900 sm:text-4xl">
-          Shipping Address Demo
+          Address Demo
         </h1>
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-surface-500">
-          Pelanggan sering mengetik alamat lengkap, lalu diminta memilih lokasi yang sama
-          lagi. Demo ini menggunakan Address Quality untuk mengambil{" "}
-          <span className="text-surface-900">Kota/Kabupaten</span> dan{" "}
-          <span className="text-surface-900">Kecamatan</span> langsung dari teks alamat —
-          pengguna cukup memverifikasi hasilnya.
+          Customers often type a full address and are then asked to pick the very same
+          location again. This demo uses Address Quality to pull the{" "}
+          <span className="text-surface-900">City/Regency</span> and{" "}
+          <span className="text-surface-900">District</span> straight from the address
+          text — the user only needs to verify the result.
         </p>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
+        {/* form column: form + result payload */}
+        <div className="flex min-w-0 flex-col gap-8">
         {/* form card */}
         <form
           noValidate
@@ -104,7 +124,7 @@ export default function ShippingDemo() {
                 htmlFor="recipient-name"
                 className="block text-sm font-medium text-surface-900"
               >
-                Nama Penerima
+                Recipient Name
               </label>
               <input
                 id="recipient-name"
@@ -117,7 +137,7 @@ export default function ShippingDemo() {
                 }}
                 aria-invalid={showErrors && errors.name ? true : undefined}
                 aria-describedby={showErrors && errors.name ? "name-error" : undefined}
-                placeholder="Balon"
+                placeholder="e.g. Balon"
                 className={`mt-1.5 w-full rounded-xl border bg-white px-4 py-2.5 text-sm text-surface-900 placeholder:text-surface-400 focus:outline-none focus:ring-2 ${
                   showErrors && errors.name
                     ? "border-red-300 focus:border-red-400 focus:ring-red-500/20"
@@ -136,7 +156,7 @@ export default function ShippingDemo() {
                 htmlFor="recipient-phone"
                 className="block text-sm font-medium text-surface-900"
               >
-                Nomor HP Penerima
+                Recipient Phone
               </label>
               <input
                 id="recipient-phone"
@@ -144,7 +164,9 @@ export default function ShippingDemo() {
                 required
                 value={form.phone}
                 onChange={(e) => {
-                  setForm({ ...form, phone: e.target.value })
+                  // Only allow an optional leading "+" followed by digits.
+                  const cleaned = e.target.value.replace(/[^+\d]/g, "").replace(/(?!^)\+/g, "")
+                  setForm({ ...form, phone: cleaned })
                   if (showErrors) setShowErrors(false)
                 }}
                 aria-invalid={showErrors && errors.phone ? true : undefined}
@@ -168,7 +190,7 @@ export default function ShippingDemo() {
                 htmlFor="detail-address"
                 className="block text-sm font-medium text-surface-900"
               >
-                Detail Alamat
+                Address Details
               </label>
               <textarea
                 id="detail-address"
@@ -204,27 +226,22 @@ export default function ShippingDemo() {
               )}
               {status === "loading" && (
                 <p id="detail-address-status" aria-live="polite" className="mt-1 text-sm text-surface-500">
-                  Memeriksa alamat...
+                  Checking address...
                 </p>
               )}
             </div>
 
             {revealAdminFields && (
-              <div
-                className={`rounded-xl p-4 ${
-                  status === "auto-filled"
-                    ? "border border-accent-200 bg-accent-50/50"
-                    : "border border-surface-200"
-                }`}
-              >
+              <div className="rounded-xl bg-surface-50 p-4">
                 <AdminComboBox
                   id="kota-kecamatan"
-                  label="Kota & Kecamatan"
+                  label="City & District"
+                  placeholder="Search city or district..."
                   value={selection}
                   onSelect={onManualSelect}
                   helperText={kotaHelper}
                   invalid={showErrors && !!errors.kota}
-                  accent={status === "auto-filled"}
+                  disabled={status === "loading"}
                   badge={
                     status === "auto-filled" ? (
                       <span className="inline-flex items-center gap-1 rounded-full border border-accent-200 bg-accent-50 px-2 py-0.5 text-xs font-medium text-accent-700">
@@ -237,37 +254,77 @@ export default function ShippingDemo() {
               </div>
             )}
 
-            <div className="flex justify-end">
-              <Button type="submit" variant="primary" size="lg">
-                Simpan
-              </Button>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs leading-relaxed text-surface-400">
+                No information is submitted when you click Save — this is a client-side
+                demo only.
+              </p>
+              <div className="shrink-0">
+                <Button type="submit" variant="primary" size="lg">
+                  Save
+                </Button>
+              </div>
             </div>
           </div>
         </form>
 
+        {submitted && payload && (
+          <div className="rounded-2xl border border-surface-200 bg-white p-6" aria-live="polite">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-surface-500">
+              Result payload
+            </h2>
+            <pre className="mt-3 overflow-auto rounded-xl bg-surface-50 p-4 text-xs leading-relaxed text-surface-800">
+              {JSON.stringify(payload, null, 2)}
+            </pre>
+          </div>
+        )}
+        </div>
+
         {/* side panel */}
-        <aside className="flex flex-col gap-6">
+        <aside className="flex min-w-0 flex-col gap-6">
+          <div className="rounded-2xl border border-surface-200 bg-white p-6">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-surface-500">
+              Example addresses
+            </h2>
+            <p className="mt-2 text-sm text-surface-500">
+              Fill the form instantly with a sample recipient and address.
+            </p>
+            <ul className="mt-3 space-y-2">
+              {EXAMPLE_SELECTIONS.map((address) => (
+                <li key={address}>
+                  <button
+                    type="button"
+                    onClick={() => applyExample(address)}
+                    className="w-full rounded-lg border border-surface-200 bg-surface-50 px-3 py-2.5 text-left text-xs leading-relaxed text-surface-700 transition-colors hover:border-accent-300 hover:bg-accent-50 hover:text-surface-900"
+                  >
+                    {address}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
           <div className="rounded-2xl border border-surface-200 bg-surface-50 p-6">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-surface-500">
-              Tentang demo ini
+              About this demo
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-surface-600">
-              Pelanggan sering mengetik alamat lengkap lalu diminta memilih lokasi yang
-              sama lagi. Address Quality mengambil Kota/Kabupaten dan Kecamatan dari teks
-              alamat, sambil tetap meminta pengguna memverifikasi hasil yang belum pasti.
+              Customers often type a full address and are then asked to pick the same
+              location again. Address Quality extracts the City and District from
+              the address text, while still asking the user to verify uncertain results.
             </p>
             <ul className="mt-4 space-y-2 text-sm text-surface-600">
               <li className="flex gap-2">
-                <span aria-hidden="true">•</span> Validasi berjalan otomatis setelah Anda
-                selesai mengetik (debounce 800ms).
+                <span aria-hidden="true">•</span> Validation runs automatically after you
+                finish typing (800ms debounce).
               </li>
               <li className="flex gap-2">
-                <span aria-hidden="true">•</span> Hasil dengan confidence ≥ 0.80 diisi
-                otomatis dan dapat diubah.
+                <span aria-hidden="true">•</span> Results with confidence ≥ 0.80 are
+                auto-filled and can be changed.
               </li>
               <li className="flex gap-2">
-                <span aria-hidden="true">•</span> Opsi wilayah berasal dari data resmi
-                Kemendagri, disimpan lokal di browser (PGlite).
+                <span aria-hidden="true">•</span> Region options come from official
+                Kemendagri data, stored locally in your browser (PGlite).
               </li>
             </ul>
             <div className="mt-5 flex flex-wrap gap-3 text-sm">
@@ -288,17 +345,6 @@ export default function ShippingDemo() {
               </Link>
             </div>
           </div>
-
-          {submitted && payload && (
-            <div className="rounded-2xl border border-surface-200 bg-white p-6" aria-live="polite">
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-surface-500">
-                Submitted payload
-              </h2>
-              <pre className="mt-3 overflow-auto rounded-xl bg-surface-50 p-4 text-xs leading-relaxed text-surface-800">
-                {JSON.stringify(payload, null, 2)}
-              </pre>
-            </div>
-          )}
         </aside>
       </div>
     </Container>
