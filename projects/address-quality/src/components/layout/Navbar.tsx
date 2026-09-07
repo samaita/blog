@@ -6,7 +6,7 @@ import Container from "@/components/layout/Container"
 const navLinks = [
   { label: "Home", to: "/" },
   { label: "Playground", to: "/playground" },
-  { label: "Shipping Demo", to: "/shipping-demo" },
+  { label: "Address Demo", to: "/address-demo" },
   { label: "Docs", to: "/docs" },
   { label: "Benchmark", to: "/benchmark" },
 ]

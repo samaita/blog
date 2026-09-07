@@ -17,7 +17,7 @@ export type LookupStatus =
   | "error"
 
 /**
- * Debounced address-quality lookup driving the shipping form reveal logic.
+ * Debounced address-quality lookup driving the demo form reveal logic.
  *
  * Stale-response protection:
  * - debounce timer reset on every keystroke
@@ -29,7 +29,7 @@ export type LookupStatus =
  *   field again (handled by the page resetting the override when the address
  *   changes).
  */
-export default function useShippingLookup() {
+export default function useAddressLookup() {
   const [status, setStatus] = useState<LookupStatus>("idle")
   const [result, setResult] = useState<AddressResponse | null>(null)
   const [selection, setSelection] = useState<AdminSelection | null>(null)
@@ -97,7 +97,7 @@ export default function useShippingLookup() {
       })
       setManualReason(undefined)
       if (import.meta.env.DEV) {
-        console.debug("[shipping-demo] autofill", {
+        console.debug("[address-demo] autofill", {
           apiStatus,
           confidence,
           city: matched.city.displayName,
@@ -111,7 +111,7 @@ export default function useShippingLookup() {
       setManualReason("no-match")
       setSelection(null)
       if (import.meta.env.DEV) {
-        console.debug("[shipping-demo] city matched, district not found", {
+        console.debug("[address-demo] city matched, district not found", {
           apiStatus,
           confidence,
           apiCity: location.city,
@@ -125,7 +125,7 @@ export default function useShippingLookup() {
       setManualReason("no-match")
       setSelection(null)
       if (import.meta.env.DEV) {
-        console.debug("[shipping-demo] no PGlite match for API result", {
+        console.debug("[address-demo] no PGlite match for API result", {
           apiStatus,
           confidence,
           apiCity: location.city,
@@ -168,7 +168,7 @@ export default function useShippingLookup() {
     setSelection(sel)
     if (import.meta.env.DEV) {
       console.debug(
-        "[shipping-demo] manual override",
+        "[address-demo] manual override",
         `${sel.city.displayName}, ${sel.district.name}`,
       )
     }

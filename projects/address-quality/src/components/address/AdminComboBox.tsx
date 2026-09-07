@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react"
-import { MagnifyingGlassIcon, MapPinIcon } from "@/components/icons"
+import {
+  MagnifyingGlassIcon,
+  MapPinIcon,
+  ArrowPathIcon,
+} from "@/components/icons"
 import { searchAdmin, type AdminSelection } from "@/services/adminDb"
 
 const RESULT_LIMIT = 20
@@ -16,8 +20,8 @@ type AdminComboBoxProps = {
   autoFocus?: boolean
   /** Red border — used when the form was submitted without a selection. */
   invalid?: boolean
-  /** Accent border — used for auto-detected values. */
-  accent?: boolean
+  /** Disable input + show a spinner (e.g. while a lookup is in flight). */
+  disabled?: boolean
   /** Chip rendered next to the label (e.g. "Auto-detected"). */
   badge?: React.ReactNode
 }
@@ -29,13 +33,13 @@ type AdminComboBoxProps = {
 export default function AdminComboBox({
   id,
   label,
-  placeholder = "Search kota atau kecamatan...",
+  placeholder = "Search city or district...",
   value,
   onSelect,
   helperText,
   autoFocus,
   invalid = false,
-  accent = false,
+  disabled = false,
   badge,
 }: AdminComboBoxProps) {
   const [query, setQuery] = useState("")
@@ -51,30 +55,26 @@ export default function AdminComboBox({
   const inputRef = useRef<HTMLInputElement>(null)
   const searchIdRef = useRef(0)
 
-  // While open with a typed query, show the query — otherwise a previous
-  // selection would swallow the user's typing. Closed shows the selection.
+  // While focused (open) the input shows only the typed query — the held
+  // selection's label returns when the menu closes without a pick. This way
+  // the committed value can only change via an explicit option pick.
   const displayValue = useMemo(() => {
     const label = value ? `${value.city.displayName}, ${value.district.name}` : ""
-    if (open) return query || label
+    if (open) return query
     return label || query
   }, [value, query, open])
 
-  // debounced PGlite search
+  // debounced PGlite search; an empty query opens a default browse list so
+  // the field behaves like a dropdown even before the user types.
   useEffect(() => {
-    const q = query.trim()
     if (!open) return
 
     const id2 = ++searchIdRef.current
-    if (!q) {
-      setResults([])
-      setLoading(false)
-      return
-    }
-
     setLoading(true)
-    const timer = setTimeout(async () => {
+
+    const doSearch = async () => {
       try {
-        const found = await searchAdmin(q, RESULT_LIMIT)
+        const found = await searchAdmin(query.trim(), RESULT_LIMIT)
         if (id2 !== searchIdRef.current) return // stale
         setResults(found)
         setSearchError(false)
@@ -86,22 +86,33 @@ export default function AdminComboBox({
       } finally {
         if (id2 === searchIdRef.current) setLoading(false)
       }
-    }, SEARCH_DEBOUNCE_MS)
+    }
 
+    if (!query.trim()) {
+      void doSearch() // immediate — the empty-state dropdown list
+      return
+    }
+    const timer = setTimeout(doSearch, SEARCH_DEBOUNCE_MS)
     return () => clearTimeout(timer)
   }, [query, open])
+
+  /** Close without a pick — the held value stays, its label returns. */
+  const dismiss = useCallback(() => {
+    setOpen(false)
+    setQuery("")
+  }, [])
 
   // close on outside click
   useEffect(() => {
     if (!open) return
     const onDocClick = (e: MouseEvent) => {
       if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
-        setOpen(false)
+        dismiss()
       }
     }
     document.addEventListener("mousedown", onDocClick)
     return () => document.removeEventListener("mousedown", onDocClick)
-  }, [open])
+  }, [open, dismiss])
 
   const choose = useCallback(
     (sel: AdminSelection) => {
@@ -115,6 +126,7 @@ export default function AdminComboBox({
   )
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (disabled) return
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {
       e.preventDefault()
       if (!open) {
@@ -130,7 +142,7 @@ export default function AdminComboBox({
       e.preventDefault()
       choose(results[highlighted])
     } else if (e.key === "Escape") {
-      setOpen(false)
+      dismiss()
     }
   }
 
@@ -154,43 +166,51 @@ export default function AdminComboBox({
           aria-autocomplete="list"
           aria-haspopup="listbox"
           aria-invalid={invalid || undefined}
+          disabled={disabled}
           aria-describedby={helperText ? `${id}-helper` : undefined}
           autoComplete="off"
           autoFocus={autoFocus}
           className={`w-full rounded-xl border bg-white py-2.5 pl-10 pr-10 text-sm text-surface-900 placeholder:text-surface-400 focus:outline-none focus:ring-2 ${
             invalid
               ? "border-red-300 focus:border-red-400 focus:ring-red-500/20"
-              : accent
-                ? "border-accent-300 focus:border-accent-500 focus:ring-accent-500/20"
-                : "border-surface-200 focus:border-accent-500 focus:ring-accent-500/20"
-          }`}
+              : "border-surface-200 focus:border-accent-500 focus:ring-accent-500/20"
+          } disabled:cursor-not-allowed disabled:bg-surface-100 disabled:text-surface-400`}
           placeholder={placeholder}
           value={displayValue}
           onChange={(e) => {
-            // If the input still shows a previous selection's label, a typed
-            // character starting from the label is a fresh query, not an edit
-            // of the old value (caret at end / no selection happened).
-            const typed = e.target.value
-            if (value && open && typed !== "") {
-              const currentLabel = `${value.city.displayName}, ${value.district.name}`
-              if (typed.startsWith(currentLabel) && typed.length > currentLabel.length) {
-                setQuery(typed.slice(currentLabel.length))
-                return
-              }
-              // caret mid-label: whole label replaced by the typed text — fall through
-            }
-            setQuery(typed)
+            if (disabled) return
+            setQuery(e.target.value)
             setOpen(true)
           }}
           onFocus={() => {
+            if (disabled) return
+            // Enter search mode: open the dropdown (default list shows when the
+            // query is empty) and clear the held label so typing starts fresh.
+            // The committed value itself only changes via an explicit pick.
             setOpen(true)
-            // Select the whole label so typing replaces it instead of appending.
-            if (value) requestAnimationFrame(() => inputRef.current?.select())
+            setQuery("")
+          }}
+          // Never close the menu from the input's blur alone: on touch devices
+          // the option button receives focus before the synthetic mousedown, and
+          // an eager dismiss here would unmount the menu mid-tap so the pick
+          // never lands. Close only when focus leaves the whole widget; the
+          // outside-click listener handles stray clicks, Esc/Enter handle keys.
+          onBlur={(e) => {
+            if (!rootRef.current?.contains(e.relatedTarget as Node | null)) {
+              dismiss()
+            }
           }}
           onKeyDown={handleKeyDown}
         />
-        {value && (
-          <MapPinIcon className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-accent-600" />
+        {disabled ? (
+          <ArrowPathIcon
+            className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-accent-600"
+            aria-hidden="true"
+          />
+        ) : (
+          value && (
+            <MapPinIcon className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-accent-600" />
+          )
         )}
       </div>
 
@@ -203,17 +223,17 @@ export default function AdminComboBox({
         >
           {loading && (
             <li className="px-4 py-2 text-sm text-surface-500" role="status">
-              Mencari...
+              Searching...
             </li>
           )}
           {!loading && searchError && (
             <li className="px-4 py-2 text-sm text-surface-500" role="status">
-              Data wilayah belum tersedia.
+              Region data is not available.
             </li>
           )}
           {!loading && !searchError && results.length === 0 && (
             <li className="px-4 py-2 text-sm text-surface-500" role="status">
-              Tidak ada hasil untuk &ldquo;{query.trim()}&rdquo;.
+              No results for &ldquo;{query.trim()}&rdquo;.
             </li>
           )}
           {!loading &&
@@ -222,7 +242,12 @@ export default function AdminComboBox({
                 <button
                   type="button"
                   onMouseEnter={() => setHighlighted(i)}
-                  onClick={() => choose(r)}
+                  // Choose on mousedown (before the browser moves focus) so the
+                  // input's onBlur/dismiss cannot unmount the menu mid-click.
+                  onMouseDown={(e) => {
+                    e.preventDefault()
+                    choose(r)
+                  }}
                   className={`flex w-full items-center justify-between gap-3 px-4 py-2 text-left text-sm ${
                     i === highlighted ? "bg-accent-50 text-surface-900" : "text-surface-700"
                   }`}
