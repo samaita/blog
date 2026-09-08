@@ -134,7 +134,7 @@ export default function Docs() {
         description="Learn how to integrate the Address Quality API into your application. Get started with authentication, endpoints, request schemas, and examples."
       />
 
-      <div className="flex gap-12">
+      <div className="flex flex-col gap-6 lg:flex-row lg:gap-12">
         <Sidebar />
 
         <div className="flex-1 min-w-0 max-w-3xl space-y-16">
