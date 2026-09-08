@@ -132,7 +132,7 @@ export default function AddressDemo() {
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-surface-500">
           Customers often type a full address and are then asked to pick the very same
           location again. This demo uses Address Quality to pull the{" "}
-          <span className="text-surface-900">City/Regency</span> and{" "}
+          <span className="text-surface-900">City</span> and{" "}
           <span className="text-surface-900">District</span> straight from the address
           text — the user only needs to verify the result.
         </p>
