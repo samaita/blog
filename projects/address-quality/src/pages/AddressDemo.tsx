@@ -38,7 +38,7 @@ export default function AddressDemo() {
   const [submitted, setSubmitted] = useState(false)
   const [showErrors, setShowErrors] = useState(false)
 
-  const { status, result, selection, manualReason, onAddressChange, onManualSelect, resetManualOverride } =
+  const { status, result, selection, manualReason, onAddressChange, startLookup, onManualSelect, resetManualOverride } =
     useAddressLookup()
 
   const revealAdminFields = status !== "idle"
@@ -96,8 +96,11 @@ export default function AddressDemo() {
       address: form.address.trim(),
       country,
       province: selection.province.name,
+      province_id: selection.province.id,
       city: selection.city ? selection.city.displayName : null,
+      city_id: selection.city ? selection.city.id : null,
       district: selection.district ? selection.district.name : null,
+      district_id: selection.district ? selection.district.id : null,
       address_suggestion: addressSuggestion,
       address_quality: result
         ? {
@@ -109,13 +112,14 @@ export default function AddressDemo() {
     }
   }, [submitted, selection, form, country, result, status])
 
-  /** Fill the form from an example: recipient + address, then re-run lookup. */
+  /** Fill the form from an example: recipient + address, then run the lookup
+   *  immediately so Save stays disabled until the API responds. */
   const applyExample = (address: string) => {
     setForm({ ...EXAMPLE_RECIPIENT, address })
     setSubmitted(false)
     setShowErrors(false)
     resetManualOverride()
-    onAddressChange(address)
+    startLookup(address)
   }
 
   return (

@@ -63,10 +63,22 @@ export default function AdminComboBox({
     return label || query
   }, [value, query, open])
 
-  /** Name + hint rendered per result row, grouped by location level. */
+  /** Name + hint rendered per result row, grouped by matched level. Every
+   *  row carries a district — province/city matches show their default
+   *  kecamatan so no bare pick is ever offered. */
   const optionParts = (r: AdminSearchResult): { name: string; hint: string } => {
-    if (r.level === "province") return { name: r.province.name, hint: "Province" }
-    if (r.level === "city") return { name: r.city?.displayName ?? r.province.name, hint: r.province.name }
+    if (r.level === "province") {
+      return {
+        name: r.province.name,
+        hint: r.city && r.district ? `${r.city.displayName}, ${r.district.name}` : "Province",
+      }
+    }
+    if (r.level === "city") {
+      return {
+        name: r.city?.displayName ?? r.province.name,
+        hint: r.district?.name ?? "",
+      }
+    }
     return {
       name: r.district?.name ?? "",
       hint: r.city?.displayName ?? r.province.name,
