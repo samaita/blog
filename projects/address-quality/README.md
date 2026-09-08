@@ -75,3 +75,21 @@ The frontend aims to provide:
 - Clean and maintainable UI components
 
 It is intentionally lightweight so the majority of development effort can remain focused on the Address Quality API and its validation engine.
+
+---
+
+## Local Development Cache Behavior
+
+The Address Demo dropdown is backed by [PGlite](https://pglite.dev) (Postgres in WASM) running entirely in the browser:
+
+- `src/services/adminDb.ts` lazily initializes a singleton in-memory `PGlite` instance, creates the `provinces` / `cities` / `districts` tables, and seeds them from `public/wilayah-seed.json` (~200KB Kemendagri data).
+- The seed file's province→city relation is keyed by province **name**, not code — the upstream dump gives Papua Barat and Papua Barat Daya the same `"92"` prefix, so codes are not unique.
+- At runtime the browser downloads ~16MB of hashed PGlite artifacts: `assets/pglite-*.wasm` (~9.6MB), `assets/pglite-*.data` (~6MB), and `assets/initdb-*.wasm` (~386KB).
+
+### Gotcha: stale dropdown on localhost
+
+`hugo server` (the `make dev` flow, `localhost:1313`) sends **no `Cache-Control` header** by default. A normal browser tab then heuristic-caches the PGlite wasm/data artifacts and `wilayah-seed.json`, so a rebuilt project can serve stale data to the address dropdown — an incognito/private window (empty cache) always loads fresh, which makes the bug look intermittent.
+
+Fix: the repo `Makefile` `dev` target runs `hugo server --noHTTPCache`, which sends `Cache-Control: no-store, no-cache, must-revalidate, max-age=0` on every response. Restart `make dev` after changing this.
+
+Production is unaffected: Cloudflare Pages serves hashed filenames (instant cache invalidation) and `nginx.conf.template` already sets explicit cache headers (`assets/` → `public, immutable`; `index.html` → `no-cache, must-revalidate`).
