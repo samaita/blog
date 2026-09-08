@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { validateAddress as callApi } from "@/services/api"
-import { matchAdmin, type AdminSelection } from "@/services/adminDb"
+import { matchAdmin, selectionLabel, type AdminSelection } from "@/services/adminDb"
 import type { AddressResponse } from "@/types/api"
 
 const DEBOUNCE_MS = 800
@@ -85,36 +85,36 @@ export default function useAddressLookup() {
     }
 
     // Case A/C: high confidence → resolve against local PGlite data
-    const matched = await matchAdmin(location.city, location.district)
+    const matched = await matchAdmin(location.province, location.city, location.district)
 
     if (id !== lookupIdRef.current) return // became stale while querying PGlite
 
-    if (matched && matched.district) {
+    if (matched && matched.level === "district") {
       if (manualOverrideRef.current) return // user already chose; never overwrite
       setStatus("auto-filled")
-      setSelection({
-        city: matched.city,
-        district: matched.district,
-      })
+      setSelection(matched)
       setManualReason(undefined)
       if (import.meta.env.DEV) {
         console.debug("[address-demo] autofill", {
           apiStatus,
           confidence,
-          city: matched.city.displayName,
-          district: matched.district.name,
+          city: matched.city?.displayName,
+          district: matched.district?.name,
         })
       }
-    } else if (matched && !matched.district) {
-      // City matched but the district is not in that city → manual
+    } else if (matched) {
+      // Province or city matched locally, but the full city/district pair is
+      // missing → manual; the dropdown lists provinces so the user can still
+      // pick the level the API did resolve.
       if (manualOverrideRef.current) return
       setStatus("matched-partial")
       setManualReason("no-match")
       setSelection(null)
       if (import.meta.env.DEV) {
-        console.debug("[address-demo] city matched, district not found", {
+        console.debug("[address-demo] partial local match", {
           apiStatus,
           confidence,
+          level: matched.level,
           apiCity: location.city,
           apiDistrict: location.district,
         })
@@ -161,17 +161,14 @@ export default function useAddressLookup() {
     [clearTimer, runLookup],
   )
 
-  /** User picked their own kota/kecamatan — protect from future overwrites. */
+  /** User picked their own province/city/district — protect from future overwrites. */
   const onManualSelect = useCallback((sel: AdminSelection) => {
     manualOverrideRef.current = true
     setStatus("manual-required")
     setManualReason(undefined)
     setSelection(sel)
     if (import.meta.env.DEV) {
-      console.debug(
-        "[address-demo] manual override",
-        `${sel.city.displayName}, ${sel.district.name}`,
-      )
+      console.debug("[address-demo] manual override", selectionLabel(sel))
     }
   }, [])
 
