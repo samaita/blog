@@ -1,77 +1,120 @@
 +++
 title = 'How I Benchmark Address Quality'
-date = 2026-09-04T18:00:00+07:00
+date = 2026-09-08T17:08:45+07:00
 draft = true
-tags = ['Address-Quality']
+tags = [address-quality]
 +++
 
-In the first post of this series I wrote about [Address Quality](https://samaita.com/projects/address-quality/), an API that validates Indonesian addresses, and I ended with a number: 49% accuracy on my own test set. A number is only useful if you know how it was produced. So before I change anything, I want to explain how I measured it.
+In the [previous post](https://samaita.com/posts/how-i-built-address-quality-api-to-read-indonesian-addresses/), I wrote about how Address Quality interprets an address. It extracts evidence, builds possible candidates, then ranks them based on how well they match the available evidence.
 
-This post is about the method, not the result. How the benchmark runs, what the test set contains, and what the score actually means. If you can see how the number was built, you can judge whether to trust it.
+I can try several addresses and see that the engine returns something reasonable. But that doesn't tell me much about how well it actually works.
 
-## What the benchmark does
+**How do I know if the engine behaves like I intended?**
 
-The benchmark is a short script, not a big system. It reads a list of addresses, sends each one to the API, and compares what the API returned against what the address should really be.
+Trying addresses manually is useful while building it, but it becomes a problem when I start changing the engine. If I change the ranking logic and five addresses suddenly look better, I still don't know whether the engine actually improved or I just happened to test five addresses that worked.
 
-Here is the loop:
+I needed something I could run again and compare.
 
-1. Read one address and its expected answer from a test file.
-2. Send the address to the `/validate` endpoint.
-3. The API returns a province, a city, a district, and a subdistrict.
-4. Compare each returned level against the expected answer.
-5. Record whether each level matched.
-6. Move to the next address.
+## Testing On 106 Addresses
 
-That is the whole method. No model, no clever scoring in the harness. It is the same call a user would make, applied one address at a time.
+I gathered 106 different addresses available online, all from Bandung. Most of them are normal addresses. I didn't intentionally make them messy or fill the dataset with difficult edge cases.
 
-## The test set
+I made small adjustments to some of them where needed, then manually labeled each address with the province, city, district, and subdistrict that it should point to.
 
-The test set is 106 addresses, all in Bandung. I collected them from public pages that list real addresses, and I tagged each one by hand with the correct province, city, district, and subdistrict.
+For example:
 
-I chose Bandung on purpose. It is a big city with messy addresses: words that appear at many levels, abbreviations, road names, RT and RW numbers. If the engine can read Bandung, it has a decent chance with the rest of the country.
+```text id="xjd2te"
+Address:
+Jl. Wastukencana No. 2, Babakan Ciamis,
+Sumur Bandung, Kota Bandung, Jawa Barat
 
-Each row in the test file looks like this: the raw address as a user might type it, plus the four expected levels. The tagging is manual. I read each address, looked it up where I needed to, and wrote down what I believed to be the ground truth. That manual step matters, and I will come back to it.
+Expected:
+Province: Jawa Barat
+City: Kota Bandung
+District: Sumur Bandung
+Subdistrict: Babakan Ciamis
+```
 
-The reference data is the official Kemendagri administrative hierarchy, derived from the [wilayah_ref project by cahyadsn](https://github.com/cahyadsn/wilayah_ref), rebuilt into a normalized SQLite database. The benchmark compares against that hierarchy indirectly, through the API.
+I repeated this for all 106 addresses. At this point I had the input and what I believed the correct answer should be.
 
-## The scoring rule
+That gave me something to compare the engine against.
 
-This is the rule that turns raw output into a number, and I want it to be exact.
+## Then I asked the API the same question
 
-A record is **accurate** when all four levels match exactly: province, city, district, and subdistrict. Every one of the four must equal the tagged answer.
+The benchmark takes each address and sends it to the `/validate` endpoint. The API interprets it and returns the province, city, district, and subdistrict it thinks the address points to.
 
-That is a strict rule, on purpose. If the province is right but the subdistrict is wrong, the record does not count. The per-level numbers are separate. They show how often each level alone is correct, and they tell you where the engine falls apart.
+For every address, I now have two answers:
 
-Here is what that gave me on the first run:
+```text id="c5b2u7"
+Address
+   │
+   ├── Manual label
+   │      └── Province → City → District → Subdistrict
+   │
+   └── API result
+          └── Province → City → District → Subdistrict
+```
 
-| Level | Correct |
-|---|---|
-| Province | 82.1% |
-| City | 76.4% |
-| District | 71.7% |
-| Subdistrict | 51.9% |
-| **All four levels (exact)** | **49.1%** |
+The benchmark compares them. If the API points to the same province, city, district, and subdistrict as my manual label, I count it as an exact match. I also keep the result for each level separately, so I can see where the engine starts getting things wrong.
 
-The province is right most of the time. The subdistrict is where things break. And because accuracy needs every level to match, the subdistrict drags the whole number down.
+Then it moves to the next address and does the same thing again.
 
-## What the score means
+The benchmark itself is not complicated:
 
-49.1% means 52 of the 106 addresses came back with all four levels exactly right. That is the number behind "49% accuracy."
+**get an address → label it manually → call the API → compare the result**
 
-It is not a result to celebrate. It is a baseline. It tells me where the weaknesses are, and it gives me a concrete place to measure change against. Every future release runs the same test set, so I can compare before and after.
+I just needed to repeat that process consistently for all 106 addresses.
 
-The benchmark page records more than the score. It keeps the status the API returned (valid, ambiguous, incomplete, or unknown), the confidence, and which levels matched for each record. That detail is what turns a single percentage into a list of things to investigate.
+## So, how well did it work?
 
-## Where the number comes from
+After running all 106 addresses through the API, this is what I got:
 
-One thing to be clear about: the number depends on the test set as much as it depends on the API. A benchmark is a conversation between the engine and its test data. If either side is wrong, the score lies.
+| Level               |   Correct |
+| ------------------- | --------: |
+| Province            |     82.1% |
+| City                |     76.4% |
+| District            |     71.7% |
+| Subdistrict         |     51.9% |
+| **All four levels** | **49.1%** |
 
-That is why the manual tagging step is so important, and why I treat it with suspicion. When I built the test set I made mistakes. In the first post I mentioned one: the ground truth carried a misspelling. The benchmark compares against what is written in the test file, so if the test file is wrong, a correct answer can look wrong, and a wrong answer can look right.
+For the main accuracy number, I use an exact match. Province, city, district, and subdistrict all need to point to the same place as my manual label.
 
-The score describes the test data as much as it describes the engine. I am keeping that thought in front of me while I decide what to change next.
+Only 52 of the 106 addresses passed that check.
 
-## A number you can check
+**49.1%, even a coin toss has better chance. LOL.**
 
-The benchmark is not a private figure. You can see the live results on the [benchmark page](https://samaita.com/projects/address-quality/benchmark), and the API is live with a playground on the [project page](https://samaita.com/projects/address-quality/). If an address comes back wrong there, that is useful data. It is one more record to add to the test set.
+Strangely enough, I was still happy with it. Not because 49.1% is good, but because I finally had something I didn't have before: a baseline.
 
-The 49% is my starting point. My next move is to look closely at the test data itself, because I suspect the test set is hiding some of the answer. That audit is the subject of the next post.
+## Now I can run the same experiment again
+
+Before having this benchmark, I could change the matching or ranking logic, try several addresses manually, and decide that the result looked better. The problem is that "looks better" doesn't tell me whether the change improved the engine as a whole.
+
+Now I can make a change and run the same benchmark again with one command.
+
+```bash id="gq8a3x"
+<actual benchmark command>
+```
+
+The same 106 addresses go through the same API and get compared against the same labels. If the result changes from 49.1%, I have somewhere to start investigating.
+
+I can check which addresses changed, which administrative level improved, and whether fixing one case broke another. The benchmark doesn't tell me what I should change, but it gives me a repeatable way to see what happened after I changed something.
+
+That is the loop I wanted:
+
+**change → benchmark → compare**
+
+## There is a problem with this baseline
+
+There are some obvious limits to the 49.1% number. All 106 addresses are from Bandung, so I cannot use this benchmark to claim that Address Quality has 49.1% accuracy across Indonesia. The number only tells me how the engine performed against these particular addresses and labels.
+
+But there is another assumption that matters even before I think about expanding the dataset.
+
+**I assume my manual labels are correct.**
+
+I labeled 106 addresses manually. If I made a mistake during labelling, the API could return the correct location and the benchmark would count it as wrong. The opposite could happen too: a wrong API result could accidentally agree with a wrong label.
+
+So I had a baseline, but before changing the engine based on that baseline, I needed to know whether I could trust it.
+
+That gave me the next thing to investigate:
+
+**Can I audit my own benchmark?**
