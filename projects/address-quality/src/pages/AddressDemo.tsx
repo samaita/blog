@@ -48,7 +48,7 @@ export default function AddressDemo() {
     if (form.name.trim() === "") errs.name = "Recipient name is required."
     if (form.phone.trim() === "") errs.phone = "Recipient phone is required."
     if (form.address.trim() === "") errs.address = "Address details are required."
-    if (revealAdminFields && !selection) errs.kota = "Pick a city and district."
+    if (revealAdminFields && !selection) errs.kota = "Pick a location."
     return errs
   }, [form, revealAdminFields, selection])
 
@@ -81,8 +81,11 @@ export default function AddressDemo() {
 
     let addressSuggestion: "USED" | "UNUSED" | "BELOW_THRESHOLD" = "BELOW_THRESHOLD"
     if (suggested && location) {
-      const sameCity = normalizeAdminName(location.city) === normalizeAdminName(selection.city.displayName)
+      const sameCity =
+        selection.city != null &&
+        normalizeAdminName(location.city) === normalizeAdminName(selection.city.displayName)
       const sameDistrict =
+        selection.district != null &&
         normalizeAdminName(location.district) === normalizeAdminName(selection.district.name)
       addressSuggestion = sameCity && sameDistrict ? "USED" : "UNUSED"
     }
@@ -92,8 +95,9 @@ export default function AddressDemo() {
       recipient_phone: form.phone.trim(),
       address: form.address.trim(),
       country,
-      city: selection.city.displayName,
-      district: selection.district.name,
+      province: selection.province.name,
+      city: selection.city ? selection.city.displayName : null,
+      district: selection.district ? selection.district.name : null,
       address_suggestion: addressSuggestion,
       address_quality: result
         ? {
@@ -261,8 +265,8 @@ export default function AddressDemo() {
               <div className="rounded-xl bg-surface-50 p-4">
                 <AdminComboBox
                   id="kota-kecamatan"
-                  label="City & District"
-                  placeholder="Search city or district..."
+                  label="Location"
+                  placeholder="Search province, city, or district..."
                   value={selection}
                   onSelect={onManualSelect}
                   helperText={kotaHelper}

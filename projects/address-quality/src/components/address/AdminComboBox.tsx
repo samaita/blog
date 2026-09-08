@@ -4,7 +4,7 @@ import {
   MapPinIcon,
   ArrowPathIcon,
 } from "@/components/icons"
-import { searchAdmin, type AdminSelection } from "@/services/adminDb"
+import { searchAdmin, selectionLabel, type AdminSearchResult, type AdminSelection } from "@/services/adminDb"
 
 const RESULT_LIMIT = 20
 /** Debounce for PGlite search queries while typing. */
@@ -27,14 +27,13 @@ type AdminComboBoxProps = {
 }
 
 /**
- * Searchable kota/kecamatan combobox backed by PGlite.
- * Results show full hierarchy: "Kota Bandung, Sumur Bandung".
+ * Searchable province/city/district combobox backed by PGlite. Results show
+ * the full hierarchy — selecting a district also carries its city and province.
  */
 export default function AdminComboBox({
   id,
   label,
-  placeholder = "Search city or district...",
-  value,
+  placeholder = "Search province, city, or district...",  value,
   onSelect,
   helperText,
   autoFocus,
@@ -43,7 +42,7 @@ export default function AdminComboBox({
   badge,
 }: AdminComboBoxProps) {
   const [query, setQuery] = useState("")
-  const [results, setResults] = useState<Array<AdminSelection & { label: string }>>([])
+  const [results, setResults] = useState<AdminSearchResult[]>([])
   const [open, setOpen] = useState(false)
   const [highlighted, setHighlighted] = useState(0)
   const [searchError, setSearchError] = useState(false)
@@ -59,10 +58,20 @@ export default function AdminComboBox({
   // selection's label returns when the menu closes without a pick. This way
   // the committed value can only change via an explicit option pick.
   const displayValue = useMemo(() => {
-    const label = value ? `${value.city.displayName}, ${value.district.name}` : ""
+    const label = value ? selectionLabel(value) : ""
     if (open) return query
     return label || query
   }, [value, query, open])
+
+  /** Name + hint rendered per result row, grouped by location level. */
+  const optionParts = (r: AdminSearchResult): { name: string; hint: string } => {
+    if (r.level === "province") return { name: r.province.name, hint: "Province" }
+    if (r.level === "city") return { name: r.city?.displayName ?? r.province.name, hint: r.province.name }
+    return {
+      name: r.district?.name ?? "",
+      hint: r.city?.displayName ?? r.province.name,
+    }
+  }
 
   // debounced PGlite search; an empty query opens a default browse list so
   // the field behaves like a dropdown even before the user types.
@@ -237,26 +246,29 @@ export default function AdminComboBox({
             </li>
           )}
           {!loading &&
-            results.map((r, i) => (
-              <li key={r.district.code} role="option" aria-selected={i === highlighted}>
-                <button
-                  type="button"
-                  onMouseEnter={() => setHighlighted(i)}
-                  // Choose on mousedown (before the browser moves focus) so the
-                  // input's onBlur/dismiss cannot unmount the menu mid-click.
-                  onMouseDown={(e) => {
-                    e.preventDefault()
-                    choose(r)
-                  }}
-                  className={`flex w-full items-center justify-between gap-3 px-4 py-2 text-left text-sm ${
-                    i === highlighted ? "bg-accent-50 text-surface-900" : "text-surface-700"
-                  }`}
-                >
-                  <span className="font-medium">{r.district.name}</span>
-                  <span className="text-xs text-surface-500">{r.city.displayName}</span>
-                </button>
-              </li>
-            ))}
+            results.map((r, i) => {
+              const { name, hint } = optionParts(r)
+              return (
+                <li key={`${r.level}-${r.id}`} role="option" aria-selected={i === highlighted}>
+                  <button
+                    type="button"
+                    onMouseEnter={() => setHighlighted(i)}
+                    // Choose on mousedown (before the browser moves focus) so the
+                    // input's onBlur/dismiss cannot unmount the menu mid-click.
+                    onMouseDown={(e) => {
+                      e.preventDefault()
+                      choose(r)
+                    }}
+                    className={`flex w-full items-center justify-between gap-3 px-4 py-2 text-left text-sm ${
+                      i === highlighted ? "bg-accent-50 text-surface-900" : "text-surface-700"
+                    }`}
+                  >
+                    <span className="font-medium">{name}</span>
+                    <span className="text-xs text-surface-500">{hint}</span>
+                  </button>
+                </li>
+              )
+            })}
         </ul>
       )}
 
