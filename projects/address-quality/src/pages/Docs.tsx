@@ -512,7 +512,7 @@ export default function Docs() {
                       Kepmendagri No. 300.2.2-2430 Tahun 2025
                     </Td>
                     <Td className="text-sm text-surface-600">
-                      Province, City/Regency, District, Subdistrict, Postal Code
+                      Province, City, District, Subdistrict, Postal Code
                     </Td>
                   </tr>
                 </tbody>

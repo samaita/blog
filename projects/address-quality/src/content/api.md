@@ -270,7 +270,7 @@ Address Quality validates addresses using official Indonesian administrative dat
 
 | Dataset | Coverage |
 |---------|----------|
-| Kepmendagri No. 300.2.2-2430 Tahun 2025 | Province, City/Regency, District, Subdistrict, Postal Code |
+| Kepmendagri No. 300.2.2-2430 Tahun 2025 | Province, City, District, Subdistrict, Postal Code |
 
 Reference dataset:
 

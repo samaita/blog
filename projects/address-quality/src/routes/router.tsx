@@ -6,6 +6,7 @@ import Playground from "@/pages/Playground"
 import Docs from "@/pages/Docs"
 import Benchmark from "@/pages/Benchmark"
 import BenchmarkDetail from "@/pages/BenchmarkDetail"
+import AddressDemo from "@/pages/AddressDemo"
 import NotFound from "@/pages/NotFound"
 
 const router = createBrowserRouter(
@@ -15,6 +16,7 @@ const router = createBrowserRouter(
       children: [
         { index: true, element: <Landing /> },
         { path: "playground", element: <Playground /> },
+        { path: "address-demo", element: <AddressDemo /> },
         { path: "docs", element: <Docs /> },
         { path: "benchmark", element: <Benchmark /> },
         { path: "benchmark/:version", element: <BenchmarkDetail /> },
