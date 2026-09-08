@@ -54,11 +54,12 @@ interface CityRow {
 
 const LEVEL_ORDER: Record<AdminLevel, number> = { province: 0, city: 1, district: 2 }
 
-/** One-line label for a selection, e.g. "Jawa Barat" or "Kota Bandung, Sumur Bandung". */
+/** One-line label for a selection, e.g. "Jawa Barat · Kabupaten Bogor, Cibinong". */
 export function selectionLabel(sel: AdminSelection): string {
-  if (sel.level === "province") return sel.province.name
-  if (sel.level === "city") return sel.city ? sel.city.displayName : sel.province.name
-  return sel.city ? `${sel.city.displayName}, ${sel.district?.name ?? ""}` : sel.province.name
+  const chain =
+    sel.city && sel.district ? `${sel.city.displayName}, ${sel.district.name}` : null
+  if (sel.level === "province") return chain ? `${sel.province.name} · ${chain}` : sel.province.name
+  return chain ?? sel.province.name
 }
 
 let dbPromise: Promise<PGlite> | null = null
@@ -204,30 +205,24 @@ export function getAdminDb(): Promise<PGlite> {
  * districts) as before — so the combobox can open a dropdown before the user
  * types.
  */
-type CityRowResult = {
-  id: number
-  code: string
-  kind: string
-  name: string
-  displayName: string
+/**
+ * Row carrying a full province→city→district chain. Province and city
+ * matches get a DEFAULT district attached (first by administrative code) so
+ * the dropdown never offers a bare province/city: every pick resolves to a
+ * kecamatan.
+ */
+type LocationRow = {
   p_id: number
   p_code: string
   p_name: string
-  own: number
-}
-
-type DistrictRowResult = {
-  d_id: number
-  d_code: string
-  d_name: string
   c_id: number
   c_code: string
   c_kind: string
   c_name: string
   c_display: string
-  p_id: number
-  p_code: string
-  p_name: string
+  d_id: number
+  d_code: string
+  d_name: string
   own?: number
   city_own?: number
 }
@@ -241,14 +236,8 @@ export async function searchAdmin(
   const pat = `%${q}%`
   const rows: Array<{ rank: number; sel: AdminSelection }> = []
 
-  const provinceOf = (r: { p_id: number; p_code: string; p_name: string }): AdminProvince => ({
-    id: r.p_id,
-    code: r.p_code,
-    name: r.p_name,
-  })
-
-  const pushDistrict = (r: DistrictRowResult, rank: number) => {
-    const province = provinceOf(r)
+  const toSelection = (r: LocationRow) => {
+    const province: AdminProvince = { id: r.p_id, code: r.p_code, name: r.p_name }
     const city: AdminCity = {
       id: r.c_id,
       code: r.c_code,
@@ -265,56 +254,61 @@ export async function searchAdmin(
       cityDisplayName: r.c_display,
       province,
     }
-    rows.push({ rank, sel: { level: "district", id: district.id, province, city, district } })
+    return { province, city, district }
   }
 
+  /** Push a row; `id` is the ORIGIN record's id (province/city/district). */
+  const pushRow = (level: AdminLevel, id: number, r: LocationRow, rank: number) => {
+    rows.push({ rank, sel: { level, id, ...toSelection(r) } })
+  }
+
+  const provinceDefaultSql = `
+    SELECT p.id AS p_id, p.code AS p_code, p.name AS p_name,
+           dc.id AS c_id, dc.code AS c_code, dc.kind AS c_kind, dc.name AS c_name,
+           dc.display_name AS c_display,
+           dd.id AS d_id, dd.code AS d_code, dd.name AS d_name
+    FROM provinces p
+    JOIN LATERAL (
+      SELECT * FROM cities WHERE province_name = p.name ORDER BY code LIMIT 1
+    ) dc ON true
+    JOIN LATERAL (
+      SELECT * FROM districts WHERE city_code = dc.code ORDER BY code LIMIT 1
+    ) dd ON true
+  `
+
   if (q) {
-    // province level — direct name match
-    const provRes = await db.query<{ p_id: number; p_code: string; p_name: string }>(
-      `SELECT id AS p_id, code AS p_code, name AS p_name FROM provinces
-       WHERE name_norm LIKE $1
-       ORDER BY code, name LIMIT $2`,
+    // province level — direct name match, wrapped with the province's default
+    // city + default district so the pick carries a full chain
+    const provRes = await db.query<LocationRow>(
+      `${provinceDefaultSql}
+       WHERE p.name_norm LIKE $1
+       ORDER BY p.code, p.name LIMIT $2`,
       [pat, limit],
     )
-    for (const r of provRes.rows) {
-      const province = provinceOf(r)
-      rows.push({
-        rank: 1,
-        sel: { level: "province", id: province.id, province, city: null, district: null },
-      })
-    }
+    for (const r of provRes.rows) pushRow("province", r.p_id, r, 1)
 
     // city level — own-name matches rank highest, cities inside a matching
-    // province rank lower
-    const cityRes = await db.query<CityRowResult>(
-      `SELECT c.id, c.code, c.kind, c.name, c.display_name AS "displayName",
+    // province rank lower; each carries its default district
+    const cityRes = await db.query<LocationRow>(
+      `SELECT c.id AS c_id, c.code AS c_code, c.kind AS c_kind, c.name AS c_name,
+              c.display_name AS c_display,
               p.id AS p_id, p.code AS p_code, p.name AS p_name,
+              dd.id AS d_id, dd.code AS d_code, dd.name AS d_name,
               (c.bare_norm LIKE $1 OR c.full_norm LIKE $1)::int AS own
        FROM cities c
        JOIN provinces p ON p.name = c.province_name
+       JOIN LATERAL (
+         SELECT * FROM districts WHERE city_code = c.code ORDER BY code LIMIT 1
+       ) dd ON true
        WHERE c.bare_norm LIKE $1 OR c.full_norm LIKE $1 OR p.name_norm LIKE $1
        ORDER BY c.code LIMIT $2`,
       [pat, limit],
     )
-    for (const r of cityRes.rows) {
-      const province = provinceOf(r)
-      const city: AdminCity = {
-        id: r.id,
-        code: r.code,
-        kind: r.kind as AdminCity["kind"],
-        name: r.name,
-        displayName: r.displayName,
-        province,
-      }
-      rows.push({
-        rank: r.own ? 1 : 2,
-        sel: { level: "city", id: city.id, province, city, district: null },
-      })
-    }
+    for (const r of cityRes.rows) pushRow("city", r.c_id, r, r.own ? 1 : 2)
 
     // district level — own name matches rank highest, then own-city matches,
     // then districts inside a matching province
-    const districtRes = await db.query<DistrictRowResult>(
+    const districtRes = await db.query<LocationRow>(
       `SELECT d.id AS d_id, d.code AS d_code, d.name AS d_name,
               c.id AS c_id, c.code AS c_code, c.kind AS c_kind, c.name AS c_name,
               c.display_name AS c_display,
@@ -329,32 +323,24 @@ export async function searchAdmin(
        ORDER BY d.code LIMIT $2`,
       [pat, limit],
     )
-    for (const r of districtRes.rows) {
-      pushDistrict(r, r.own ? 1 : r.city_own ? 2 : 3)
-    }
+    for (const r of districtRes.rows) pushRow("district", r.d_id, r, r.own ? 1 : r.city_own ? 2 : 3)
   } else {
-    // default browse list — provinces hosting the priority cities lead, then
-    // the priority cities with their districts
-    const provRes = await db.query<{ p_id: number; p_code: string; p_name: string }>(
-      `SELECT id AS p_id, code AS p_code, name AS p_name FROM provinces
-       WHERE code IN ('31','32','35','34','33','12','73','51','36','62','16')
-       ORDER BY CASE code
+    // default browse list — provinces hosting the priority cities lead (with
+    // their default city+district), then the priority cities with districts
+    const provRes = await db.query<LocationRow>(
+      `${provinceDefaultSql}
+       WHERE p.code IN ('31','32','35','34','33','12','73','51','36','62','16')
+       ORDER BY CASE p.code
          WHEN '31' THEN 1  WHEN '32' THEN 2  WHEN '35' THEN 3  WHEN '34' THEN 4
          WHEN '33' THEN 5  WHEN '12' THEN 6  WHEN '73' THEN 7  WHEN '51' THEN 8
          WHEN '36' THEN 9  WHEN '62' THEN 10 WHEN '16' THEN 11
-         ELSE 99 END, code
+         ELSE 99 END, p.code
        LIMIT $1`,
       [limit],
     )
-    for (const r of provRes.rows) {
-      const province = provinceOf(r)
-      rows.push({
-        rank: 0,
-        sel: { level: "province", id: province.id, province, city: null, district: null },
-      })
-    }
+    for (const r of provRes.rows) pushRow("province", r.p_id, r, 0)
 
-    const districtRes = await db.query<DistrictRowResult>(
+    const districtRes = await db.query<LocationRow>(
       `SELECT d.id AS d_id, d.code AS d_code, d.name AS d_name,
               c.id AS c_id, c.code AS c_code, c.kind AS c_kind, c.name AS c_name,
               c.display_name AS c_display,
@@ -375,9 +361,7 @@ export async function searchAdmin(
        LIMIT $1`,
       [limit],
     )
-    for (const r of districtRes.rows) {
-      pushDistrict(r, 1)
-    }
+    for (const r of districtRes.rows) pushRow("district", r.d_id, r, 1)
   }
 
   rows.sort(

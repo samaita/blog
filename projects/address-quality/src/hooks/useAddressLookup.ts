@@ -161,6 +161,17 @@ export default function useAddressLookup() {
     [clearTimer, runLookup],
   )
 
+  /** Immediate lookup, no debounce — used when an example address is applied
+   *  so the form enters "loading" (Save disabled) the moment the user clicks. */
+  const startLookup = useCallback(
+    (address: string) => {
+      clearTimer()
+      lastRequestedRef.current = address.trim()
+      void runLookup(address)
+    },
+    [clearTimer, runLookup],
+  )
+
   /** User picked their own province/city/district — protect from future overwrites. */
   const onManualSelect = useCallback((sel: AdminSelection) => {
     manualOverrideRef.current = true
@@ -183,6 +194,7 @@ export default function useAddressLookup() {
     selection,
     manualReason,
     onAddressChange,
+    startLookup,
     onManualSelect,
     resetManualOverride,
   } as const
