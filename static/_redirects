@@ -3,6 +3,7 @@
 # directly and never rewritten by the SPA fallback. Rewrites apply before static
 # assets, so only the SPA routes below map to index.html.
 /projects/address-quality/benchmark/*/ /projects/address-quality/benchmark/:splat/ 200
+/projects/address-quality/address-demo /projects/address-quality/ 200
 /projects/address-quality/docs /projects/address-quality/ 200
 /projects/address-quality/playground /projects/address-quality/ 200
 /projects/address-quality/benchmark /projects/address-quality/ 200
