@@ -2,7 +2,7 @@
 title = 'How I Benchmark Address Quality'
 date = 2026-09-09T17:08:45+07:00
 draft = false
-tags = ['Address-Quality']
+tags = ['address-quality']
 +++
 
 In the [previous post](https://samaita.com/posts/how-i-built-address-quality-api-to-read-indonesian-addresses/), I wrote about how Address Quality interprets an address. It extracts evidence, builds possible candidates, then ranks them based on how well they match the available evidence.
