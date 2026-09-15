@@ -11,7 +11,7 @@
   featured: true
   weight: 10
   related:
-    - title: "Building an Indonesian Address Validation API: Starting With 49% Accuracy"
+    - title: "Building an Indonesian Address Validation API: Starting With 49.1% Accuracy, Now at 57.5%"
       url: /posts/address-quality-building-indonesian-address-validation-api/
     - title: Why Are We Still Asked to Fill Our Address Twice?
       url: /posts/why-are-we-still-asked-to-fill-our-address-twice/
