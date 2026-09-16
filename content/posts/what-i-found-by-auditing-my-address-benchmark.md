@@ -201,5 +201,3 @@ It takes less than ten seconds to run all 106 addresses again. I can make a smal
 ---
 
 **Series:** Address Quality
-
-[← Previous](https://samaita.com/posts/how-i-benchmark-address-quality/) · **[Next: Where Does Google Maps Fit in Address Validation?](https://samaita.com/posts/where-google-maps-fit-in-address-validation/)**
