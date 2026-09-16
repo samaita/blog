@@ -10,13 +10,11 @@ The first Address Quality benchmark result was **49.1%**.
 
 Lower than the odds of a coin toss. LOL.
 
-But the benchmark does more than give me a number. It keeps the result for every address, including the expected location, API response, generated candidates, and their confidence.
+But the benchmark does more than give me a number. It keeps the result for every address: the expected location, API response, generated candidates, and their confidence.
 
-That gives me something to inspect when the number looks bad.
+That report gives me something to inspect when the number looks bad.
 
-I went through the report expecting to find problems in the address-resolution engine. Instead, I found two different mistakes that I had overlooked.
-
-The first one was in the test data.
+I went through the report expecting to find problems in the address-resolution engine. Instead, I found two different mistakes that I had overlooked, and the first one was in the test data.
 
 ## What if the expected result is wrong?
 
@@ -35,21 +33,15 @@ KAB. GARUT, JAWA BARAT 44151
 
 At first, the address looks reasonable. It contains a road, location names, an administrative hierarchy, and a postal code.
 
-The API result did not match my expected value, so the benchmark marked it as incorrect.
+The API result did not match my expected value, so the benchmark marked it as incorrect. When I checked the address again, however, the expected value was the problem.
 
-When I checked the address again, however, the expected value was the problem.
-
-Panjalin is a real location, but it belongs to Kecamatan Sumberjaya, Kabupaten Majalengka. The road location in this address points to Pananjung, Tarogong Kaler.
-
-The individual names looked valid. Their relationship was not.
+Panjalin is a real location, but it belongs to Kecamatan Sumberjaya, Kabupaten Majalengka. The road location in this address points to Pananjung, Tarogong Kaler. The individual names looked valid, but their relationship was not.
 
 This is difficult to catch by reading the address alone. I had created the expected values from address data that looked reasonable, but I had not properly reviewed whether every administrative relationship was correct.
 
 If I trusted the failed test immediately, I could change the engine to match a wrong expectation.
 
-So I stopped changing the engine and reviewed the dataset instead.
-
-Not only this address. I went through all **106 records** again and checked their expected administrative hierarchy.
+So I stopped changing the engine and reviewed the dataset instead. Rather than correcting only this address, I went through all **106 records** again and checked their expected administrative hierarchy.
 
 After correcting the test data, I ran the benchmark again.
 
@@ -58,11 +50,7 @@ Before review: 49.1%
 After review:  52.8%
 ```
 
-The score increased by **3.7 percentage points** without changing the address-resolution engine.
-
-The API did not improve here.
-
-The data I used to measure it did.
+The score increased by **3.7 percentage points** without changing the address-resolution engine. The API did not improve in this step; the benchmark became more reliable because I corrected the data used to measure it.
 
 ## Then confidence 1.0 started looking suspicious
 
@@ -107,11 +95,7 @@ Confidence:  1.0
 
 The engine was not generating a random invalid candidate. Candidate A exists in the location data, and Candidate B exists too.
 
-Both also have evidence from the address supporting their hierarchy, which explains why both could reach confidence `1.0`.
-
-But there is still a difference.
-
-The address explicitly contains `Cimareme`.
+Both also have evidence from the address supporting their hierarchy, which explains why both could reach confidence `1.0`. But the address contains another piece of evidence that separates them: `Cimareme`.
 
 Candidate B can explain all four pieces of location evidence:
 
@@ -132,9 +116,7 @@ Jawa Barat    → Province
 Cimareme      → ?
 ```
 
-That changed how I looked at the problem.
-
-Candidate A was not invalid. It was a valid location hierarchy, but it explained less of the address.
+That changed how I looked at the problem. Candidate A was not invalid; it was a valid location hierarchy that explained less of the address.
 
 My ranking logic rewarded evidence that supported a candidate, but it did not sufficiently consider relevant evidence that the candidate left unexplained.
 
@@ -142,19 +124,15 @@ That was how two valid candidates could both reach confidence `1.0`, even when o
 
 ## Changing the weights would hide the problem
 
-I could increase the weight of `Cimareme` until Candidate B wins.
-
-But there is no reason to make Cimareme inherently more important.
+I could increase the weight of `Cimareme` until Candidate B wins, but there is no reason to make Cimareme inherently more important.
 
 In another address, Ngamprah might genuinely be the intended subdistrict. Both hierarchies are valid.
 
 The useful signal is not which location name I prefer, but how much of the input each candidate can explain.
 
-I also considered allowing confidence to go above `1.0`. That would give Candidate B more room to accumulate a higher score.
+I also considered allowing confidence to go above `1.0`. That would give Candidate B more room to accumulate a higher score, but it still would not explain why Candidate A could reach maximum confidence while leaving part of the address unexplained.
 
-But it would not address why Candidate A could reach maximum confidence while leaving part of the address unexplained.
-
-The information I needed was already available.
+The information I needed was already available in the unused evidence.
 
 ## Penalizing evidence that a candidate ignores
 
@@ -174,11 +152,9 @@ confidence =
 
 The diagram shows the difference. Candidate A is a valid hierarchy, but it leaves `Cimareme` unused, so its confidence drops from `1.0` to `0.8`. Candidate B uses all the extracted location evidence and keeps its confidence at `1.0`.
 
-For Candidate B, all four location values contribute to the hierarchy.
+For Candidate B, all four location values contribute to the hierarchy, while Candidate A leaves `Cimareme` unused.
 
-For Candidate A, `Cimareme` remains unused.
-
-The penalty does not say that Candidate A is invalid. It says that, for this particular input, there is more evidence supporting Candidate B.
+The penalty does not say that Candidate A is invalid. For this particular input, it says there is more evidence supporting Candidate B.
 
 I ran the same 106-address benchmark again.
 
@@ -187,9 +163,7 @@ After dataset review:          52.8%
 After unused-evidence penalty: 57.5%
 ```
 
-The benchmark improved by another **4.7 percentage points**.
-
-Unlike the first improvement, this one came from changing the engine.
+The benchmark improved by another **4.7 percentage points**. Unlike the first improvement, this one came from changing the engine.
 
 ## The same report found two different problems
 
@@ -213,23 +187,21 @@ Penalized candidates that ignore evidence
 +4.7 percentage points
 ```
 
-The final number is still not particularly high. The dataset also contains only 106 addresses, so this does not mean Address Quality is 57.5% accurate for Indonesian addresses in general.
+The final number is still not particularly high. The dataset contains only 106 addresses, so this does not mean Address Quality is 57.5% accurate for Indonesian addresses in general.
 
-But I trust this benchmark more than the one I started with.
+But I trust this benchmark more than the one I started with. I have now reviewed the expected result for every record instead of assuming the labels are correct.
 
-I have now reviewed the expected result for every record instead of assuming the labels are correct. The benchmark report also gives me enough information to inspect why an address failed instead of only looking at the overall accuracy.
-
-Running the test is also cheap.
+Running the test is also cheap:
 
 ```bash
 make benchmark
 ```
 
-It takes less than ten seconds to run all 106 addresses again.
+It takes less than ten seconds to run all 106 addresses again. I can make a small change, run the same dataset, and check both what improved and what became worse.
 
-That means I can make a small change, run the same dataset, check what improved, and also check what became worse. I do not need to rely on a few addresses that happen to work when I test them manually.
+I do not need to rely on a few addresses that happen to work when I test them manually.
 
-The unused-evidence penalty gives me another question to test.
+The unused-evidence penalty now gives me another question to test.
 
 Not every unused location name necessarily means a candidate is worse. An address can contain conflicting information, aliases, or a postal code that points somewhere different from the written hierarchy.
 
