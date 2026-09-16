@@ -3,205 +3,236 @@ title = 'Audit the Test Data, Then Penalize Ignored Evidence'
 date = 2026-09-16T11:06:44+07:00
 draft = true
 tags = ['address-quality']
-description = 'How checking the expected address values and penalizing candidates that ignore evidence improved the Address Quality benchmark.'
+description = 'Reviewing the Address Quality benchmark exposed two problems I had overlooked: incorrect expected values and candidates that ignored part of the address.'
 +++
 
-The benchmark score went up after I changed the address-resolution engine.
+The first Address Quality benchmark result was **49.1%**.
 
-That sounds like the usual story: change the code, run the tests, report a better number.
+Lower than the odds of a coin toss. LOL.
 
-This time, that was not the whole story.
+But the benchmark does more than give me a number. It keeps the result for every address, including the expected location, API response, generated candidates, and their confidence.
 
-Before changing the engine, I found that some expected values in the test data were wrong. After fixing them, the score improved by **3.7 percentage points**.
+That gives me something to inspect when the number looks bad.
 
-Then I found a different problem in the ranking logic. Two candidates could both reach a confidence of 1, even when one candidate ignored part of the address. Adding a penalty for ignored evidence improved the score by another **4.7 percentage points**.
+I went through the report expecting to find problems in the address-resolution engine. Instead, I found two different mistakes that I had overlooked.
 
-The benchmark helped me find both problems, but they needed different fixes.
+The first one was in the test data.
 
-## The benchmark depends on expected values
+## What if the expected result is wrong?
 
-The benchmark sends each address to the API and compares the result with an expected location. A record counts as accurate when the province, city, district, and subdistrict all match the expected value.
+The benchmark currently uses 106 addresses. For each address, I have an expected province, city, district, and subdistrict.
 
-That means the benchmark does not know the correct answer by itself. It trusts the expected value in the test data.
+The benchmark sends the address to the API and compares the result with those expected values. If all four levels match, I count it as correct.
 
-If the expected value is wrong, the benchmark can report the wrong result. The API may return the correct location and still be counted as a failure.
+This works only if the expected values are correct.
 
-So improving accuracy does not always start with changing the API. Sometimes it starts with checking the test data.
-
-## An address that looked correct
-
-One address in the test set looked reasonable:
-
-`JL. CIPANAS BARU, PANJALING, KEC. TAROGONG KALER, KAB. GARUT, JAWA BARAT 44151`
-
-The address contains a road, a subdistrict, a district, a city, a province, and a postal code. At a glance, the hierarchy looks complete.
-
-But **Panjalin does not exist under Tarogong Kaler**.
-
-Panjalin is actually located in Kecamatan Sumberjaya, Kabupaten Majalengka, Jawa Barat. The road address is located within Tarogong Kaler, Pananjung. The expected subdistrict in the test data was wrong.
-
-This is difficult to infer from the address text alone. The words look like a valid hierarchy because they are all real place names. Their relationship is the problem.
-
-I had to check the address with an external tool, such as Google Maps, instead of assuming that the text was enough.
-
-That check corrected the expected value. The benchmark moved from **49.1% to 52.8%** on the 106-address dataset, an improvement of **3.7 percentage points**.
-
-The API did not get better in this step. The measurement got better because the test data became more reliable.
-
-## You cannot infer every hierarchy from the text
-
-This is an important limit of address benchmarks.
-
-A location name can be real, the district can be real, and the province can be real. That does not mean the location belongs to that district.
-
-An address is not only a collection of names. It is also a set of relationships between those names.
-
-For that reason, expected values need their own audit process. Useful checks include:
-
-- Is the subdistrict actually under the stated district?
-- Does the district belong to the stated city?
-- Does the city belong to the stated province?
-- Does the postal code match the expected subdistrict?
-- Does the road location support the administrative hierarchy?
-
-The benchmark can compare API output against labels. It cannot guarantee that the labels are correct.
-
-## Another problem appeared in the candidates
-
-After auditing the test data, I looked at the benchmark results again.
-
-The original `v0.1.0-alpha` benchmark had an address with two candidates that both received confidence **1**:
-
-`JL. Raya Cimareme No.296, Cimareme, Kec. Ngamprah, Kabupaten Bandung Barat, Jawa Barat 40553`
-
-The evidence extracted from the address was:
-
-- Subdistrict: Cimareme
-- District: Ngamprah
-- City: Kabupaten Bandung Barat
-- Province: Jawa Barat
-
-The engine produced two candidates.
-
-The first candidate was:
+One failed case looked like this:
 
 ```text
+JL. CIPANAS BARU, PANJALING, KEC. TAROGONG KALER,
+KAB. GARUT, JAWA BARAT 44151
+```
+
+At first, the address looks reasonable. It contains a road, location names, an administrative hierarchy, and a postal code.
+
+The API result did not match my expected value, so the benchmark marked it as incorrect.
+
+When I checked the address again, however, the expected value was the problem.
+
+Panjalin is a real location, but it belongs to Kecamatan Sumberjaya, Kabupaten Majalengka. The road location in this address points to Pananjung, Tarogong Kaler.
+
+The individual names looked valid. Their relationship was not.
+
+This is difficult to catch by reading the address alone. I had created the expected values from address data that looked reasonable, but I had not properly reviewed whether every administrative relationship was correct.
+
+If I trusted the failed test immediately, I could change the engine to match a wrong expectation.
+
+So I stopped changing the engine and reviewed the dataset instead.
+
+Not only this address. I went through all **106 records** again and checked their expected administrative hierarchy.
+
+After correcting the test data, I ran the benchmark again.
+
+```text
+Before review: 49.1%
+After review:  52.8%
+```
+
+The score increased by **3.7 percentage points** without changing the address-resolution engine.
+
+The API did not improve here.
+
+The data I used to measure it did.
+
+## Then confidence 1.0 started looking suspicious
+
+With the expected values reviewed, I went back to the benchmark report.
+
+Another pattern started to appear. Several addresses had two or more candidates with **confidence 1.0**.
+
+One example was:
+
+```text
+JL. Raya Cimareme No.296, Cimareme, Kec. Ngamprah,
+Kabupaten Bandung Barat, Jawa Barat 40553
+```
+
+The engine found evidence for `Cimareme`, `Ngamprah`, `Kabupaten Bandung Barat`, and `Jawa Barat`.
+
+There is something interesting about this address.
+
+**Ngamprah is both a district and a subdistrict inside that district.**
+
+So these are both valid administrative hierarchies:
+
+```text
+Candidate A
+
 Subdistrict: Ngamprah
-District: Ngamprah
-City: Kabupaten Bandung Barat
-Province: Jawa Barat
+District:    Ngamprah
+City:        Kabupaten Bandung Barat
+Province:    Jawa Barat
+Confidence:  1.0
 ```
 
-The second candidate was:
-
 ```text
+Candidate B
+
 Subdistrict: Cimareme
-District: Ngamprah
-City: Kabupaten Bandung Barat
-Province: Jawa Barat
+District:    Ngamprah
+City:        Kabupaten Bandung Barat
+Province:    Jawa Barat
+Confidence:  1.0
 ```
 
-The first candidate matched the province, city, and district evidence, but it did not use the evidence for Cimareme. The second candidate used all four location values. Both still reached the confidence ceiling of **1**.
+The engine was not generating a random invalid candidate. Candidate A exists in the location data, and Candidate B exists too.
 
-But the first candidate had a clear problem. It ignored the evidence for Cimareme. The address says Cimareme, while the candidate returned Ngamprah as the subdistrict.
+Both also have evidence from the address supporting their hierarchy, which explains why both could reach confidence `1.0`.
 
-The second candidate used all the available evidence and returned Cimareme under Ngamprah.
+But there is still a difference.
 
-The ranking logic did not distinguish them because confidence could not go above 1. Once both candidates reached the ceiling, the unused evidence did not help the correct candidate win.
+The address explicitly contains `Cimareme`.
 
-## Why simply changing the score was not enough
-
-I considered two straightforward options:
-
-1. Change the scoring weights.
-2. Allow confidence to go above 1.
-
-Neither option solved the real problem.
-
-I had no good reason to put Cimareme above Ngamprah only by changing a weight. Both are valid subdistrict names under Ngamprah. The useful difference was not that one name was more important than the other.
-
-The difference was that one candidate ignored evidence that was present in the address.
-
-That needed to affect the candidate directly.
-
-## Adding a penalty for ignored evidence
-
-The engine already tracks which evidence each candidate uses. It can see when an address contains evidence that did not contribute to a candidate.
-
-I added a penalty after the normal confidence score is calculated.
-
-In simple terms:
+Candidate B can explain all four pieces of location evidence:
 
 ```text
-confidence = matched evidence and hierarchy score
-confidence = confidence - penalty for each unused evidence item
+Cimareme      → Subdistrict
+Ngamprah      → District
+Bandung Barat → City
+Jawa Barat    → Province
 ```
 
-The penalty does not reward Cimareme because it is a preferred name. It lowers the score of the candidate that ignored Cimareme.
+Candidate A can build a valid hierarchy using Ngamprah, but `Cimareme` is left unused:
 
-That changes the ranking for the right reason:
+```text
+Ngamprah      → Subdistrict + District
+Bandung Barat → City
+Jawa Barat    → Province
 
-- Candidate using Cimareme: no unused place evidence
-- Candidate using Ngamprah as the subdistrict: Cimareme is unused
-- Candidate with unused evidence receives a lower score
+Cimareme      → ?
+```
 
-This also keeps confidence bounded. The score still cannot exceed 1. The new rule gives the ranking process more information instead of adding another scoring scale above 1.
+That changed how I looked at the problem.
 
-## The result after the penalty
+Candidate A was not invalid. It was a valid location hierarchy, but it explained less of the address.
 
-With the ignored-evidence penalty in place, the engine selected the candidate that used Cimareme.
+My ranking logic rewarded evidence that supported a candidate, but it did not sufficiently consider relevant evidence that the candidate left unexplained.
 
-Across the same 106-address dataset, the benchmark moved from **52.8% to 57.5%** exact matches. That is an improvement of **4.7 percentage points**.
+That was how two valid candidates could both reach confidence `1.0`, even when one fit the complete address better.
 
-The latest benchmark result is available here:
+## Changing the weights would hide the problem
 
-[Address Quality v0.1.1-alpha benchmark](https://samaita.com/projects/address-quality/benchmark/v0.1.1-alpha)
+I could increase the weight of `Cimareme` until Candidate B wins.
 
-The overall result is useful, but the individual cases matter more. The score tells me that the change helped somewhere. The candidate details explain why.
+But there is no reason to make Cimareme inherently more important.
 
-## The loop found two different kinds of error
+In another address, Ngamprah might genuinely be the intended subdistrict. Both hierarchies are valid.
 
-The sequence was:
+The useful signal is not which location name I prefer, but how much of the input each candidate can explain.
 
-1. Run the benchmark.
-2. Inspect failures.
-3. Audit the expected values.
-4. Correct the test data.
-5. Run the benchmark again.
-6. Inspect candidates with suspiciously high confidence.
-7. Penalize candidates that ignore evidence.
-8. Run the benchmark again.
+I also considered allowing confidence to go above `1.0`. That would give Candidate B more room to accumulate a higher score.
 
-The first improvement came from fixing the measurement.
+But it would not address why Candidate A could reach maximum confidence while leaving part of the address unexplained.
 
-The second improvement came from fixing the ranking logic.
+The information I needed was already available.
 
-Without the benchmark, I might have changed the scorer based on a few manual examples. I might also have blamed the API for failures caused by incorrect expected values.
+## Penalizing evidence that a candidate ignores
 
-A repeatable test loop makes those two problems easier to separate.
+The engine already tracks which evidence contributes to each candidate.
 
-## This is why the benchmark needs to be cheap
+I used that information after calculating the normal confidence score. If relevant location evidence remains unused, the candidate receives a small penalty.
 
-Testing this process manually would take a long time. I would need to send every address to the API, inspect the response, compare it with the expected value, and repeat the work after every code change.
+In simplified form:
 
-The benchmark does that loop in less than ten seconds:
+```text
+confidence =
+    existing confidence
+    - unused evidence penalty
+```
+
+For Candidate B, all four location values contribute to the hierarchy.
+
+For Candidate A, `Cimareme` remains unused.
+
+The penalty does not say that Candidate A is invalid. It says that, for this particular input, there is more evidence supporting Candidate B.
+
+I ran the same 106-address benchmark again.
+
+```text
+After dataset review:          52.8%
+After unused-evidence penalty: 57.5%
+```
+
+The benchmark improved by another **4.7 percentage points**.
+
+Unlike the first improvement, this one came from changing the engine.
+
+## The same report found two different problems
+
+I started with a benchmark result of **49.1%**.
+
+Reviewing the failures showed that some expected values were unreliable. I reviewed all 106 records, corrected the test data, and the result moved to **52.8%**.
+
+Then the same report showed several cases where different candidates could reach confidence `1.0`. Looking at the evidence they used showed that some candidates could ignore part of the address without paying any cost.
+
+Adding the unused-evidence penalty moved the benchmark again to **57.5%**.
+
+So the two improvements came from different places:
+
+```text
+49.1% → 52.8%
+Reviewed and corrected the test data
++3.7 percentage points
+
+52.8% → 57.5%
+Penalized candidates that ignore evidence
++4.7 percentage points
+```
+
+The final number is still not particularly high. The dataset also contains only 106 addresses, so this does not mean Address Quality is 57.5% accurate for Indonesian addresses in general.
+
+But I trust this benchmark more than the one I started with.
+
+I have now reviewed the expected result for every record instead of assuming the labels are correct. The benchmark report also gives me enough information to inspect why an address failed instead of only looking at the overall accuracy.
+
+Running the test is also cheap.
 
 ```bash
 make benchmark
 ```
 
-The benchmark does not tell me which change to make. It gives me a repeatable way to see whether a change affected the dataset, then points me to the addresses that need investigation.
+It takes less than ten seconds to run all 106 addresses again.
 
-That makes it possible to try a small change, inspect the result, and run the full dataset again without turning every experiment into a long manual session.
+That means I can make a small change, run the same dataset, check what improved, and also check what became worse. I do not need to rely on a few addresses that happen to work when I test them manually.
 
-## The next question
+The unused-evidence penalty gives me another question to test.
 
-Auditing the expected values improved the benchmark by 3.7 percentage points. Penalizing ignored evidence improved it by another 4.7 percentage points.
+Not every unused location name necessarily means a candidate is worse. An address can contain conflicting information, aliases, or a postal code that points somewhere different from the written hierarchy.
 
-That does not mean the problem is solved. The dataset still has 106 addresses, all from Bandung, and exact matching remains a strict measure.
+I need to see how the penalty behaves in those cases before making it stronger.
 
-The next question is whether the same ranking rule behaves well when the address contains conflicting evidence. What should happen when the postal code disagrees with the subdistrict? What if a road location supports one candidate but the written city points to another?
+---
 
-The benchmark can help answer those questions, as long as I keep checking both sides of the comparison: the API result and the expected value.
+**Series:** Address Quality
 
-*Series: Address Quality. Previous: [How I Benchmark Address Quality](https://samaita.com/posts/how-i-benchmark-address-quality/).*
+**Previous:** How I Benchmark Address Quality
