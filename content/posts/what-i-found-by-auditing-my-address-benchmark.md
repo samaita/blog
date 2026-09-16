@@ -36,7 +36,7 @@ At first, the address looks reasonable. It contains a road, location names, an a
 
 The API result did not match my expected value, so the benchmark marked it as incorrect. When I checked the address again, however, the expected value was the problem.
 
-Panjalin is a real location, but it belongs to Kecamatan Sumberjaya, Kabupaten Majalengka. The road location in this address points to Pananjung, Tarogong Kaler. The individual names looked valid, but their relationship was not.
+Panjalin is a real location, but it belongs to Kecamatan `Sumberjaya`, Kabupaten `Majalengka`. The road location in this address points to `Pananjung`, `Tarogong Kaler`. The individual names looked valid, but their relationship was not.
 
 This is difficult to catch by reading the address alone. I had created the expected values from address data that looked reasonable, but I had not properly reviewed whether every administrative relationship was correct.
 
@@ -72,7 +72,7 @@ The engine found evidence for `Cimareme`, `Ngamprah`, `Kabupaten Bandung Barat`,
 
 There is something interesting about this address.
 
-**Ngamprah is both a district and a subdistrict inside that district.**
+**`Ngamprah` is both a district and a subdistrict inside that district.**
 
 So these are both valid administrative hierarchies:
 
@@ -127,9 +127,9 @@ That was how two valid candidates could both reach confidence `1.0`, even when o
 
 ## Changing the weights would hide the problem
 
-I could increase the weight of `Cimareme` until Candidate B wins, but there is no reason to make Cimareme inherently more important.
+I could increase the weight of `Cimareme` until Candidate B wins, but there is no reason to make `Cimareme` inherently more important.
 
-In another address, Ngamprah might genuinely be the intended subdistrict. Both hierarchies are valid.
+In another address, `Ngamprah` might genuinely be the intended subdistrict. Both hierarchies are valid.
 
 The useful signal is not which location name I prefer, but how much of the input each candidate can explain.
 
