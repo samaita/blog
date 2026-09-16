@@ -143,13 +143,7 @@ The engine already tracks which evidence contributes to each candidate.
 
 I used that information after calculating the normal confidence score. If relevant location evidence remains unused, the candidate receives a small penalty.
 
-In simplified form:
-
-```text
-confidence =
-    existing confidence
-    - unused evidence penalty
-```
+In simplified form: `confidence = existing confidence - unused evidence penalty`.
 
 ![Address-resolution penalty comparing two candidates: Candidate A leaves Cimareme unused and drops from 1.0 to 0.8, while Candidate B uses all evidence and stays at 1.0.](https://samaita.com/projects/address-quality/images/address-resolution-penalty.png)
 
@@ -203,14 +197,6 @@ make benchmark
 ```
 
 It takes less than ten seconds to run all 106 addresses again. I can make a small change, run the same dataset, and check both what improved and what became worse.
-
-I do not need to rely on a few addresses that happen to work when I test them manually.
-
-The unused-evidence penalty now gives me another question to test.
-
-Not every unused location name necessarily means a candidate is worse. An address can contain conflicting information, aliases, or a postal code that points somewhere different from the written hierarchy.
-
-I need to see how the penalty behaves in those cases before making it stronger.
 
 ---
 
