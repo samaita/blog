@@ -7,7 +7,7 @@ description = 'Reviewing the Address Quality benchmark exposed two problems I ha
 series = ['Address Quality']
 +++
 
-The first [Address Quality](https://samaita.com/projects/address-quality/) benchmark result was **49.1%**, as documented in [How I Benchmark Address Quality](https://samaita.com/posts/how-i-benchmark-address-quality/).
+The first Address Quality benchmark result was **49.1%**, as documented in [How I Benchmark Address Quality](https://samaita.com/posts/how-i-benchmark-address-quality/).
 
 Lower than the odds of a coin toss. LOL.
 
@@ -15,13 +15,13 @@ But the benchmark does more than give me a number. It keeps the result for every
 
 That report gives me something to inspect when the number looks bad.
 
-I went through the report expecting to find problems in the [engine](https://samaita.com/posts/how-i-built-address-quality-api-to-read-indonesian-addresses/), but the first mistake I found was in the test data.
+I went through the report expecting to find problems in the engine, but the first mistake I found was in the test data.
 
 ## What if the expected result is wrong?
 
 The benchmark currently uses 106 addresses. For each address, I have an expected province, city, district, and subdistrict.
 
-The [benchmark](https://samaita.com/posts/how-i-benchmark-address-quality/) sends the address to the [API](https://samaita.com/posts/how-i-built-address-quality-api-to-read-indonesian-addresses/) and compares the result with those expected values. If all four levels match, I count it as correct.
+The benchmark sends the address to the API and compares the result with those expected values. If all four levels match, I count it as correct.
 
 This works only if the expected values are correct.
 
@@ -51,7 +51,9 @@ Before review: 49.1%
 After review:  52.8%
 ```
 
-The score increased by **3.7 percentage points** without changing the address-resolution engine. The API did not improve in this step; the benchmark became more reliable because I corrected the data used to measure it.
+The score increased by **3.7 percentage points** without changing the engine. The API did not improve in this step; the benchmark became more reliable because I corrected the data used to measure it.
+
+[The benchmark v0.1.0-alpha-revision-106-1](https://samaita.com/projects/address-quality/benchmark/v0.1.0-alpha-revision-106-1) document shows this improvement.
 
 ## Then confidence 1.0 started looking suspicious
 
@@ -157,14 +159,16 @@ For Candidate B, all four location values contribute to the hierarchy, while Can
 
 The penalty does not say that Candidate A is invalid. For this particular input, it says there is more evidence supporting Candidate B.
 
-I ran the same [benchmark](https://samaita.com/posts/how-i-benchmark-address-quality/) again.
+I ran the same benchmark again.
 
 ```text
 After dataset review:          52.8%
 After unused-evidence penalty: 57.5%
 ```
 
-The [benchmark](https://samaita.com/posts/how-i-benchmark-address-quality/) improved by another **4.7 percentage points**. Unlike the first improvement, this one came from changing the [engine](https://samaita.com/posts/how-i-built-address-quality-api-to-read-indonesian-addresses/).
+The benchmark improved by another **4.7 percentage points**. Unlike the first improvement, this one came from changing the engine.
+
+[The benchmark v0.1.1-alpha](https://samaita.com/projects/address-quality/benchmark/v0.1.1-alpha) document shows this result.
 
 ## The same report found two different problems
 
@@ -172,7 +176,7 @@ I started with a [benchmark](https://samaita.com/posts/how-i-benchmark-address-q
 
 Reviewing the failures showed that some expected values were unreliable. I reviewed all 106 records, corrected the test data, and the result moved to **52.8%**.
 
-Then the same report showed several cases where different [candidates](https://samaita.com/posts/how-i-built-address-quality-api-to-read-indonesian-addresses/) could reach [confidence](https://samaita.com/posts/how-i-built-address-quality-api-to-read-indonesian-addresses/) `1.0`. Looking at the [evidence](https://samaita.com/posts/how-i-built-address-quality-api-to-read-indonesian-addresses/) they used showed that some candidates could ignore part of the address without paying any cost.
+Then the same report showed several cases where different candidates could reach confidence `1.0`. Looking at the evidence they used showed that some candidates could ignore part of the address without paying any cost.
 
 Adding the unused-evidence penalty moved the benchmark again to **57.5%**.
 
@@ -192,7 +196,7 @@ The final number is still not particularly high. The dataset contains only 106 a
 
 But I trust this benchmark more than the one I started with. I have now reviewed the expected result for every record instead of assuming the labels are correct.
 
-Running the [test](https://samaita.com/posts/how-i-benchmark-address-quality/) is also cheap:
+Running the test is also cheap:
 
 ```bash
 make benchmark
@@ -209,7 +213,6 @@ Not every unused location name necessarily means a candidate is worse. An addres
 I need to see how the penalty behaves in those cases before making it stronger.
 
 ---
-
 
 **Series:** Address Quality
 
