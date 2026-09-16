@@ -170,6 +170,10 @@ confidence =
     - unused evidence penalty
 ```
 
+![Address-resolution penalty comparing two candidates: Candidate A leaves Cimareme unused and drops from 1.0 to 0.8, while Candidate B uses all evidence and stays at 1.0.](https://samaita.com/projects/address-quality/images/address-resolution-penalty.png)
+
+The diagram shows the difference. Candidate A is a valid hierarchy, but it leaves `Cimareme` unused, so its confidence drops from `1.0` to `0.8`. Candidate B uses all the extracted location evidence and keeps its confidence at `1.0`.
+
 For Candidate B, all four location values contribute to the hierarchy.
 
 For Candidate A, `Cimareme` remains unused.
