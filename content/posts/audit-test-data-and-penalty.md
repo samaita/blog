@@ -36,9 +36,9 @@ One address in the test set looked reasonable:
 
 The address contains a road, a subdistrict, a district, a city, a province, and a postal code. At a glance, the hierarchy looks complete.
 
-But **Panjaling does not exist under Tarogong Kaler**.
+But **Panjalin does not exist under Tarogong Kaler**.
 
-The road address is located within Tarogong Kaler, Pananjung. The expected subdistrict in the test data was wrong.
+Panjalin is actually located in Kecamatan Sumberjaya, Kabupaten Majalengka, Jawa Barat. The road address is located within Tarogong Kaler, Pananjung. The expected subdistrict in the test data was wrong.
 
 This is difficult to infer from the address text alone. The words look like a valid hierarchy because they are all real place names. Their relationship is the problem.
 
