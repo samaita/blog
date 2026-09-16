@@ -1,7 +1,7 @@
 +++
-title = 'Audit the Test Data, Then Penalize Ignored Evidence'
-date = 2026-09-16T11:06:44+07:00
-draft = true
+title = 'What I Found by Auditing My Address Benchmark'
+date = 2026-09-16T19:00:00+07:00
+draft = false
 tags = ['address-quality']
 description = 'Reviewing the Address Quality benchmark exposed two problems I had overlooked: incorrect expected values and candidates that ignored part of the address.'
 +++
