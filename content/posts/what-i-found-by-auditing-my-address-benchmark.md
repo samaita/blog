@@ -4,9 +4,10 @@ date = 2026-09-16T19:00:00+07:00
 draft = false
 tags = ['address-quality']
 description = 'Reviewing the Address Quality benchmark exposed two problems I had overlooked: incorrect expected values and candidates that ignored part of the address.'
+series = ['Address Quality']
 +++
 
-The first Address Quality benchmark result was **49.1%**.
+The first Address Quality benchmark result was **49.1%**, as documented in [How I Benchmark Address Quality](https://samaita.com/posts/how-i-benchmark-address-quality/).
 
 Lower than the odds of a coin toss. LOL.
 
@@ -14,7 +15,7 @@ But the benchmark does more than give me a number. It keeps the result for every
 
 That report gives me something to inspect when the number looks bad.
 
-I went through the report expecting to find problems in the address-resolution engine. Instead, I found two different mistakes that I had overlooked, and the first one was in the test data.
+I went through the report expecting to find problems in the engine, but the first mistake I found was in the test data.
 
 ## What if the expected result is wrong?
 
@@ -35,7 +36,7 @@ At first, the address looks reasonable. It contains a road, location names, an a
 
 The API result did not match my expected value, so the benchmark marked it as incorrect. When I checked the address again, however, the expected value was the problem.
 
-Panjalin is a real location, but it belongs to Kecamatan Sumberjaya, Kabupaten Majalengka. The road location in this address points to Pananjung, Tarogong Kaler. The individual names looked valid, but their relationship was not.
+Panjalin is a real location, but it belongs to Kecamatan `Sumberjaya`, Kabupaten `Majalengka`. The road location in this address points to `Pananjung`, `Tarogong Kaler`. The individual names looked valid, but their relationship was not.
 
 This is difficult to catch by reading the address alone. I had created the expected values from address data that looked reasonable, but I had not properly reviewed whether every administrative relationship was correct.
 
@@ -50,7 +51,9 @@ Before review: 49.1%
 After review:  52.8%
 ```
 
-The score increased by **3.7 percentage points** without changing the address-resolution engine. The API did not improve in this step; the benchmark became more reliable because I corrected the data used to measure it.
+The score increased by **3.7 percentage points** without changing the engine. The API did not improve in this step; the benchmark became more reliable because I corrected the data used to measure it.
+
+[The benchmark v0.1.0-alpha-revision-106-1](https://samaita.com/projects/address-quality/benchmark/v0.1.0-alpha-revision-106-1) document shows this improvement.
 
 ## Then confidence 1.0 started looking suspicious
 
@@ -69,7 +72,7 @@ The engine found evidence for `Cimareme`, `Ngamprah`, `Kabupaten Bandung Barat`,
 
 There is something interesting about this address.
 
-**Ngamprah is both a district and a subdistrict inside that district.**
+**`Ngamprah` is both a district and a subdistrict inside that district.**
 
 So these are both valid administrative hierarchies:
 
@@ -124,9 +127,9 @@ That was how two valid candidates could both reach confidence `1.0`, even when o
 
 ## Changing the weights would hide the problem
 
-I could increase the weight of `Cimareme` until Candidate B wins, but there is no reason to make Cimareme inherently more important.
+I could increase the weight of `Cimareme` until Candidate B wins, but there is no reason to make `Cimareme` inherently more important.
 
-In another address, Ngamprah might genuinely be the intended subdistrict. Both hierarchies are valid.
+In another address, `Ngamprah` might genuinely be the intended subdistrict. Both hierarchies are valid.
 
 The useful signal is not which location name I prefer, but how much of the input each candidate can explain.
 
@@ -140,13 +143,7 @@ The engine already tracks which evidence contributes to each candidate.
 
 I used that information after calculating the normal confidence score. If relevant location evidence remains unused, the candidate receives a small penalty.
 
-In simplified form:
-
-```text
-confidence =
-    existing confidence
-    - unused evidence penalty
-```
+In simplified form: `confidence = existing confidence - unused evidence penalty`.
 
 ![Address-resolution penalty comparing two candidates: Candidate A leaves Cimareme unused and drops from 1.0 to 0.8, while Candidate B uses all evidence and stays at 1.0.](https://samaita.com/projects/address-quality/images/address-resolution-penalty.png)
 
@@ -156,7 +153,7 @@ For Candidate B, all four location values contribute to the hierarchy, while Can
 
 The penalty does not say that Candidate A is invalid. For this particular input, it says there is more evidence supporting Candidate B.
 
-I ran the same 106-address benchmark again.
+I ran the same benchmark again.
 
 ```text
 After dataset review:          52.8%
@@ -165,9 +162,11 @@ After unused-evidence penalty: 57.5%
 
 The benchmark improved by another **4.7 percentage points**. Unlike the first improvement, this one came from changing the engine.
 
+[The benchmark v0.1.1-alpha](https://samaita.com/projects/address-quality/benchmark/v0.1.1-alpha) document shows this result.
+
 ## The same report found two different problems
 
-I started with a benchmark result of **49.1%**.
+I started with a [benchmark](https://samaita.com/posts/how-i-benchmark-address-quality/) result of **49.1%**.
 
 Reviewing the failures showed that some expected values were unreliable. I reviewed all 106 records, corrected the test data, and the result moved to **52.8%**.
 
@@ -199,16 +198,6 @@ make benchmark
 
 It takes less than ten seconds to run all 106 addresses again. I can make a small change, run the same dataset, and check both what improved and what became worse.
 
-I do not need to rely on a few addresses that happen to work when I test them manually.
-
-The unused-evidence penalty now gives me another question to test.
-
-Not every unused location name necessarily means a candidate is worse. An address can contain conflicting information, aliases, or a postal code that points somewhere different from the written hierarchy.
-
-I need to see how the penalty behaves in those cases before making it stronger.
-
 ---
 
 **Series:** Address Quality
-
-**Previous:** How I Benchmark Address Quality
