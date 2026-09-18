@@ -29,10 +29,11 @@ export default function Playground() {
       <PageHeader
         title="Playground"
         description="Paste an Indonesian address and validate it against official data. See confidence, parsed hierarchy, evidence, and candidate matches in real time."
-      />
-      <div className="mt-2">
-        <Badge variant="info">v0.1.1-alpha</Badge>
-      </div>
+      >
+        <div className="mt-2">
+          <Badge variant="info">v0.1.1-alpha</Badge>
+        </div>
+      </PageHeader>
 
       <div className="flex flex-col gap-8 lg:flex-row">
         <div className="w-full lg:w-[440px] xl:w-[480px]">
