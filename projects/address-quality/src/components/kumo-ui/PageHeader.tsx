@@ -1,9 +1,12 @@
+import type { ReactNode } from "react"
+
 type PageHeaderProps = {
   title: string
   description?: string
+  children?: ReactNode
 }
 
-export default function PageHeader({ title, description }: PageHeaderProps) {
+export default function PageHeader({ title, description, children }: PageHeaderProps) {
   return (
     <div className="py-16 lg:py-24">
       <h1 className="text-4xl font-semibold tracking-tight text-surface-900 sm:text-5xl">
@@ -14,6 +17,7 @@ export default function PageHeader({ title, description }: PageHeaderProps) {
           {description}
         </p>
       )}
+      {children}
     </div>
   )
 }

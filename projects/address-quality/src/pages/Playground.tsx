@@ -1,6 +1,7 @@
 import { useCallback, useRef } from "react"
 import Container from "@/components/layout/Container"
 import { PageHeader } from "@/components/kumo-ui"
+import Badge from "@/components/common/Badge"
 import PlaygroundInput from "@/components/playground/PlaygroundInput"
 import PlaygroundResults from "@/components/playground/PlaygroundResults"
 import useValidateAddress from "@/hooks/useValidateAddress"
@@ -28,7 +29,11 @@ export default function Playground() {
       <PageHeader
         title="Playground"
         description="Paste an Indonesian address and validate it against official data. See confidence, parsed hierarchy, evidence, and candidate matches in real time."
-      />
+      >
+        <div className="mt-2">
+          <Badge variant="info">v0.1.1-alpha</Badge>
+        </div>
+      </PageHeader>
 
       <div className="flex flex-col gap-8 lg:flex-row">
         <div className="w-full lg:w-[440px] xl:w-[480px]">
