@@ -110,18 +110,6 @@ I am not sure which one is right. Both results look reasonable.
 
 ## A Successful Geocode Is Not the Same as a Validated Address
 
-That is where the difference matters. A geocoder is trying to answer a simple question:
-
-```code
-Where is this address?
-```
-
-[**Address Quality**](https://samaita.com/projects/address-quality/) has to answer another one too:
-
-```code
-Does this address agree with itself?
-```
-
 Take another example, the Cihampelas No. 7.
 ```text
 JL. Cihampelas No.7, Pasir Kaliki, Kec. Cicendo, Kota Bandung, Jawa Barat 40171
@@ -166,32 +154,42 @@ It is not "not found", but something else entirely.
 
 ![Google somehow decide Cihampelas 7 Pasir Kaliki is Cihampelas 7A Tamansari](https://samaita.com/projects/address-quality/images/address-quality-google-maps-api-cihampelas-case.png)
 
-## But I Cannot Inspect Why
+At this point, I don't know wether this result is actually accurate or not. But this is where the difference matters. A geocoder is trying to answer a simple question:
+
+```code
+Where is this address?
+```
+Accurate or not, it will just try to return the closesst result. [**Address Quality**](https://samaita.com/projects/address-quality/) aim to answer two question:
+
+```code
+Does this address agree with itself? Yes/No, and WHY?
+```
+
+## Mismatch in Google result? I Cannot Inspect Why
 
 I don't expect Google to explain its internals to me. Who am I, the Pentagon?
 
-But that result from Google Maps API becomes a limitation for address validation. When the API pick Jl. Cihampelas No.7 as No.7A, I can't see why. When it chooses LLRE Martadinata as Cihapit instead of Citarum, no clue. It is what it is, a mytery.
+But that result from Google Maps API becomes a limitation for address validation. When the API pick Jl. Cihampelas No.7 as No.7A, I can't see why. When it chooses LLRE Martadinata as Cihapit instead of Citarum, no clue. It is what it is, a magic and mystery.
 
 I also cannot tell whether Pasir Kaliki and 40171 were considered and rejected, or whether they never influenced the result at all.
 
 For many products, that is fine. You only need the final place.
 
-For [**Address Quality**](https://samaita.com/projects/address-quality/) project, I want more than that.
+For [**Address Quality**](https://samaita.com/projects/address-quality/) project, I want more exposed reasoning.
 
 I want the system to show me the evidence it used. I want to know when the input supported the result, when it only partly supported it, and even when it disagreed. **I need the WHY**.
 
 Something like this:
 
 ```text
-Input evidence:
-Cicendo
-40171
-
-External result:
-Bandung Wetan
-40116
+Input Evidence:
+JL. Ir. H. Juanda No.69, Dago, Tamansari, Kec. Bandung Wetan, Kota Bandung, Jawa Barat
 
 Result:
+- Dago
+- Tamansari
+
+Reason:
 conflicting_evidence
 ```
 
