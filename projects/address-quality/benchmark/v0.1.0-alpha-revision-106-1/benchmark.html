@@ -535,7 +535,7 @@
       var rows = challengeRow('Address ID', ex.id);
       if (ex.raw) rows += challengeRow('Input', ex.raw);
       rows += challengeRow('Formatted', ex.formatted);
-      rows += challengeRow('Actual address', [ex.actual.province, ex.actual.city, ex.actual.district, ex.actual.subdistrict].filter(Boolean).join(', '));
+      rows += challengeRow('Actual address', [ex.actual.subdistrict, ex.actual.district, ex.actual.city, ex.actual.province].filter(Boolean).join(', '));
       rows += challengeRow('Confidence', ex.confidence === null || ex.confidence === undefined ? null : pct(ex.confidence, 0));
       rows += challengeRow('Status', ex.status);
       exHtml = '<div class="aq-example"><div class="aq-example-label">Example</div><div class="aq-rows">' + rows + '</div></div>';
