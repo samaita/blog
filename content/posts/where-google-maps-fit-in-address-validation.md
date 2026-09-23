@@ -185,9 +185,9 @@ Something like this:
 Input Evidence:
 JL. Ir. H. Juanda No.69, Dago, Tamansari, Kec. Bandung Wetan, Kota Bandung, Jawa Barat
 
-Result:
-- Dago
-- Tamansari
+Result Candidates:
+- Dago, Kec. Bandung Wetan
+- Tamansari, Kec. Bandung Wetan
 
 Reason:
 conflicting_evidence
