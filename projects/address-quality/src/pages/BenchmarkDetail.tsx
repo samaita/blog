@@ -1,11 +1,9 @@
 import { useParams, Link } from "react-router-dom"
 import Container from "@/components/layout/Container"
-import { useIframeAutoHeight } from "@/hooks/useIframeAutoHeight"
 import { BENCHMARKS } from "@/data/benchmarks"
 
 export default function BenchmarkDetail() {
   const { version = "" } = useParams<{ version: string }>()
-  const { iframeRef, height } = useIframeAutoHeight()
 
   if (!BENCHMARKS.includes(version)) {
     return (
@@ -28,7 +26,7 @@ export default function BenchmarkDetail() {
   }
 
   return (
-    <Container className="pb-24">
+    <Container>
       <nav
         aria-label="Breadcrumb"
         className="flex items-center gap-2 pt-10 text-sm text-surface-500"
@@ -44,12 +42,9 @@ export default function BenchmarkDetail() {
       </nav>
 
       <iframe
-        ref={iframeRef}
         src={`${import.meta.env.BASE_URL}benchmark/${version}/`}
         title="Address Quality Benchmark"
-        width="100%"
-        height={height}
-        style={{ border: 0, display: "block" }}
+        className="sticky top-16 block h-[calc(100dvh-4rem)] w-full border-0"
       />
     </Container>
   )
